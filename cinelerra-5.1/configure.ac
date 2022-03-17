@@ -196,7 +196,6 @@ PKG_3RD([ffmpeg],[yes],
   [ libavutil/libavutil.a \
     libavcodec/libavcodec.a \
     libpostproc/libpostproc.a \
-    libavdevice/libavdevice.a \
     libavformat/libavformat.a \
     libswscale/libswscale.a \
     libavfilter/libavfilter.a \
@@ -1055,7 +1054,7 @@ fi
 
 if test [ "$(uname -o)"] = "Android" ; then
 # termux
-EXTRA_LIBS+=' -liconv'
+EXTRA_LIBS+=' -liconv -landroid-shmem'
 fi
 
 # intel lock elision bugs

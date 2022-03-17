@@ -130,7 +130,7 @@ esound.mak_vars+= CFLAGS=""
 esound.ldflags=" -lm -lstdc++"
 fftw.cfg_params= --disable-fortran --enable-shared=no
 ffmpeg.cfg_params= \
-	--enable-pthreads --enable-gpl --disable-ffplay \
+	--enable-pthreads --disable-avdevice --enable-gpl --disable-ffplay \
 	$(call if_want,VAAPI,--enable-vaapi,--disable-vaapi) \
 	$(call if_want,VDPAU,--enable-vdpau,--disable-vdpau) \
 	$(call if_want,NV, --enable-nvenc --enable-nvdec --enable-ffnvcodec) \
