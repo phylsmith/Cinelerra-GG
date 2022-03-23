@@ -1173,6 +1173,24 @@ if( debug && event->type != ClientMessage ) {
 //__LINE__,
 //keysym);
 
+// force setting modifiers state if a modifier key pressed
+		switch( keysym ) {
+		case XK_Alt_L:
+		case XK_Alt_R:
+			alt_mask = 1;
+			break;
+		case XK_Shift_L:
+		case XK_Shift_R:
+			shift_mask = 1;
+			break;
+		case XK_Control_L:
+		case XK_Control_R:
+			ctrl_mask = 1;
+			break;
+		default:
+			break;
+		}
+
 // block out control keys
 		if(keysym > 0xffe0 && keysym < 0xffff) break;
 // block out Alt_GR key
@@ -1309,8 +1327,26 @@ if( debug && event->type != ClientMessage ) {
 
 	case KeyRelease:
 		XLookupString((XKeyEvent*)event, keys_return, 1, &keysym, 0);
+		get_key_masks(event->xkey.state);
+// force clearing modifiers state if a modifier key released
+		switch( keysym ) {
+		case XK_Alt_L:
+		case XK_Alt_R:
+			alt_mask = 0;
+			break;
+		case XK_Shift_L:
+		case XK_Shift_R:
+			shift_mask = 0;
+			break;
+		case XK_Control_L:
+		case XK_Control_R:
+			ctrl_mask = 0;
+			break;
+		default:
+			break;
+		}
 		dispatch_keyrelease_event();
-// printf("BC_WindowBase::dispatch_event KeyRelease keysym=0x%x keystate=0x%lld\n",
+// printf("BC_WindowBase::dispatch_event KeyRelease keysym=%#lx keystate=%04x\n",
 // keysym, event->xkey.state);
 		break;
 

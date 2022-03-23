@@ -12,10 +12,14 @@
 # On empty keyphrase do nothing
 # The special keyphrase "TOC" shows Contents, "IDX" shows Index
 # The keyphrase starting with "FILE:" shows the file named after colon
+# The special keyphrase "API" shows the numeric version of the script itself
 
 # Several important definitions
 
-# Web browser executable
+# ContextManual.pl script API version. Must not be changed !
+$cin_cm_api = 1;
+
+# Web browser executable, can be redefined on user's demand
 $cin_browser = $ENV{'CIN_BROWSER'};
 # a likely default browser
 $cin_browser = 'firefox' if $cin_browser eq '';
@@ -23,6 +27,9 @@ $cin_browser = 'firefox' if $cin_browser eq '';
 #$cin_browser = 'xdg-open' if $cin_browser eq '';
 # a fake browser for debugging
 #$cin_browser = 'echo';
+
+# The following definitions depend on the HTML manual structure
+# There is nothing to change below this line
 
 # The node with the manual contents
 $contents_node = 'Contents.html';
@@ -76,11 +83,48 @@ $contents = $cin_man.'/'.$contents_node;
 $index = $cin_man.'/'.$index_node;
 #print "ContextManual: using contents $contents\n";
 
+# Cinelerra user's config directory
+$cin_config = $ENV{'CIN_CONFIG'};
+$cin_config = $ENV{'HOME'}.'/.bcast5'
+  if $cin_config eq '' && $ENV{'HOME'} ne '';
+$cin_config = '.' if $cin_config eq '';
+$me_config = "$cin_config/ContextManual.pl";
+#print "ContextManual: user script=$me_config\n";
+
 # 1st argument is the requested key
 $help_key = $ARGV[0];
 #print "ContextManual: request=$help_key\n";
 # Do nothing if no key requested
 exit 0 if $help_key eq '';
+
+# A special internal request: output own API version
+if ($help_key eq 'API')
+{
+  print "$cin_cm_api\n";
+  exit 0;
+}
+
+# If a system (not user's) script instance is executed, and the API versions
+# of both scripts do not match, then copy the system script to the user's one
+# (making a backup copy of the latter). Then execute it with the same key.
+if ($0 ne $me_config)
+{
+  $me_api = 0;
+  $me_api = `\"$me_config\" API` if -x $me_config;
+  if ($me_api != $cin_cm_api)
+  {
+    print "ContextManual: copying \"$0\" to \"$me_config\"\n";
+    unlink "$me_config.bak" if -f "$me_config.bak";
+    rename "$me_config", "$me_config.bak" if -f $me_config;
+    system "cp \"$0\" \"$me_config\"";
+    system "chmod +x \"$me_config\"";
+  }
+  exec "\"$me_config\" \"$help_key\"" if -x $me_config;
+}
+
+# If a user's script instance is executed, do everything by myself
+#print "ContextManual: executing \"$0\" \"$help_key\"\n";
+
 # Show contents on this special request
 if ($help_key eq 'TOC')
 {
@@ -178,13 +222,13 @@ if ($node eq '')
 # If not found, grep manual for exact key instance
 if ($node eq '')
 {
-  $_ = `grep -l \"$help_key\" $cin_dat/doc/CinelerraGG_Manual/*.html`;
+  $_ = `grep -l \"$help_key\" \"$cin_dat\"/doc/CinelerraGG_Manual/*.html`;
   ($node) = split;
 }
 # If not found, grep manual for case insensitive key instance
 if ($node eq '')
 {
-  $_ = `grep -il \"$help_key\" $cin_dat/doc/CinelerraGG_Manual/*.html`;
+  $_ = `grep -il \"$help_key\" \"$cin_dat\"/doc/CinelerraGG_Manual/*.html`;
   ($node) = split;
 }
 

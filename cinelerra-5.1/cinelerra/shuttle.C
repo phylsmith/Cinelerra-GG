@@ -504,6 +504,8 @@ int Shuttle::send_keycode(unsigned key, unsigned msk, int press, int send)
 	k->x = wx;
 	k->y = wy;
 	k->state = msk;
+// also clear modifiers state if a key is to be released
+	if( !press ) k->state = 0;
 	k->keycode = key;
 	k->same_screen = 1;
 	wdw->top_level->put_event((XEvent *) k);
@@ -553,9 +555,9 @@ void Shuttle::key(unsigned short code, unsigned int value)
 		fprintf(stderr, "key(%d, %d) out of range\n", code + EVENT_CODE_KEY1, value);
 		return;
 	}
-// Show help if both Alt's pressed on keyboard together with a shuttle button
-	if( wdw && wdw->alt_down() ) {
-		if( value ) wdw->context_help_show("Shuttle key default arrangement");
+// Show help if Alt is pressed on the keyboard together with a shuttle button
+	if( wdw && wdw->alt_down() && value ) {
+		wdw->context_help_show("Shuttle key default arrangement");
 		return;
 	}
 	send_stroke_sequence(value ? KJS_KEY_DOWN : KJS_KEY_UP, code);
