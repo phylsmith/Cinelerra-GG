@@ -1,0 +1,153 @@
+configure.ac:19: installing 'cfg/compile'
+configure.ac:12: installing 'cfg/install-sh'
+configure.ac:12: installing 'cfg/missing'
+Makefile.am: installing 'cfg/depcomp'
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a thread-safe mkdir -p... /usr/bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking for g++... g++
+checking whether the C++ compiler works... yes
+checking for C++ compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C++ compiler... yes
+checking whether g++ accepts -g... yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of g++... gcc3
+checking for gcc... gcc
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether gcc understands -c and -o together... yes
+checking dependency style of gcc... gcc3
+checking how to run the C preprocessor... gcc -E
+checking how to run the C++ preprocessor... g++ -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking boost/filesystem.hpp usability... yes
+checking boost/filesystem.hpp presence... yes
+checking for boost/filesystem.hpp... yes
+checking boost/filesystem/path.hpp usability... yes
+checking boost/filesystem/path.hpp presence... yes
+checking for boost/filesystem/path.hpp... yes
+checking boost/regex.hpp usability... yes
+checking boost/regex.hpp presence... yes
+checking for boost/regex.hpp... yes
+checking libpng16/png.h usability... yes
+checking libpng16/png.h presence... yes
+checking for libpng16/png.h... yes
+checking zlib.h usability... yes
+checking zlib.h presence... yes
+checking for zlib.h... yes
+checking jpeglib.h usability... yes
+checking jpeglib.h presence... yes
+checking for jpeglib.h... yes
+./configure: line 5262: -O2: command not found
+checking for X... libraries , headers 
+checking fcntl.h usability... yes
+checking fcntl.h presence... yes
+checking for fcntl.h... yes
+checking for memory.h... (cached) yes
+checking sys/time.h usability... yes
+checking sys/time.h presence... yes
+checking for sys/time.h... yes
+checking for unistd.h... (cached) yes
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+checking for inline... inline
+checking for int32_t... yes
+checking for int64_t... yes
+checking for size_t... yes
+checking for ssize_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+checking for ptrdiff_t... yes
+checking for pid_t... yes
+checking vfork.h usability... no
+checking vfork.h presence... no
+checking for vfork.h... no
+checking for fork... yes
+checking for vfork... yes
+checking for working fork... yes
+checking for working vfork... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for GNU libc compatible malloc... yes
+checking for stdlib.h... (cached) yes
+checking for unistd.h... (cached) yes
+checking for sys/param.h... yes
+checking for getpagesize... yes
+checking for working mmap... yes
+checking for dup2... yes
+checking for floor... no
+checking for gettimeofday... yes
+checking for memmove... yes
+checking for memset... yes
+checking for munmap... yes
+checking for pow... no
+checking for realpath... yes
+checking for select... yes
+checking for sqrt... no
+checking for strcasecmp... yes
+checking for strchr... yes
+checking for strdup... yes
+checking for strerror... yes
+checking for strncasecmp... yes
+checking for strrchr... yes
+checking for strstr... yes
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+make  all-am
+make[1]: Entering directory '/home/mat/Sources/cinelerra5/cinelerra-5.1/tools/makeappimagetool'
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT appdir.o -MD -MP -MF .deps/appdir.Tpo -c -o appdir.o appdir.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT appdir_root_setup.o -MD -MP -MF .deps/appdir_root_setup.Tpo -c -o appdir_root_setup.o appdir_root_setup.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT copyright.o -MD -MP -MF .deps/copyright.Tpo -c -o copyright.o copyright.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT copyright_dpkgquery.o -MD -MP -MF .deps/copyright_dpkgquery.Tpo -c -o copyright_dpkgquery.o copyright_dpkgquery.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT core.o -MD -MP -MF .deps/core.Tpo -c -o core.o core.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT desktopfile.o -MD -MP -MF .deps/desktopfile.Tpo -c -o desktopfile.o desktopfile.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT desktopfileentry.o -MD -MP -MF .deps/desktopfileentry.Tpo -c -o desktopfileentry.o desktopfileentry.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT desktopfilereader.o -MD -MP -MF .deps/desktopfilereader.Tpo -c -o desktopfilereader.o desktopfilereader.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT desktopfilewriter.o -MD -MP -MF .deps/desktopfilewriter.Tpo -c -o desktopfilewriter.o desktopfilewriter.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT elf_file.o -MD -MP -MF .deps/elf_file.Tpo -c -o elf_file.o elf_file.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT log.o -MD -MP -MF .deps/log.Tpo -c -o log.o log.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT main.o -MD -MP -MF .deps/main.Tpo -c -o main.o main.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT pipe_reader.o -MD -MP -MF .deps/pipe_reader.Tpo -c -o pipe_reader.o pipe_reader.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT process.o -MD -MP -MF .deps/process.Tpo -c -o process.o process.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT subprocess.o -MD -MP -MF .deps/subprocess.Tpo -c -o subprocess.o subprocess.cpp
+g++ -DHAVE_CONFIG_H -I.     -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1 -MT subprocess_result.o -MD -MP -MF .deps/subprocess_result.Tpo -c -o subprocess_result.o subprocess_result.cpp
+mv -f .deps/subprocess_result.Tpo .deps/subprocess_result.Po
+mv -f .deps/pipe_reader.Tpo .deps/pipe_reader.Po
+mv -f .deps/desktopfileentry.Tpo .deps/desktopfileentry.Po
+mv -f .deps/process.Tpo .deps/process.Po
+mv -f .deps/subprocess.Tpo .deps/subprocess.Po
+mv -f .deps/desktopfilewriter.Tpo .deps/desktopfilewriter.Po
+mv -f .deps/desktopfile.Tpo .deps/desktopfile.Po
+mv -f .deps/core.Tpo .deps/core.Po
+mv -f .deps/log.Tpo .deps/log.Po
+mv -f .deps/copyright.Tpo .deps/copyright.Po
+mv -f .deps/copyright_dpkgquery.Tpo .deps/copyright_dpkgquery.Po
+mv -f .deps/desktopfilereader.Tpo .deps/desktopfilereader.Po
+mv -f .deps/appdir_root_setup.Tpo .deps/appdir_root_setup.Po
+mv -f .deps/main.Tpo .deps/main.Po
+mv -f .deps/elf_file.Tpo .deps/elf_file.Po
+mv -f .deps/appdir.Tpo .deps/appdir.Po
+g++  -g -O2 -DBOOST_NO_CXX11_SCOPED_ENUMS -Dcimg_display=0 -Dcimg_use_jpeg=1 -Dcimg_use_png=1   -o makeappimage appdir.o appdir_root_setup.o copyright.o copyright_dpkgquery.o core.o desktopfile.o desktopfileentry.o desktopfilereader.o desktopfilewriter.o elf_file.o log.o main.o pipe_reader.o process.o subprocess.o subprocess_result.o  -lpng16 -lz -ljpeg -lboost_filesystem -lboost_regex -lstdc++
+make[1]: Leaving directory '/home/mat/Sources/cinelerra5/cinelerra-5.1/tools/makeappimagetool'
