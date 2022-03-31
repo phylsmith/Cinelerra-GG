@@ -3,6 +3,12 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 March changes of note:
+  A new script, bld_appimage.sh, includes rework of linuxdeploy
+   in order to create appimages for aarch64 and armhf + x86_64/i686.
+  Context Help for the Shuttle has been improved for reliability.
+  New lossless render format for vp9 was added.
+  BSD compiled CinGG for version 13.0 and 12.3 is available.
 2022 February changes of note:
   Updated libraries: libvpx, libogg, tiff, and fftw to current.
 2022 January changes of note:
