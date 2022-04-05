@@ -262,6 +262,7 @@ x264.cfg_params?= --enable-static --enable-pic
 x265.cfg_vars?=$(call cmake_config,source)
 x265.cfg_params?= -DENABLE_SHARED=no
 libvpx.cfg_params?= --enable-pic --disable-avx512 --enable-vp9-highbitdepth --disable-examples --disable-unit_tests
+libdpx.cfg_vars?= libtoolize; aclocal; autoconf; automake -a;
 
 DS:=$$$$$$$$
 pkg_cfg=$(call bld_path,$(1),usr/local/lib/pkgconfig):
@@ -375,6 +376,7 @@ $(call rules,$(call std-build,sratom, serd sord lv2))
 $(call rules,$(call std-build,lilv, lv2 sratom serd sord))
 $(call rules,$(call std-build,suil, lv2))
 $(call rules,$(call std-build,ffnvcodec))
+$(call rules,$(call std-build,libdpx))
 
 # specialize festival, multiple tarballs
 festival:

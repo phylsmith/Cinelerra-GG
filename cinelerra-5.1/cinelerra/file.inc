@@ -93,6 +93,8 @@
 #define FILE_PPM                38
 #define FILE_PPM_LIST           39
 #define FILE_REF                40
+#define FILE_DPX                41
+#define FILE_DPX_LIST           42
 
 // For formats supported by plugins, the format number is the plugin number in the
 // plugin list ORed with 0x8000.
@@ -170,6 +172,8 @@ N_("Reference to EDL")
 #define VORBIS_NAME		"OGG Vorbis"
 #define WAV_NAME		"Microsoft WAV"
 #define REF_NAME		"Reference EDL"
+#define DPX_NAME		"DPX"
+#define DPX_LIST_NAME		"DPX Sequence"
 
 #define BITSLINEAR8    8
 #define BITSLINEAR16   16

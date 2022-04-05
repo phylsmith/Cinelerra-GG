@@ -133,6 +133,7 @@ OBJS := $(OVERLAYS) \
 	$(OBJDIR)/filebaseulaw.o \
 	$(OBJDIR)/filecr2.o \
 	$(OBJDIR)/filedv.o \
+	$(OBJDIR)/filedpx.o \
 	$(OBJDIR)/fileexr.o \
 	$(OBJDIR)/fileffmpeg.o \
 	$(OBJDIR)/fileflac.o \

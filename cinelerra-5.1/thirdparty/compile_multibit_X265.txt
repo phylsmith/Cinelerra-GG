@@ -16,7 +16,7 @@ Subject: [PATCH 32/67] Add multilib x265 (slower compilation, but you can
 diff --git a/cinelerra-5.1/thirdparty/Makefile b/cinelerra-5.1/thirdparty/Makefile
 --- a/cinelerra-5.1/thirdparty/Makefile
 +++ b/cinelerra-5.1/thirdparty/Makefile
-@@ -250,8 +250,9 @@ tiff.cfg_params+= --enable-shared=no --disable-zstd $(call if_pkg,libwebp,\
+@@ -259,8 +259,9 @@ tiff.cfg_params+= --disable-libdeflate --enable-shared=no --disable-zstd $(call
   $(call if_npkg,libwebp,--disable-webp)
  twolame.cfg_params?=--enable-shared=no
  x264.cfg_params?= --enable-static --enable-pic
@@ -25,8 +25,8 @@ diff --git a/cinelerra-5.1/thirdparty/Makefile b/cinelerra-5.1/thirdparty/Makefi
 +x265.cfg_vars?=chmod +x ./configure; chmod +x ./multilib.sh;
 +#x265.cfg_vars?=$(call cmake_config,source)
 +#x265.cfg_params?= -DENABLE_SHARED=no
- libvpx.cfg_params?= --enable-pic --disable-avx512 --disable-examples --disable-unit_tests
-
+ libvpx.cfg_params?= --enable-pic --disable-avx512 --enable-vp9-highbitdepth --disable-examples --disable-unit_tests
+ 
  DS:=$$$$$$$$
 diff --git a/cinelerra-5.1/thirdparty/src/x265_3.5.patch1 b/cinelerra-5.1/thirdparty/src/x265_3.5.patch1
 new file mode 100644

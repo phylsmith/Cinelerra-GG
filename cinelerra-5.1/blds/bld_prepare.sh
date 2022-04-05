@@ -7,7 +7,7 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 <os>"
-  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian]"
+  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch]"
 fi
 
 dir="$1"
@@ -57,6 +57,11 @@ case "$dir" in
     jbigkit-devel libvdpau-devel libva-devel gtk2-devel mesa-vdpau-drivers \
     pulseaudio-libs-devel libtool patchelf boost-devel
   ;;
+"arch")
+    pacman -Syu gtk2 nasm yasm cmake fftw patchelf boost boost-libs \
+    base-devel libvdpau libva perl-xml-parser perl-carp libogg texinfo \
+    libsndfile
+ ;;
 "suse" | "leap" | "tumbleweed")
   zypper -n install nasm gcc gcc-c++ zlib-devel texinfo libpng16-devel \
     freeglut-devel libXv-devel alsa-devel libbz2-devel ncurses-devel \

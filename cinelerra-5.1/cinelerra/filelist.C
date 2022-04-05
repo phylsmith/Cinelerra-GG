@@ -115,7 +115,7 @@ int FileList::open_file(int rd, int wr)
 				int width = asset->width, height = asset->height;
 				char string[BCTEXTLEN];
 				int len = strlen(list_prefix);
-				int ret = fread(string, 1, strlen(list_prefix), stream);
+				int ret = fread(string, 1, len, stream);
 				fclose(stream);
 				result = len == ret ? 0 : 1;
 				if( !result && !strncasecmp(string, list_prefix, len)) {

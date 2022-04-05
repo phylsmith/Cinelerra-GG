@@ -1,0 +1,11 @@
+--- ./configure.ac.orig	2022-04-03 18:21:04.183058995 +0300
++++ ./configure.ac	2022-04-03 18:26:35.223059015 +0300
+@@ -10,7 +10,7 @@
+ # Checks for programs.
+ AC_PROG_CC
+ AC_PROG_CXX
+-AX_CXX_COMPILE_STDCXX_17
++AX_CXX_COMPILE_STDCXX_11
+ 
+ # libtool
+ AM_DISABLE_SHARED
