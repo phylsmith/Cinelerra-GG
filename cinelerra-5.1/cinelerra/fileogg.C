@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#ifdef HAVE_OGG
 
 #include "asset.h"
 #include "bcsignals.h"
@@ -1914,3 +1915,4 @@ int OGGTheoraSharpness::handle_event()
 }
 
 
+#endif
