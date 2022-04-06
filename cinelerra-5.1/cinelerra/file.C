@@ -387,7 +387,9 @@ const char *File::default_probes[] = {
 	"PNG",
 	"PPM",
 	"JPEG",
+#ifdef HAVE_GIFLIB
 	"GIF",
+#endif
 	"DPX",
 #ifdef HAVE_OPENEXR
 	"EXR",
@@ -465,6 +467,7 @@ int File::probe()
 			file = new FileJPEG(this->asset, this);
 			return FILE_OK;
 		}
+#ifdef HAVE_GIFLIB
 		if( !strcmp(pref->name,"GIF") ) { // GIF file
 			if( FileGIFList::check_sig(this->asset) )
 				file = new FileGIFList(this->asset, this);
@@ -473,6 +476,7 @@ int File::probe()
 			else continue;
 			return FILE_OK;
 		}
+#endif
 #ifdef HAVE_LIBDPX
 		if( !strcmp(pref->name,"DPX") ) { // DPX file
 			if( !FileDPX::check_sig(this->asset, data) ) continue;
@@ -599,13 +603,14 @@ int File::open_file(Preferences *preferences,
 	case FILE_JPEG_LIST:
 		file = new FileJPEG(this->asset, this);
 		break;
-
+#ifdef HAVE_GIFLIB
 	case FILE_GIF:
 		file = new FileGIF(this->asset, this);
 		break;
 	case FILE_GIF_LIST:
 		file = new FileGIFList(this->asset, this);
 		break;
+#endif
 #ifdef HAVE_LIBDPX
 	case FILE_DPX:
 	case FILE_DPX_LIST:

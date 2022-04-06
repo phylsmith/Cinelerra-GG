@@ -61,8 +61,10 @@ void FormatPopup::create_objects()
 
 
 	if(!use_brender) {
+#ifdef HAVE_GIFLIB
 		post_item(FILE_GIF);
 		post_item(FILE_GIF_LIST);
+#endif
 #ifdef HAVE_OPENEXR
 		post_item(FILE_EXR);
 		post_item(FILE_EXR_LIST);

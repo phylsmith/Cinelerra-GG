@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
+#ifdef HAVE_GIFLIB
 #include "asset.h"
 #include "bcsignals.h"
 #include "file.h"
@@ -572,3 +572,4 @@ GIFUnit::~GIFUnit()
 	delete temp_frame;
 }
 
+#endif
