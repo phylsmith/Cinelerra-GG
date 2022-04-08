@@ -70,6 +70,7 @@ CHECK_WITH([vdpau],[video decode+presentation api for unix],[VDPAU],[yes])
 CHECK_WITH([nv],[nvenc/nvdec ffnvcodec api],[NV],[yes])
 CHECK_WITH([cuda],[nv cuda plugins],[CUDA],[auto])
 CHECK_WITH([clang],[use clang instead of gcc/g++],[CLANG],[no])
+CHECK_WITH([filegif],[enable filegif i/o], [GIFLIB],[yes])
 
 if test "x$WANT_LV2" != "xno"; then
   GTK2_LIBS=`pkg-config --libs gtk+-2.0`
@@ -940,7 +941,7 @@ PKG_PROVIDE([esound],[$WANT_ESOUND])
 PKG_PROVIDE([ffmpeg])
 PKG_PROVIDE([fftw])
 PKG_PROVIDE([flac])
-PKG_PROVIDE([giflib])
+PKG_PROVIDE([giflib], [$WANT_GIFLIB])
 PKG_PROVIDE([ilmBase], [$WANT_OPENEXR])
 PKG_PROVIDE([ladspa],[$WANT_LADSPA_BUILD])
 PKG_PROVIDE([lame])
@@ -999,7 +1000,7 @@ if test "x$WANT_CIN_3RDPARTY" != "xno"; then
 fi
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
-	 COMMERCIAL LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
+	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
 	 VAAPI VDPAU CUDA NV WINTV X10TV; do
   eval vv="\$WANT_$v"
   if test "x$vv" != "xno"; then

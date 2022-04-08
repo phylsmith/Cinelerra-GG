@@ -390,7 +390,9 @@ const char *File::default_probes[] = {
 #ifdef HAVE_GIFLIB
 	"GIF",
 #endif
+#ifdef HAVE_LIBDPX
 	"DPX",
+#endif
 #ifdef HAVE_OPENEXR
 	"EXR",
 #endif
@@ -402,7 +404,9 @@ const char *File::default_probes[] = {
 	"OGG",
 	"Vorbis",
 #endif
+#ifdef HAVE_LIBZMPEG
 	"MPEG",
+#endif
 	"EDL",
 	"FFMPEG_Late",
 }; 
