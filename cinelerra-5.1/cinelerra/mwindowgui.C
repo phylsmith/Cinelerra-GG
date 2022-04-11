@@ -1236,6 +1236,12 @@ int MWindowGUI::keypress_event()
 		}
 		break;
 
+	case '!':
+		if( !ctrl_down() || !shift_down() ) break;
+/* code to execute is same as lines 383-401 in editpopup.C */
+		result = 1;
+		break;
+
 	case UP:
 		if( ctrl_down() && !alt_down() )
 			mwindow->expand_y();

@@ -1482,7 +1482,9 @@ void TrackCanvas::draw_resources(int mode,
 			if(MWindowGUI::visible(edit_x, edit_x + edit_w, 0, get_w()) &&
 				MWindowGUI::visible(edit_y, edit_y + edit_h, 0, get_h()))
 			{
-				int64_t pixmap_x, pixmap_w, pixmap_h;
+				int64_t pixmap_x=0;
+				int64_t pixmap_w=0;
+				int64_t pixmap_h=0;
 				if(debug) PRINT_TRACE
 
 // Search for existing pixmap containing edit

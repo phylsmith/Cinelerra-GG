@@ -377,6 +377,7 @@ EditPopupTimecode::EditPopupTimecode(MWindow *mwindow, EditPopup *popup)
 	this->mwindow = mwindow;
 	this->popup = popup;
 	set_ctrl(1);
+	set_shift(1);
 }
 
 int EditPopupTimecode::handle_event()
