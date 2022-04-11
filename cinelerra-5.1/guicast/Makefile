@@ -5,6 +5,10 @@ ifeq ($(OBJDIR), i686)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B i386 -I binary -O elf32-i386\""
 endif
 
+ifeq ($(OBJDIR), i386)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B i386 -I binary -O elf32-i386\""
+endif
+
 ifeq ($(OBJDIR), x86_64)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B i386 -I binary -O elf64-x86-64\""
 endif
@@ -19,6 +23,17 @@ endif
 ifeq ($(OBJDIR), aarch64)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B aarch64 -I binary -O elf64-littleaarch64\""
 endif
+
+ifeq ($(OBJDIR), ppc64)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf64-powerpc\""
+endif
+
+ifeq ($(OBJDIR), ppc)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf32-powerpc\""
+endif
+
+
+
 
 $(shell mkdir -p $(OBJDIR) )
 
