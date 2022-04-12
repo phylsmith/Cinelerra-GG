@@ -58,13 +58,15 @@ void* Thread::entrypoint(void *parameters)
 	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 	thread->cancel_enabled = false;
 
+// not on bsd
+#if defined (__linux__) || defined (__TERMUX__)
 // Set realtime here since it doesn't work in start
 	if( thread->realtime && getuid() == 0 ) {
 		struct sched_param param = { sched_priority : 1 };
 		if(pthread_setschedparam(thread->tid, SCHED_RR, &param) < 0)
 			perror("Thread::entrypoint pthread_attr_setschedpolicy");
 	}
-
+#endif
 	thread->run();
 	thread->finished = true;
 	if( !thread->synchronous ) {
