@@ -24,8 +24,13 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#if !defined(__FreeBSD__)
 #include <sys/stat.h>
 #include <sys/statfs.h>
+#else
+#include <sys/param.h>
+#include <sys/mount.h>
+#endif
 
 // BD Creation
 
@@ -61,6 +66,14 @@ static struct bd_format {
 	{ "720x480   29.97i",	 720,480,  29.97,  0, ILACE_MODE_BOTTOM_FIRST },
 	{ "720x480   29.97p*",	 720,480,  29.97,  0, ILACE_MODE_NOTINTERLACED },
 };
+
+static struct bd_profile {
+	const char *name;
+} bd_profiles[] = {
+	{"bluray.m2ts"},
+	{"bluray_lpcm.m2ts"},
+};
+
 
 const int64_t CreateBD_Thread::BD_SIZE = 25000000000;
 const int CreateBD_Thread::BD_STREAMS = 1;
@@ -144,10 +157,13 @@ int BD_BatchRenderJob::get_udfs_mount(char *udfs, char *mopts, char *mntpt)
 	return ret;
 }
 
+
+
 char *BD_BatchRenderJob::create_script(EDL *edl, ArrayList<Indexable *> *idxbls)
 {
 	char script[BCTEXTLEN];
 	strcpy(script, edl_path);
+
 	FILE *fp = 0;
 	char *bp = strrchr(script,'/');
 	int fd = -1;
@@ -175,10 +191,15 @@ char *BD_BatchRenderJob::create_script(EDL *edl, ArrayList<Indexable *> *idxbls)
 	fprintf(fp,"sz=`du -cb $dir/bd.m2ts* | tail -1 | sed -e 's/[ 	].*//'`\n");
 	fprintf(fp,"blks=$((sz/2048 + 4096))\n");
 	fprintf(fp,"rm -f %s\n", udfs);
+	fprintf(fp,"if [ -f bd.meta ]; then\n");
+	fprintf(fp,"tsmuxer bd.meta $dir/bd.iso \n");
+	fprintf(fp,"mv $dir/bd.iso $dir/bd.udfs\n");
+	fprintf(fp,"else\n");
 	fprintf(fp,"mkudffs -b 2048 %s $blks\n", udfs);
 	fprintf(fp,"mount %s%s\n", mopts, mntpt);
 	fprintf(fp,"bdwrite %s $dir/bd.m2ts*\n",mntpt);
 	fprintf(fp,"umount %s\n",mntpt);
+	fprintf(fp,"fi\n");
 	if( is_usr_mnt )
 		fprintf(fp,"mv -f %s $dir/bd.udfs\n", udfs);
 	fprintf(fp,"echo To burn bluray, load writable media and run:\n");
@@ -204,6 +225,9 @@ CreateBD_Thread::CreateBD_Thread(MWindow *mwindow)
 	this->use_resize_tracks = 0;
 	this->use_labeled = 0;
 	this->use_farmed = 0;
+	this->use_tsmuxer = 0;
+
+	strcpy(use_profile,"bluray.m2ts");
 
 	this->bd_size = BD_SIZE;
 	this->bd_width = BD_WIDTH;
@@ -215,6 +239,7 @@ CreateBD_Thread::CreateBD_Thread(MWindow *mwindow)
 	this->bd_max_bitrate = BD_MAX_BITRATE;
 	this->bd_kaudio_rate = BD_KAUDIO_RATE;
 	this->max_w = this->max_h = 0;
+	this->batchrender = 0;
 }
 
 CreateBD_Thread::~CreateBD_Thread()
@@ -297,6 +322,41 @@ int CreateBD_Thread::create_bd_jobs(ArrayList<BatchRenderJob*> *jobs, const char
 		return 1;
 	}
 
+	if (use_tsmuxer) {
+	char meta_script[BCTEXTLEN];
+	strcpy(meta_script, "/");
+
+	FILE *fp = 0;
+	char *bp = strrchr(meta_script,'/');
+	int fd = -1;
+	if( bp ) {
+		char script_filename[BCTEXTLEN];
+		sprintf(script_filename, "%s/bd.meta", asset_dir);
+		strcpy(bp, script_filename);
+		fd = open(meta_script, O_WRONLY+O_CREAT+O_TRUNC, 0755);
+	}
+	if( fd >= 0 )
+		fp = fdopen(fd, "w");
+	if( !fp ) {
+		char err[BCTEXTLEN], msg[BCTEXTLEN];
+		strerror_r(errno, err, sizeof(err));
+		sprintf(msg, _("Unable to save: %s\n-- %s"), meta_script, err);
+		MainError::show_error(msg);
+		return 0;
+	}
+
+
+	fprintf(fp,"MUXOPT --blu-ray --hdmv-descriptors\n");
+	fprintf(fp,"V_MPEG4/ISO/AVC, bd.m2ts, track=4113\n");
+	if(!strcmp(use_profile, "bluray.m2ts"))
+	fprintf(fp,"A_AC3, bd.m2ts, track=4352\n");
+	if(!strcmp(use_profile, "bluray_lpcm.m2ts"))
+	fprintf(fp,"A_LPCM, bd.m2ts, track=4352\n");
+	fprintf(fp,"\n");
+	fclose(fp);
+
+	}
+
 	BatchRenderJob *job = new BD_BatchRenderJob(mwindow->preferences,
 		use_labeled, use_farmed);
 	jobs->append(job);
@@ -316,7 +376,7 @@ int CreateBD_Thread::create_bd_jobs(ArrayList<BatchRenderJob*> *jobs, const char
 	strcpy(asset->fformat, "m2ts");
 
 	asset->audio_data = 1;
-	strcpy(asset->acodec, "bluray.m2ts");
+	strcpy(asset->acodec, use_profile);
 	//mwindow->defaults->get("DEFAULT_BLURAY_ACODEC", asset->acodec);
 	FFMPEG::set_option_path(option_path, "audio/%s", asset->acodec);
 	FFMPEG::load_options(option_path, asset->ff_audio_options,
@@ -324,7 +384,7 @@ int CreateBD_Thread::create_bd_jobs(ArrayList<BatchRenderJob*> *jobs, const char
 	asset->ff_audio_bitrate = bd_kaudio_rate * 1000;
 
 	asset->video_data = 1;
-	const char *vcodec = "bluray.m2ts";
+	const char *vcodec = use_profile;
 	switch( asset->interlace_mode ) {
 	case ILACE_MODE_TOP_FIRST:    vcodec = "bluray_tff.m2ts";  break;
 	case ILACE_MODE_BOTTOM_FIRST: vcodec = "bluray_bff.m2ts";  break;
@@ -419,6 +479,7 @@ void CreateBD_Thread::handle_close_event(int result)
 	char asset_dir[BCTEXTLEN], jobs_path[BCTEXTLEN];
 	snprintf(asset_dir, sizeof(asset_dir), "%s/%s", tmp_path, asset_title);
 	snprintf(jobs_path, sizeof(jobs_path), "%s/bd.jobs", asset_dir);
+	//batchrender->tsmuxered = use_tsmuxer;
 	mwindow->batch_render->reset(jobs_path);
 	int ret = create_bd_jobs(&mwindow->batch_render->jobs, asset_dir);
 	mwindow->undo->update_undo_after(_("create bd"), LOAD_ALL);
@@ -446,6 +507,7 @@ BC_Window* CreateBD_Thread::new_gui()
 	use_resize_tracks = 0;
 	use_labeled = 0;
 	use_farmed = 0;
+	use_tsmuxer = 0;
 	use_standard = !strcmp(mwindow->default_std(),"NTSC") ?
 		 BD_1920x1080_2997i : BD_1920x1080_25i;
 	bd_size = BD_SIZE;
@@ -478,7 +540,7 @@ BC_Window* CreateBD_Thread::new_gui()
 	int scr_x = mwindow->gui->get_screen_x(0, -1);
 	int scr_w = mwindow->gui->get_screen_w(0, -1);
 	int scr_h = mwindow->gui->get_screen_h(0, -1);
-	int w = xS(560), h = yS(290);
+	int w = xS(560), h = yS(340);
 	int x = scr_x + scr_w/2 - w/2, y = scr_h/2 - h/2;
 
 	gui = new CreateBD_GUI(this, x, y, w, h);
@@ -707,6 +769,16 @@ CreateBD_WideAudio::~CreateBD_WideAudio()
 {
 }
 
+CreateBD_UseTsmuxer::CreateBD_UseTsmuxer(CreateBD_GUI *gui, int x, int y)
+ : BC_CheckBox(x, y, &gui->thread->use_tsmuxer, _("use tsmuxer"))
+{
+	this->gui = gui;
+}
+
+CreateBD_UseTsmuxer::~CreateBD_UseTsmuxer()
+{
+}
+
 
 CreateBD_GUI::CreateBD_GUI(CreateBD_Thread *thread, int x, int y, int w, int h)
  : BC_Window(_(PROGRAM_NAME ": Create BD"), x, y, w, h, xS(50), yS(50), 1, 0, 1)
@@ -721,6 +793,7 @@ CreateBD_GUI::CreateBD_GUI(CreateBD_Thread *thread, int x, int y, int w, int h)
 	disk_space = 0;
 	standard = 0;
 	scale = 0;
+	profile = 0;
 	need_deinterlace = 0;
 	need_inverse_telecine = 0;
 	need_resize_tracks = 0;
@@ -729,6 +802,7 @@ CreateBD_GUI::CreateBD_GUI(CreateBD_Thread *thread, int x, int y, int w, int h)
 	need_wide_audio = 0;
 	need_labeled = 0;
 	need_farmed = 0;
+	need_tsmuxer = 0;
 	ok = 0;
 	cancel = 0;
 // *** CONTEXT_HELP ***
@@ -741,8 +815,9 @@ CreateBD_GUI::~CreateBD_GUI()
 
 void CreateBD_GUI::create_objects()
 {
+	int xs1 = xS(1);
 	int xs10 = xS(10), xs35 = xS(35);
-	int xs160 = xS(160), xs170 = xS(170);
+	int xs60 = xS(60), xs160 = xS(160), xs170 = xS(170);
 	int ys5 = yS(5), ys10 = yS(10);
 	lock_window("CreateBD_GUI::create_objects");
 	int pady = BC_TextBox::calculate_h(this, MEDIUMFONT, 0, 1) + ys5;
@@ -778,7 +853,25 @@ void CreateBD_GUI::create_objects()
 	media_size->update(media_sizes[0]->get_text());
 	disk_space->update();
 	y += disk_space->get_h() + pady/2;
-	title = new BC_Title(x, y, _("Format:"), MEDIUMFONT, YELLOW);
+
+	title = new BC_Title(x, y, _("Profile:"), MEDIUMFONT, YELLOW);
+	add_subwindow(title);
+	int start_x = x;
+	x += title->get_w()+padx;
+	profile = new CreateBD_Profile(this, x, y);
+	profile->create_objects();
+	profiles.append(new BC_ListBoxItem("bluray.m2ts"));
+	profiles.append(new BC_ListBoxItem("bluray_lpcm.m2ts"));
+/*	profiles.append(new BC_ListBoxItem("bluray_truehd.m2ts")); */
+	profile->update_list(&profiles);
+	profile->update(profiles[0]->get_text());
+
+	x += profile->get_w()+padx;
+	need_tsmuxer = new CreateBD_UseTsmuxer(this, x, y);
+	add_subwindow(need_tsmuxer);
+	y += need_tsmuxer->get_h() + pady;
+
+	title = new BC_Title(start_x, y, _("Format:"), MEDIUMFONT, YELLOW);
 	add_subwindow(title);
 	standard = new CreateBD_Format(this, title->get_w() + padx, y);
 	add_subwindow(standard);
@@ -793,15 +886,15 @@ void CreateBD_GUI::create_objects()
 	scale->create_objects();
 	y += standard->get_h() + pady/2;
 	x1 = x;  int y1 = y;
-	need_deinterlace = new CreateBD_Deinterlace(this, x1, y);
+	need_deinterlace = new CreateBD_Deinterlace(this, start_x, y);
 	add_subwindow(need_deinterlace);
 	y += need_deinterlace->get_h() + pady/2;
-	need_histogram = new CreateBD_Histogram(this, x1, y);
+	need_histogram = new CreateBD_Histogram(this, start_x, y);
 	add_subwindow(need_histogram);
 	y += need_histogram->get_h() + pady/2;
 	non_standard = new BC_Title(x1, y+ys5, "", MEDIUMFONT, RED);
 	add_subwindow(non_standard);
-	x1 += xs160;  y = y1;
+	x1 -= xs60;  y = y1;
 	need_inverse_telecine = new CreateBD_InverseTelecine(this, x1, y);
 	add_subwindow(need_inverse_telecine);
 	y += need_inverse_telecine->get_h() + pady/2;
@@ -810,7 +903,7 @@ void CreateBD_GUI::create_objects()
 	y += need_wide_audio->get_h() + pady/2;
 	need_resize_tracks = new CreateBD_ResizeTracks(this, x1, y);
 	add_subwindow(need_resize_tracks);
-	x1 += xs160;  y = y1;
+	x1 += xs170;  y = y1;
 	need_labeled = new CreateBD_LabelChapters(this, x1, y);
 	add_subwindow(need_labeled);
 	y += need_labeled->get_h() + pady/2;
@@ -818,7 +911,7 @@ void CreateBD_GUI::create_objects()
 	add_subwindow(need_farmed);
 	ok_w = BC_OKButton::calculate_w();
 	ok_h = BC_OKButton::calculate_h();
-	ok_x = xs10;
+	ok_x = xs1;
 	ok_y = get_h() - ok_h - xs10;
 	ok = new CreateBD_OK(this, ok_x, ok_y);
 	add_subwindow(ok);
@@ -1121,3 +1214,18 @@ int CreateBD_MediaSize::handle_event()
 	return 1;
 }
 
+CreateBD_Profile::CreateBD_Profile(CreateBD_GUI *gui, int x, int y)
+ : BC_PopupTextBox(gui, 0, 0, x, y, xS(170),yS(50))
+{
+	this->gui = gui;
+}
+
+CreateBD_Profile::~CreateBD_Profile()
+{
+}
+
+int CreateBD_Profile::handle_event()
+{
+	strcpy(gui->thread->use_profile, get_text());
+	return 1;
+}

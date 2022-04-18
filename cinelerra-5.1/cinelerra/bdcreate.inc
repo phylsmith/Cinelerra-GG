@@ -41,5 +41,7 @@ class CreateBD_GUI;
 class CreateBD_FormatItem;
 class CreateBD_Format;
 class CreateBD_MediaSize;
+class CreateBD_Profile;
+class CreateBD_UseTsmuxer;
 
 #endif

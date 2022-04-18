@@ -30,6 +30,7 @@ public:
 	static int get_udfs_mount(char *udfs, char *mopts, char *mntpt);
 	BD_BatchRenderJob(Preferences *preferences, int labeled, int farmed);
 	char *create_script(EDL *edl, ArrayList<Indexable *> *idxbls);
+	int tsmuxered;
 };
 
 
@@ -57,11 +58,13 @@ public:
 	CreateBD_GUI *gui;
 	char asset_title[BCTEXTLEN];
 	char tmp_path[BCTEXTLEN];
+	char use_profile[BCTEXTLEN];
 	int use_deinterlace, use_inverse_telecine;
 	int use_scale, use_resize_tracks;
 	int use_wide_audio, use_farmed;
 	int use_histogram, use_labeled;
 	int use_standard;
+	int use_tsmuxer;
 
 	int64_t bd_size;
 	int bd_width;
@@ -74,6 +77,8 @@ public:
 	double bd_kaudio_rate;
 	int bd_interlace_mode;
 	int max_w, max_h;
+
+	BD_BatchRenderJob *batchrender;
 };
 
 class CreateBD_OK : public BC_OKButton
@@ -196,6 +201,17 @@ public:
 	CreateBD_GUI *gui;
 };
 
+
+class CreateBD_UseTsmuxer : public BC_CheckBox
+{
+public:
+	CreateBD_UseTsmuxer(CreateBD_GUI *gui, int x, int y);
+	~CreateBD_UseTsmuxer();
+
+	CreateBD_GUI *gui;
+};
+
+
 class CreateBD_GUI : public BC_Window
 {
 public:
@@ -224,6 +240,7 @@ public:
 	CreateBD_InverseTelecine *need_inverse_telecine;
 	CreateBD_ResizeTracks *need_resize_tracks;
 	CreateBD_Histogram *need_histogram;
+	CreateBD_UseTsmuxer *need_tsmuxer;
 	BC_Title *non_standard;
 	CreateBD_WideAudio *need_wide_audio;
 	CreateBD_LabelChapters *need_labeled;
@@ -232,6 +249,8 @@ public:
 	CreateBD_OK *ok;
 	int cancel_x, cancel_y, cancel_w, cancel_h;
 	CreateBD_Cancel *cancel;
+	ArrayList<BC_ListBoxItem *> profiles;
+	CreateBD_Profile *profile;
 };
 
 class CreateBD_FormatItem : public BC_MenuItem
@@ -289,5 +308,16 @@ public:
 
 	CreateBD_GUI *gui;
 };
+
+class CreateBD_Profile : public BC_PopupTextBox
+{
+public:
+	CreateBD_Profile(CreateBD_GUI *gui, int x, int y);
+	~CreateBD_Profile();
+	int handle_event();
+
+	CreateBD_GUI *gui;
+};
+
 
 #endif

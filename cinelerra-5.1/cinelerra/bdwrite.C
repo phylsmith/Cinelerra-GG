@@ -38,7 +38,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#if !defined (__FreeBSD__)
 #include <endian.h>
+#else
+#include <sys/endian.h>
+#endif
 #include <limits.h>
 #include <sys/stat.h>
 // work arounds (centos)
@@ -102,6 +106,7 @@ enum {
   BLURAY_STREAM_TYPE_VIDEO_VC1 = 0xea,
   BLURAY_STREAM_TYPE_VIDEO_H264 = 0x1b,
   BLURAY_STREAM_TYPE_VIDEO_H264_MVC = 0x20,
+  BLURAY_STREAM_TYPE_VIDEO_HEVC = 0x24,
   BLURAY_STREAM_TYPE_SUB_PG = 0x90,
   BLURAY_STREAM_TYPE_SUB_IG = 0x91,
   BLURAY_STREAM_TYPE_SUB_TEXT = 0x92,
@@ -122,6 +127,7 @@ enum {
   BLURAY_VIDEO_FORMAT_720P = 5,  // SMPTE 296M
   BLURAY_VIDEO_FORMAT_1080P = 6, // SMPTE 274M
   BLURAY_VIDEO_FORMAT_576P = 7,  // ITU-R BT.1358
+  BLURAY_VIDEO_FORMAT_2160P = 8,
 
   BLURAY_VIDEO_RATE_24000_1001 = 1, // 23.976
   BLURAY_VIDEO_RATE_24 = 2,
@@ -648,6 +654,10 @@ public:
   uint8_t subclip_id;
   uint8_t format;
   uint8_t rate;
+  uint8_t dynamic_range_type;
+  uint8_t color_space;
+  uint8_t cr_flag;
+  uint8_t hdr_plus_flag;
   uint8_t char_code;
   char lang[4];
 
@@ -1217,7 +1227,7 @@ public:
   ArrayList<mpls_pl *> pl;
 
   void add_movie(uint32_t *ops, int n);
-  int compose();
+  int compose(int ch_interval);
   int write(char *fn);
 
   Media() { path = 0;  filename[0] = 0; }
@@ -1505,6 +1515,7 @@ clpi_prog_stream::write()
   case BLURAY_STREAM_TYPE_VIDEO_MPEG2:
   case BLURAY_STREAM_TYPE_VIDEO_VC1:
   case BLURAY_STREAM_TYPE_VIDEO_H264:
+  case BLURAY_STREAM_TYPE_VIDEO_HEVC:
   case 0x20:
     bs.write(format, 4);
     bs.write(rate, 4);
@@ -1905,24 +1916,24 @@ write()
 
   bs.write(stream_type, 8);
   switch (stream_type) {
-  case 0x01:
+  case 1:
     bs.write(pid, 16);
     break;
 
-  case 0x02:
-  case 0x04:
+  case 2:
+  case 4:
     bs.write(subpath_id, 8);
     bs.write(subclip_id, 8);
     bs.write(pid, 16);
     break;
 
-  case 0x03:
+  case 3:
     bs.write(subpath_id, 8);
     bs.write(pid, 16);
     break;
 
   default:
-    fprintf(stderr, "unrecognized stream type %02x\n", stream_type);
+    fprintf(stderr, "unrecognized mpls stream type %02x\n", stream_type);
     break;
   };
   bs.padb(9 - strm.bs_posb(bs));
@@ -1935,6 +1946,7 @@ write()
   case BLURAY_STREAM_TYPE_VIDEO_MPEG2:
   case BLURAY_STREAM_TYPE_VIDEO_VC1:
   case BLURAY_STREAM_TYPE_VIDEO_H264:
+  case BLURAY_STREAM_TYPE_VIDEO_HEVC:
     bs.write(format, 4);
     bs.write(rate, 4);
     break;
@@ -2393,45 +2405,51 @@ build_toc(clpi_ep_map_entry *map)
 
 const AVRational media_info::clk45k = { 1, 45000 };
 
-static int bd_stream_type(AVCodecID codec_id)
+static int bd_coding_type(AVCodecID codec_id)
 {
-  int stream_type = 0;
+  int coding_type = 0;
   switch (codec_id) {
   case AV_CODEC_ID_MPEG1VIDEO:
-    stream_type = BLURAY_STREAM_TYPE_VIDEO_MPEG1;
+    coding_type = BLURAY_STREAM_TYPE_VIDEO_MPEG1;
     break;
   case AV_CODEC_ID_MPEG2VIDEO:
-    stream_type = BLURAY_STREAM_TYPE_VIDEO_MPEG2;
+    coding_type = BLURAY_STREAM_TYPE_VIDEO_MPEG2;
     break;
   case AV_CODEC_ID_H264:
-    stream_type = BLURAY_STREAM_TYPE_VIDEO_H264;
+    coding_type = BLURAY_STREAM_TYPE_VIDEO_H264;
+    break;
+  case AV_CODEC_ID_HEVC:
+    coding_type = BLURAY_STREAM_TYPE_VIDEO_HEVC;
     break;
   case AV_CODEC_ID_MP2:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_MPEG1;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_MPEG1;
     break;
   case AV_CODEC_ID_MP3:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_MPEG2;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_MPEG2;
     break;
   case AV_CODEC_ID_AC3:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_AC3;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_AC3;
     break;
   case AV_CODEC_ID_EAC3:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_AC3PLUS;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_AC3PLUS;
     break;
   case AV_CODEC_ID_DTS:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_DTS;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_DTS;
     break;
   case AV_CODEC_ID_TRUEHD:
-    stream_type = BLURAY_STREAM_TYPE_AUDIO_TRUHD;
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_TRUHD;
+    break;
+  case AV_CODEC_ID_PCM_BLURAY:
+    coding_type = BLURAY_STREAM_TYPE_AUDIO_LPCM;
     break;
   case AV_CODEC_ID_HDMV_PGS_SUBTITLE:
-    stream_type = BLURAY_STREAM_TYPE_SUB_PG;
+    coding_type = BLURAY_STREAM_TYPE_SUB_PG;
     break;
   default:
-    fprintf(stderr, "unknown bluray stream type %s\n", avcodec_get_name(codec_id));
+    fprintf(stderr, "unknown bluray codec type %s\n", avcodec_get_name(codec_id));
     exit(1);
   }
-  return stream_type;
+  return coding_type;
 }
 
 static int bd_audio_format(int channels)
@@ -2478,6 +2496,8 @@ static int bd_video_format(int w, int h, int ilace)
   if( w == 1280 && h ==  720 /* && !ilace*/ ) return BLURAY_VIDEO_FORMAT_720P;
   if( w == 1440 && h == 1080 /* &&  ilace*/ ) return BLURAY_VIDEO_FORMAT_1080I;
   if( w == 1920 && h == 1080 /* && !ilace*/ ) return BLURAY_VIDEO_FORMAT_1080P;
+  if( w == 3840 && h == 2160 &&  !ilace ) return BLURAY_VIDEO_FORMAT_2160P;
+
   fprintf(stderr, "unknown bluray video format %dx%d %silace\n",
     w, h, !ilace ? "not " : "");
   exit(1);
@@ -2593,7 +2613,7 @@ int media_info::scan()
     switch( type ) {
     case AVMEDIA_TYPE_VIDEO: {
       if( ep_pid < 0 ) ep_pid = st->id;
-      s->coding_type = bd_stream_type(codec_id);
+      s->coding_type = bd_coding_type(codec_id);
       int ilace = field_probe(fmt_ctx, st);
       if( ilace < 0 ) {
         fprintf(stderr, "interlace probe failed\n");
@@ -2607,13 +2627,13 @@ int media_info::scan()
 		 (double)st->sample_aspect_ratio.num / st->sample_aspect_ratio.den);
       break; }
     case AVMEDIA_TYPE_AUDIO: {
-      s->coding_type = bd_stream_type(codec_id);
+      s->coding_type = bd_coding_type(codec_id);
       s->format = bd_audio_format(st->codecpar->channels);
       s->rate = bd_audio_rate(st->codecpar->sample_rate);
       strcpy((char*)s->lang, "eng");
       break; }
     case AVMEDIA_TYPE_SUBTITLE: {
-      s->coding_type = bd_stream_type(codec_id);
+      s->coding_type = bd_coding_type(codec_id);
       AVDictionaryEntry *lang = av_dict_get(st->metadata, "language", 0, 0);
       strncpy((char*)s->lang, lang ? lang->value : "und", sizeof(s->lang));
       break; }
@@ -2793,7 +2813,7 @@ Media::add_movie(uint32_t *ops, int n)
 }
 
 int
-Media::compose()
+Media::compose(int ch_interval)
 {
 // movie
   bs.init();
@@ -2966,8 +2986,11 @@ Media::compose()
       }
       pp->play_item.append(pi);
     }
-// chapter marks every ch_duration ticks
-    int64_t ch_duration = 45000 * 60*5;
+// chapter marks every ch_duration seconds * 45Kticks, default 5 min
+    int PCR_FREQ = 45000;
+    if (ch_interval == 0)
+    ch_interval = 60*5;
+    int64_t ch_duration = PCR_FREQ * ch_interval;
     int64_t mrktm = ch_duration;
     int64_t plytm = 0;
     int pmark = 0, pitem = 0;
@@ -3144,8 +3167,15 @@ main(int ac, char **av)
   //av_log_set_level(AV_LOG_DEBUG);
   Media media;
   media_info *mp = 0;
+  int start  = 0, chapter_every_n_sec = 0;
 
-  for( int ii=2; ii<ac; ++ii ) {
+  int opt = getopt(ac, av, "c:");
+  if (opt == 'c') {
+  chapter_every_n_sec = optarg[0]; start = 3; }
+  else
+  start = 2;
+
+  for( int ii=start; ii<ac; ++ii ) {
     char *ap = av[ii];
     // any dash seq followed by number sets curr title pgm_pid
     // single dash only sets title pgm_pid
@@ -3176,7 +3206,7 @@ main(int ac, char **av)
 
   if( mp ) mp->brk = 1;
 
-  if( media.compose() ) {
+  if( media.compose(chapter_every_n_sec) ) {
     fprintf(stderr, "cant compose media\n");
     return 1;
   }
