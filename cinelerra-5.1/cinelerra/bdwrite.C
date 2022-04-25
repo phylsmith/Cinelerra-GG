@@ -3161,7 +3161,7 @@ int
 main(int ac, char **av)
 {
   char *path = av[1];
-  if( mkbdmv(path) ) return 1;
+  
   av_log_set_level(AV_LOG_FATAL);
   //av_log_set_level(AV_LOG_VERBOSE);
   //av_log_set_level(AV_LOG_DEBUG);
@@ -3171,10 +3171,11 @@ main(int ac, char **av)
 
   int opt = getopt(ac, av, "c:");
   if (opt == 'c') {
-  chapter_every_n_sec = optarg[0]; start = 3; }
+  chapter_every_n_sec = atoi(optarg); start = 4;
+  path = av[3]; printf("Chapter interval: %i \n", chapter_every_n_sec );}
   else
   start = 2;
-
+  if( mkbdmv(path) ) return 1;
   for( int ii=start; ii<ac; ++ii ) {
     char *ap = av[ii];
     // any dash seq followed by number sets curr title pgm_pid

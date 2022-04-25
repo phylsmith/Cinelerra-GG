@@ -191,8 +191,9 @@ char *BD_BatchRenderJob::create_script(EDL *edl, ArrayList<Indexable *> *idxbls)
 	fprintf(fp,"sz=`du -cb $dir/bd.m2ts* | tail -1 | sed -e 's/[ 	].*//'`\n");
 	fprintf(fp,"blks=$((sz/2048 + 4096))\n");
 	fprintf(fp,"rm -f %s\n", udfs);
-	fprintf(fp,"if [ -f bd.meta ]; then\n");
-	fprintf(fp,"tsmuxer bd.meta $dir/bd.iso \n");
+	fprintf(fp,"if [ -f $dir/bd.meta ]; then\n");
+	fprintf(fp,"sed -i \"s|bd.m2ts|$dir\/bd.m2ts|g\" $dir/bd.meta\n");
+	fprintf(fp,"tsmuxer $dir/bd.meta $dir/bd.iso \n");
 	fprintf(fp,"mv $dir/bd.iso $dir/bd.udfs\n");
 	fprintf(fp,"else\n");
 	fprintf(fp,"mkudffs -b 2048 %s $blks\n", udfs);
