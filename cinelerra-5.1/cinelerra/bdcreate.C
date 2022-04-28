@@ -962,6 +962,7 @@ void CreateBD_GUI::update()
 	need_wide_audio->set_value(thread->use_wide_audio);
 	need_labeled->set_value(thread->use_labeled);
 	need_farmed->set_value(thread->use_farmed);
+	need_tsmuxer->set_value(thread->use_tsmuxer);
 }
 
 int CreateBD_Thread::
@@ -1011,6 +1012,7 @@ option_presets()
 	use_wide_audio = 0;
 	use_labeled = 0;
 	use_farmed = 0;
+	use_tsmuxer = 0;
 
 	if( !mwindow->edl ) return 1;
 
@@ -1219,6 +1221,7 @@ CreateBD_Profile::CreateBD_Profile(CreateBD_GUI *gui, int x, int y)
  : BC_PopupTextBox(gui, 0, 0, x, y, xS(170),yS(50))
 {
 	this->gui = gui;
+	strcpy(gui->thread->use_profile, "bluray.m2ts");
 }
 
 CreateBD_Profile::~CreateBD_Profile()
