@@ -3,6 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 April changes of note:
+  DPX image reader added to easily load a list file of DPX images.
+  Bluray lpcm and tsmuxer audio options added + chapter intervals.
 2022 March changes of note:
   A new script, bld_appimage.sh, includes rework of linuxdeploy
    in order to create appimages for aarch64 and armhf + x86_64/i686.
