@@ -45,12 +45,12 @@
 +    switch(avctx->sample_fmt) {
 +    case AV_SAMPLE_FMT_S16:
 +       avctx->bits_per_coded_sample = 16;
-+       frame_size = 120;
++       frame_size = 240;
 +       quant =1;
 +       break;
 +    case AV_SAMPLE_FMT_S32:
 +       avctx->bits_per_coded_sample = 24;
-+       frame_size = 180;
++       frame_size = 360;
 +       quant =3;
 +       break;
 +    default:
@@ -62,13 +62,13 @@
          freq = 1;
          break;
      case 96000:
-+        frame_size *= 2;
++        //frame_size *= 2;
          freq = 4;
          break;
      case 192000:
 -	freq = 5;
 -	break;
-+	frame_size *= 4;
++	//frame_size *= 4;
 +        freq = 5;
 +        break;
 +    default:
@@ -79,7 +79,7 @@
 -    case AV_SAMPLE_FMT_S16:
 -        avctx->bits_per_coded_sample = 16;
 -        quant = 1;
-+    frame_size *= avctx->channels;
++    //frame_size *= avctx->channels;
 +    
 +    switch (avctx->channel_layout) {
 +    case AV_CH_LAYOUT_MONO:

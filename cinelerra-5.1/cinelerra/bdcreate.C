@@ -347,12 +347,14 @@ int CreateBD_Thread::create_bd_jobs(ArrayList<BatchRenderJob*> *jobs, const char
 	}
 
 
-	fprintf(fp,"MUXOPT --blu-ray --hdmv-descriptors\n");
+	fprintf(fp,"MUXOPT --blu-ray --hdmv-descriptors --auto-chapters=5\n");
 	fprintf(fp,"V_MPEG4/ISO/AVC, bd.m2ts, track=4113\n");
 	if(!strcmp(use_profile, "bluray.m2ts"))
 	fprintf(fp,"A_AC3, bd.m2ts, track=4352\n");
 	if(!strcmp(use_profile, "bluray_lpcm.m2ts"))
 	fprintf(fp,"A_LPCM, bd.m2ts, track=4352\n");
+	if(!strcmp(use_profile, "bluray_truehd.m2ts"))
+	fprintf(fp,"A_MLP, bd.m2ts, track=4352\n");
 	fprintf(fp,"\n");
 	fclose(fp);
 
