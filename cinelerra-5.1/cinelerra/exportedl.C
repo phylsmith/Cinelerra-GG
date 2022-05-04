@@ -39,7 +39,9 @@
 #include "exportedl.h"
 #include "tracks.h"
 #include "transition.h"
-
+#if defined (__FreeBSD__)
+#include <libgen.h>
+#endif
 #include <ctype.h>
 #include <string.h>
 

@@ -304,6 +304,7 @@ int IndexState::read_markers(char *index_dir, char *file_path)
 			if( memcmp(version, MARKER_MAGIC_VERSION, vsz) ) {
 				eprintf(_("IndexState::read_markers marker file version mismatched\n: %s\n"),
 					marker_path);
+				fclose(fp);
 				return 1;
 			}
 			ret = read_marks(fp);

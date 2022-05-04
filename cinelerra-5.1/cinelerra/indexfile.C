@@ -73,6 +73,9 @@
 #ifdef HAVE_ISOFS
 #include <linux/iso_fs.h>
 #endif
+#if defined(__FreeBSD__)
+#include <isofs/cd9660/iso.h>
+#endif
 
 // check for isofs volume_id for dvd/cdrom
 
@@ -859,7 +862,8 @@ int IndexFile::read_info(Indexable *test_indexable)
 
 		data = new char[index_state->index_start];
 		temp = fread(data, index_state->index_start - sizeof(int64_t), 1, fd);
-		if(!temp) return 1;
+		if(!temp) { delete [] data;
+		return 1;}
 
 		data[index_state->index_start - sizeof(int64_t)] = 0;
 		FileXML xml;

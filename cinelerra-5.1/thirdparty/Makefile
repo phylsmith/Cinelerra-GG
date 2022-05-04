@@ -47,7 +47,7 @@ pkg-built=$(BLD)/$(1).built
 ext=$(lastword $(subst ., ,$(1)))
 tarball=$(if $($(1).git),$(1).git,$(lastword $(sort $(wildcard src/$(1)*.tar.*))))
 unpack=$(call unpack_$(call ext,$(1)),$(1))
-unpack_git=git clone $($(1)) $(1)
+unpack_git=git clone --depth 1 $($(1)) $(1)
 unpack_gz=tar -xzf $(1)
 unpack_bz2=tar -xjf $(1)
 unpack_xz=tar -xJf $(1)
@@ -407,6 +407,9 @@ clean:
 install:
 	cp -a $(ver_mjpegtools)/mpeg2enc/mpeg2enc $(BINDIR)/.
 	cp -a $(ver_mjpegtools)/mplex/mplex $(BINDIR)/.
+
+objrem:
+	find . -type f -name '*.o' -delete
 else
 # not WANT_CIN_3RDPARTY
 all:

@@ -238,7 +238,7 @@ VFrame *ResourcePixmap::change_title_color(VFrame *title_bg, int color)
 	c.r = color>>16;  c.g = color>>8;  c.b = color>>0;  c.a = 0xff;
 	if( BC_CModels::has_alpha(colormodel) && // fast path
 	    BC_CModels::calculate_pixelsize(colormodel) == sizeof(unsigned) ) {
-		const unsigned gap_rgba = (0xff<<24) |
+		const unsigned gap_rgba = ((uint32_t)(0xff)<<24) |
 			(gap_grey<<16) | (gap_grey<<8) | (gap_grey<<0);
 		if( th > 0 ) {
 			unsigned *bp = (unsigned *)bar_rows[0];

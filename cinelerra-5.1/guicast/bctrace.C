@@ -309,7 +309,7 @@ void BC_Trace::dump_traces(FILE *fp)
 	}
 }
 
-void trace_info::set_owner() { owner = pthread_self(); }
+void trace_info::set_owner() { owner = (unsigned long)pthread_self(); }
 void trace_info::unset_owner() { owner = 0; }
 
 void BC_Trace::dump_locks(FILE *fp)
@@ -322,7 +322,7 @@ void BC_Trace::dump_locks(FILE *fp)
 		fprintf(fp,"    %p %s, %s %p%s",
 			p->info, p->title, p->loc,
 			(void*)p->tid, p->is_owner ? " *" : "");
-		if( p->info->owner && p->info->owner != p->tid )
+		if( p->info->owner && p->info->owner != (unsigned long)p->tid )
 			fprintf(fp," %p", (void*)p->info->owner);
 		fprintf(fp,"\n");
 	}

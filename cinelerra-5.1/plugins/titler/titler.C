@@ -57,8 +57,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#if defined (__linux__)
 #include <endian.h>
 #include <byteswap.h>
+#endif
+#if defined (__FreeBSD__)
+#include <sys/endian.h>
+#endif
 #include <iconv.h>
 #include <sys/stat.h>
 #include <fontconfig/fontconfig.h>

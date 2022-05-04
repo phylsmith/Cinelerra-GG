@@ -51,6 +51,7 @@ return 0;
 int Cursor_::draw(int flash, long selectionstart, long selectionend, long zoom_sample, long viewstart, int vertical)
 {
 return 0;
+#if 0
 	if(canvas->get_h() * canvas->get_w() == 0) return 1;
 	if(zoom_sample == 0) return 1;       // no canvas
 
@@ -93,6 +94,7 @@ return 0;
 		canvas->set_opaque();
 	}
 	if(flash) canvas->flash();
+#endif
 }
 
 int Cursor_::resize(int w, int h)
