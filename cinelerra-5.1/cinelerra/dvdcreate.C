@@ -24,9 +24,13 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#if !defined(__FreeBSD__)
 #include <sys/stat.h>
 #include <sys/statfs.h>
-
+#else
+#include <sys/param.h>
+#include <sys/mount.h>
+#endif
 
 #define DVD_PAL_4x3	0
 #define DVD_PAL_16x9	1

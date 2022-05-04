@@ -425,3 +425,6 @@ monochrome
 #msad ###Input/output error
 #setts
 #vif ###Input/output error
+#frei0r
+#frei0r_src
+#libvmaf

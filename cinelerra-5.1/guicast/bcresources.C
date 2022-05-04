@@ -39,6 +39,9 @@
 #include <iconv.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#if defined(__FreeBSD__)
+#include <sys/sysctl.h>
+#endif
 #include <X11/extensions/XShm.h>
 #include <fontconfig/fontconfig.h>
 #include <fontconfig/fcfreetype.h>
@@ -298,6 +301,7 @@ int BC_Resources::machine_cpus = 1;
 
 int BC_Resources::get_machine_cpus()
 {
+#if !defined(__FreeBSD__)
 	int cpus = 1;
 	FILE *proc = fopen("/proc/cpuinfo", "r");
 	if( proc ) {
@@ -315,6 +319,14 @@ int BC_Resources::get_machine_cpus()
 		fclose(proc);
 	}
 	return cpus;
+#else
+	int mib[2], ncpu;
+	size_t len = sizeof(ncpu);
+	mib[0] = CTL_HW;
+	mib[1] = HW_NCPU;
+	if( sysctl(mib, 2, &ncpu, &len, 0, 0) ) ncpu = 1;
+	return ncpu;
+#endif
 }
 
 void BC_Resources::new_vframes(int n, VFrame *vframes[], ...)
@@ -367,9 +379,13 @@ BC_Resources::BC_Resources(float x_scale, float y_scale)
 	BC_WindowBase::resources = this;
 	synchronous = 0;
 	vframe_shm = 0;
+#if !defined(__FreeBSD__)
 	use_shm = -1;
 	shm_reply = 1;
-
+#else
+	use_shm = 0;
+	shm_reply = 0;
+#endif
 	if( x_scale <= 0 ) x_scale = 1;
 	if( y_scale <= 0 ) y_scale = x_scale;
 	this->x_scale = x_scale;

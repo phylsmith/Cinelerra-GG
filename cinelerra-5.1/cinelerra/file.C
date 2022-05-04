@@ -1666,7 +1666,14 @@ int File::record_fd()
 void File::get_exe_path(char *result, char *bnp)
 {
 // Get executable path, basename
+#if !defined(__FreeBSD__)
 	int len = readlink("/proc/self/exe", result, BCTEXTLEN-1);
+#else
+	char exe_path[BCTEXTLEN];
+	sprintf(exe_path,"/proc/%d/file",getpid());
+	int len = readlink(exe_path, result, BCTEXTLEN-1);
+#endif
+
 	if( len >= 0 ) {
 		result[len] = 0;
 		char *ptr = strrchr(result, '/');
