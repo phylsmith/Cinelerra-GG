@@ -49,6 +49,7 @@ jobs:=-j$(shell echo $$(($(cpus) + $(cpus)/2 +2)))
 #opencv4 breaks SIFT/SURF findobj
 CFLAGS += -I$(opencv_prefix)/include/opencv4
 CFLAGS += -I$(opencv_prefix)/include
+CFLAGS += -std=c++11
 
 ifeq ($(src),git)
 $(opencv).src:
@@ -83,6 +84,9 @@ $(opencv)/build: $(opencv).src
   -DINSTALL_C_EXAMPLES=OFF \
   -DINSTALL_PYTHON_EXAMPLES=OFF \
   -DBUILD_EXAMPLES=OFF .. \
+  -DBUILD_PERF_TESTS=OFF \
+  -DBUILD_TESTS=OFF \
+  -DBUILD_opencv_apps=OFF \
   -DBUILD_opencv_python3=no \
   -DCMAKE_INSTALL_PREFIX=/usr/local \
   -DOPENCV_EXTRA_MODULES_PATH="$(opencv)_contrib/modules/"
@@ -106,10 +110,13 @@ $(opencv)/build: $(opencv).src
   -DINSTALL_PYTHON_EXAMPLES=ON \
   -DBUILD_EXAMPLES=ON .. \
   -DBUILD_opencv_python3=no \
+  -DBUILD_PERF_TESTS=OFF \
+  -DBUILD_TESTS=OFF \
+  -DBUILD_opencv_apps=OFF \
   -DCMAKE_INSTALL_PREFIX=/usr/local \
   -DOPENCV_EXTRA_MODULES_PATH="$(opencv)_contrib/modules/"
 
-SYSLIB := $(lastword $(wildcard /usr/lib /usrlib32 /usr/lib64))
+SYSLIB := $(lastword $(wildcard /usr/lib /usr/lib32 /usr/lib64))
 CVLIBS := $(dir $(shell find $(opencv_prefix) -name libopencv_core.so))
 LFLAGS += -L$(CVLIBS) $(patsubst $(CVLIBS)/lib%.so,-l%,$(wildcard $(CVLIBS)/libopencv_*.so))
 LFLAGS += $(patsubst $(SYSLIB)/lib%.so,-l%,$(wildcard $(SYSLIB)/lib{Half,Imath,Ilm,Iex}*.so))
@@ -118,7 +125,7 @@ static_incs :=
 else ifeq ($(bld),sys)
 $(opencv)/build:
 
-SYSLIB := $(lastword $(wildcard /usr/lib /usrlib32 /usr/lib64))
+SYSLIB := $(lastword $(wildcard /usr/lib /usr/lib32 /usr/lib64))
 LFLAGS += $(patsubst $(SYSLIB)/lib%.so,-l%,$(wildcard $(SYSLIB)/libopencv_*.so))
 LFLAGS += $(patsubst $(SYSLIB)/lib%.so,-l%,$(wildcard $(SYSLIB)/lib{Half,Imath,Ilm,Iex}*.so))
 static_libs :=

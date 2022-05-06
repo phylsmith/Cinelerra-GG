@@ -436,9 +436,11 @@ LIBS := $(LIBRARIES)
 ifeq ($(WANT_CIN_3RDPARTY),no)
 LIBS += -lavcodec -lavdevice -lavfilter -lavformat -lavutil
 LIBS += -lswresample -lswscale
+PLATFORM = $(shell uname -s)
+ifneq (, $(filter $(PLATFORM), FreeBSD NetBSD))
 LIBS += -lintl -liconv
 LIBS += -lexecinfo
-
+endif
 LIBS += $(shared_libs)
 LIBS += $(system_libs)
 else

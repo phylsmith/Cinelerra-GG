@@ -1,0 +1,6 @@
+#!/bin/sh
+./configure --with-single-user --without-thirdparty \
+    --without-dvb --without-video4linux2 --without-dv \
+    --without-firewire --without-libzmpeg --without-vaapi \
+    --without-vdpau --without-lv2 --without-openexr --without-ogg \
+    --without-gl

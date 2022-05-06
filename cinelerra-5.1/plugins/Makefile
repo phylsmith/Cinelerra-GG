@@ -37,7 +37,6 @@ DIRS = $(OPENCV_OBJS) \
 	brightness \
 	burn \
 	C41 \
-	cdripper \
 	chorus \
 	chromakey \
 	chromakeyhsv \
@@ -172,6 +171,11 @@ DIRS = $(OPENCV_OBJS) \
 	theme_suv \
 	theme_unflat \
 	theme_cakewalk \
+
+PLATFORM = $(shell uname -o)
+ifneq ($(PLATFORM), FreeBSD)
+DIRS += cdripper
+endif
 
 # not maintained
 #	motion-cv \
