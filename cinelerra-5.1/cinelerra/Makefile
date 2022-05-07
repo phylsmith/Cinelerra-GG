@@ -434,12 +434,26 @@ endif
 LIBS := $(LIBRARIES)
 
 ifeq ($(WANT_CIN_3RDPARTY),no)
-LIBS += -lavcodec -lavdevice -lavfilter -lavformat -lavutil
+LIBS += -lavfilter -lavformat -lavcodec -lavutil
 LIBS += -lswresample -lswscale
 PLATFORM = $(shell uname -s)
 ifneq (, $(filter $(PLATFORM), FreeBSD NetBSD))
 LIBS += -lintl -liconv
 LIBS += -lexecinfo
+endif
+LIBS += `pkg-config --libs OpenEXR`
+LIBS += `pkg-config --libs flac`
+LIBS += `pkg-config --libs libjpeg`
+LIBS += `pkg-config --libs uuid`
+LIBS += `pkg-config --libs theora`
+LIBS += `pkg-config --libs vorbis`
+LIBS += `pkg-config --libs sndfile`
+ifeq ($(WANT_LIBZMPEG),yes)
+LIBS += -la52 -ltwolame -lmp3lame
+endif
+LIBS += -lgif -ltheoraenc -ltheoradec -lvorbisfile -lvorbisenc -ltiff
+ifeq ($(shell uname -o), Android)
+LIBS += -landroid-shmem -liconv jpt.a
 endif
 LIBS += $(shared_libs)
 LIBS += $(system_libs)
