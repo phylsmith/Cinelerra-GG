@@ -13,6 +13,13 @@ CFLAGS += $(static_incs)
 LIBS := $(LIBZMPEG3)/$(OBJDIR)/libzmpeg3.a
 LIBS += $(libraries)
 
+ifeq ($(WANT_CIN_3RDPARTY),no)
+LIBS += -la52
+endif
+ifeq ($(shell uname -o), Android)
+LIBS += jpt.a
+endif
+
 OUTPUT := $(OBJDIR)/mplexlo
 
 $(OUTPUT) all: $(OBJS)

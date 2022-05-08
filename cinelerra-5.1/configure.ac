@@ -29,6 +29,7 @@ CFG_CFLAGS+=" -D__STDC_LIMIT_MACROS"
 CFG_CFLAGS+=" -DPNG_SKIP_SETJMP_CHECK=1"
 CFG_CFLAGS+=" -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
 CFG_CFLAGS+=" -I/usr/include -I/usr/local/include"
+CFG_CFLAGS+=" -I/data/data/com.termux/files/usr/include/a52dec -I/usr/include/a52dec"
 CFG_CFLAGS+=" -I/usr/include/freetype2 -I/usr/local/include/freetype2"
 CFG_CFLAGS+=" -I/data/data/com.termux/files/usr/include/freetype2"
 CFG_CFLAGS+=" -I/usr/include/uuid -I/usr/local/include/uuid"
@@ -84,6 +85,12 @@ fi
 
 if test "x$WANT_COMMERCIAL" = "xyes" -a "x$WANT_LIBZMPEG" != "xyes" ; then
   AC_MSG_ERROR([commercial requires libzmpeg support.])
+fi
+if test "x$WANT_VIDEO4LINUX2" = "xyes" -a "x$WANT_LIBZMPEG" != "xyes" ; then
+  AC_MSG_ERROR([video4linux2 currently requires libzmpeg support.])
+fi
+if test "x$WANT_DVB" = "xyes" -a "x$WANT_LIBZMPEG" != "xyes" ; then
+  AC_MSG_ERROR([dvb currently requires libzmpeg support.])
 fi
 
 if test "x$WANT_CINBIN_BUILD" = "xyes"; then
@@ -582,7 +589,16 @@ CHECK_LIB([XEXT], [Xext], [XShmQueryExtension])
 CHECK_HEADERS([XEXT], [Xlib XShm extention], [X11/Xlib.h X11/extensions/XShm.h X11/extensions/shape.h])
 CHECK_LIB([XINERAMA], [Xinerama], [XineramaQueryExtension])
 CHECK_HEADERS([XINERAMA], [Xinerama headers], [X11/extensions/Xinerama.h])
+
+if test "x$HAVE_XINERAMA" != "xyes"; then
+  AC_MSG_ERROR([requires Xinerama support.])
+fi
+
 CHECK_LIB([XFIXES], [Xfixes], [XFixesQueryVersion])
+if test "x$HAVE_XFIXES" != "xyes"; then
+  AC_MSG_ERROR([requires XFixes support.])
+fi
+
 CHECK_LIB([BZ2], [bz2], [BZ2_bzDecompress])
 CHECK_LIB([FONTCONFIG], [fontconfig], [FcInit])
 CHECK_LIB([FREETYPE], [freetype], [FT_Init_FreeType])
@@ -629,7 +645,7 @@ CHECK_HEADERS([dav1d], [libdav1d headers], [dav1d/dav1d.h])
 CHECK_LIB([libwebp], [webp], [WebPGetEncoderVersion])
 CHECK_HEADERS([libwebp], [libwebp headers], [webp/encode.h])
 CHECK_LIB([a52dec], [a52], [a52_init])
-CHECK_HEADERS([a52dec], [a52 headers], [stdint.h a52.h])
+CHECK_HEADERS([a52dec], [a52 headers], [stdint.h a52dec/a52.h])
 CHECK_LIB([encore], [encore], [encore])
 CHECK_HEADERS([encore], [encore headers], [encore.h])
 CHECK_LIB([giflib], [gif], [DGifOpen])
@@ -823,6 +839,7 @@ CHECK_WANT([OPENEXR], [auto], [use openexr], [
  # ilmbase libs
  LIBS=" -lIlmImf -lIlmThread -lIex -lpthread"
  CXXFLAGS="-I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
+ CXXFLAGS+=" $(pkg-config --cflags OpenEXR)"
  AC_LANG_PUSH(C++)
  AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include "ImfChannelList.h"
@@ -848,7 +865,9 @@ EXROStream() : Imf::OStream("mypath") {} };
     SHARED_openexr="$LIBS"
     SHARED_LIBS+=" $LIBS"
     CFG_CFLAGS+=" -I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
+    CFG_CFLAGS+=" $(pkg-config --cflags OpenEXR)"
   fi
+  CFG_CFLAGS+=" $(pkg-config --cflags OpenEXR)"
  fi
  LIBS="$saved_LIBS"
  CXXFLAGS="$saved_CXXFLAGS"

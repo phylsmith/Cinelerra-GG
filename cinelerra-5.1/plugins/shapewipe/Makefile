@@ -1,7 +1,7 @@
 include ../../plugin_defs
 
 OBJS = $(OBJDIR)/shapewipe.o
-LFLAGS += -lpng
+LFLAGS += `pkg-config --libs libpng`
 
 PLUGIN = shapewipe
 

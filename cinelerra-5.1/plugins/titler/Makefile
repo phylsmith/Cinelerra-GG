@@ -7,7 +7,7 @@ PLUGIN = titler
 CFLAGS += -Wall
 
 ifneq ($(STATIC_LIBRARIES), y)
-LFLAGS += -lfreetype
+LFLAGS += `pkg-config --libs freetype`
 endif
 
 include ../../plugin_config

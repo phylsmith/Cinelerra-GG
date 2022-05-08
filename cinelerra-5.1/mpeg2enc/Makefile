@@ -56,6 +56,13 @@ OBJ = \
 LIBS := $(LIBZMPEG3)/$(OBJDIR)/libzmpeg3.a
 LIBS += $(libraries)
 
+ifeq ($(WANT_CIN_3RDPARTY),no)
+LIBS += -la52
+endif
+ifeq ($(shell uname -o), Android)
+LIBS += jpt.a
+endif
+
 HVEG2LIB = $(OBJDIR)/hveg2enc.a
 HVEG2ENC = $(OBJDIR)/hveg2enc
 HVEG2ENC_G = $(OBJDIR)/hveg2enc_g

@@ -117,9 +117,14 @@ $(shell echo $(CFLAGS) > $(OBJDIR)/c_flags)
 $(shell echo $(OBJS) > $(OBJDIR)/objs)
 
 all: $(OUTPUT) $(UTILS)
+ifeq ($(uname -s), FreeBSD)
+python = $(shell find /usrlocal/bin -name python3\* | head -n 1)
+else
+python = `which python`
+endif
 
 $(BCXFER):	bccmdl.py bcxfer.C bcxfer.h
-	python3 < ./bccmdl.py
+	$(python) < ./bccmdl.py
 	+$(MAKE) -C xfer
 
 $(OUTPUT): $(OBJS) $(BCXFER)
@@ -132,8 +137,11 @@ $(OBJDIR)/bootstrap:
 $(OBJDIR)/pngtoh: pngtoh.c
 	$(CC) -O2 pngtoh.c -o $(OBJDIR)/pngtoh
 
+PNGTORAWFLAGS = $(shell pkg-config --libs libpng pkg-config --cflags libpng)
+
+
 $(OBJDIR)/pngtoraw: pngtoraw.c
-	$(CC) -O2 pngtoraw.c -o $(OBJDIR)/pngtoraw -lpng -lz
+	$(CC) -O2 pngtoraw.c -o $(OBJDIR)/pngtoraw $(PNGTORAWFLAGS) -lz
 
 clean:
 	rm -rf $(OBJDIR)

@@ -1,6 +1,9 @@
 #!/bin/sh
+#CFLAGS=$(pkg-config --cflags OpenEXR)
+#echo $CFLAGS
+export CFLAGS
 ./configure --with-single-user --without-thirdparty \
     --without-dv \
     --without-firewire  --without-vaapi \
-    --without-vdpau --without-lv2 --without-openexr --without-ogg \
+    --without-vdpau --without-lv2 --without-libdpx --without-ogg \
     --without-gl

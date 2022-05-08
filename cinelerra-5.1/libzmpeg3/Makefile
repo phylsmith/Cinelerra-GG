@@ -79,6 +79,12 @@ UTILS += $(OBJDIR)/zmpeg3ifochk
 UTILS += $(OBJDIR)/zmpeg3cc2txt
 
 LIBS = -lm -lpthread
+ifeq ($(WANT_CIN_3RDPARTY),no)
+LIBS += -la52
+endif
+ifeq ($(shell uname -o), Android)
+LIBS += jpt.a
+endif
 
 LIBS += $(lib_a52dec) $(lib_djbfft) $(lib_libbthread)
 
