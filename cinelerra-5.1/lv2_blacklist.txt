@@ -82,4 +82,8 @@ urn:juced:DrumSynth
 # gives several "invalid argument" errors.
 #
 http://calf.sourceforge.net/plugins/Vinyl
+http://calf.sourceforge.net/plugins/Fluidsynth
+http://calf.sourceforge.net/plugins/Monosynth
+http://calf.sourceforge.net/plugins/Organ
+http://calf.sourceforge.net/plugins/Wavetable
 

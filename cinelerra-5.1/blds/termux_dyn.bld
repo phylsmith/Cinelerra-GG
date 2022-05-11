@@ -4,6 +4,6 @@
 export CFLAGS
 ./configure --with-single-user --without-thirdparty \
     --without-dv \
-    --without-firewire  --without-vaapi \
-    --without-vdpau --without-lv2 --without-libdpx --without-ogg \
+    --without-firewire --without-vaapi \
+    --without-vdpau --without-libdpx \
     --without-gl

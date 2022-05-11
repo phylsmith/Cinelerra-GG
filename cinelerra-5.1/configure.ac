@@ -793,19 +793,29 @@ CHECK_WANT([SHUTTLE_USB], [yes], [use libusb-1.0], [
  CHECK_HEADERS([libusbx], [libusb headers], [libusb-1.0/libusb.h])])
 
 CHECK_WANT([LV2], [auto], [use lv2], [
+ AC_MSG_CHECKING([for lv2 availability])
+ saved_LIBS="$LIBS"
  saved_CFLAGS="$CFLAGS"
+ LIBS=" $(pkg-config --libs lilv-0)"
  CHECK_LIB([lilv], [lilv-0], [lilv_world_new])
  CHECK_LIB([sord], [sord-0], [sord_world_new])
  CHECK_LIB([serd], [serd-0], [serd_reader_new])
  CHECK_LIB([sratom], [sratom-0], [sratom_new])
- CFLAGS="-I/usr/include/lilv-0 -I/usr/local/include/lilv-0"
- CHECK_HEADERS([lv2], [lilv headers], [lilv/lilv.h])
+ CFLAGS="-I/usr/include/lilv-0 -I/usr/local/include/lilv-0 `pkg-config --cflags lilv-0`"
+ CHECK_HEADERS([lilv], [lilv headers], [lilv/lilv.h])
+ CFLAGS="-I/usr/include/serd-0 -I/usr/local/include/serd-0 `pkg-config --cflags serd-0`"
+ CHECK_HEADERS([serd], [serd headers], [serd/serd.h])
+ CFLAGS="-I/usr/include/sord-0 -I/usr/local/include/sord-0 `pkg-config --cflags sord-0`"
+ CHECK_HEADERS([sord], [sord headers], [sord/sord.h])
+ CFLAGS="-I/usr/include/sratom-0 -I/usr/local/include/sratom-0 `pkg-config --cflags sratom-0`"
+ CHECK_HEADERS([sratom], [sratom headers], [sratom/sratom.h])
  CHECK_LIB([suil], [suil-0], [suil_instance_new])
- CFLAGS="-I/usr/include/suil-0 -I/usr/local/include/suil-0"
- CHECK_HEADERS([lv2], [suil headers], [suil/suil.h])
+ CFLAGS="-I/usr/include/suil-0 -I/usr/local/include/suil-0 `pkg-config --cflags  suil-0`"
+ CHECK_HEADERS([suil], [suil headers], [suil/suil.h])
+ CFG_CFLAGS+=" $(pkg-config --cflags lilv-0) $(pkg-config --cflags suil-0)"
+ LIBS="$saved_LIBS"
  CFLAGS="$saved_CFLAGS"])
 # have all or none
-test "x$HAVE_lv2" = "xyes" && \
 test "x$HAVE_lilv" = "xyes" && \
 test "x$HAVE_sord" = "xyes" && \
 test "x$HAVE_serd" = "xyes" && \
@@ -882,6 +892,12 @@ test "x$HAVE_ilmbase" = "xyes" && \
 HAVE_openexr=no \
 HAVE_ilmbase=no \
   HAVE_OPENEXR=no
+
+if test "x$WANT_CIN_3RDPARTY" = "xno"; then
+ if test "x$HAVE_LV2" != "xyes" -a "x$WANT_LV2" = "xyes"; then
+  AC_MSG_ERROR([lv2 requested but no lv2 headers found])
+ fi
+fi
 
 # build global_config
 OBJDIR=`uname -m`

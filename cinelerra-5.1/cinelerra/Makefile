@@ -483,6 +483,7 @@ LV2OBJS = \
 	$(OBJDIR)/pluginlv2ui.o \
 	$(OBJDIR)/pluginlv2config.o \
 	$(OBJDIR)/forkbase.o
+LIBS += `pkg-config --libs lilv-0`
 endif
 
 CFLAGS := \
@@ -588,6 +589,7 @@ $(OBJDIR)/%.o:		%.C
 ifneq ($(WANT_LV2),no)
 GTK2_INCS := `pkg-config --cflags gtk+-2.0` -Wno-deprecated-declarations
 GTK2_LIBS := `pkg-config --libs gtk+-2.0`
+LV2_LIBS  := `pkg-config --libs lilv-0` `pkg-config --libs suil-0`
 
 $(OBJDIR)/pluginlv2ui.o:	pluginlv2ui.C
 $(OBJDIR)/lv2ui.o:	lv2ui.C
@@ -596,7 +598,7 @@ $(OBJDIR)/pluginlv2ui.o $(OBJDIR)/lv2ui.o:
 
 $(OBJDIR)/lv2ui: $(LV2OBJS)
 	@echo $(CXX) \`cat $(OBJDIR)/c_flags\` $^ -o $@
-	@$(CXX) `cat $(OBJDIR)/c_flags` $^ -o $@ $(LIBS) $(GTK2_LIBS)
+	@$(CXX) `cat $(OBJDIR)/c_flags` $^ -o $@ $(LIBS) $(LV2_LIBS) $(GTK2_LIBS)
 	$(if $(findstring -g,$(CFLAGS)),objcopy --only-keep-debug $(LV2UI) $(LV2UI).debuginfo)
 	$(if $(findstring -ggdb,$(CFLAGS)),,strip $(LV2UI))
 
