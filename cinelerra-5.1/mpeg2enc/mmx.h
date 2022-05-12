@@ -43,7 +43,7 @@ typedef	union {
 #define	mmx_si2r(op,imm,reg) \
 	__asm__ __volatile__ (#op " %0, %%" #reg \
 			      : /* nothing */ \
-			      : "J" (imm) )
+			      : "X" (imm) )
 
 #define	mmx_m2r(op,mem,reg) \
 	__asm__ __volatile__ (#op " %0, %%" #reg \

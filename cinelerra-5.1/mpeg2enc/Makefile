@@ -7,7 +7,7 @@ CC = gcc
 CFLAGS += -I$(TOPDIR)/libzmpeg3
 
 ifeq ($(OBJDIR), i686)
-CFLAGS += -DX86_CPU
+CFLAGS += -DX86_CPU -march=i686 -mcpu=i686 -fomit-frame-pointer
 NASMOBJ = \
 	$(OBJDIR)/bdist1_mmx.o \
 	$(OBJDIR)/bdist2_mmx.o \

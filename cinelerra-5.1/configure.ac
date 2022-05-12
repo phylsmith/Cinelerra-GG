@@ -1063,12 +1063,12 @@ fi
 
 FFMPEG_EXTRA_LDFLAGS=""
 if test "x$WANT_VAAPI" != "xno" -a "x$HAVE_VAAPI" = "xyes"; then
-  FFMPEG_EXTRA_LDFLAGS+=' -lva'
-  EXTRA_LIBS+=' -lva'
+  FFMPEG_EXTRA_LDFLAGS+=' -lva `pkg-config --libs libva`'
+  EXTRA_LIBS+=' -lva '
   WANT_VAAPI="yes"
   if test "x$HAVE_vaapi_x11" = "xyes"; then
     FFMPEG_EXTRA_LDFLAGS+=' -lva-x11'
-    EXTRA_LIBS+=' -lva-x11'
+    EXTRA_LIBS+=' -lva-x11 `pkg-config --libs x11`'
   fi
   if test "x$HAVE_vaapi_drm" = "xyes"; then
     FFMPEG_EXTRA_LDFLAGS+=' -lva-drm'

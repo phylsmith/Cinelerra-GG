@@ -89,7 +89,7 @@ endif
 LIBS += $(lib_a52dec) $(lib_djbfft) $(lib_libbthread)
 
 ifeq ($(DYNAMIC_FONTS), 1)
-LIBS += -lX11
+LIBS += -lX11 `pkg-config --libs x11`
 else
 CFLAGS += -DBUILTIN_FONT_DATA 
 OBJS += $(OBJDIR)/xfont1.o
