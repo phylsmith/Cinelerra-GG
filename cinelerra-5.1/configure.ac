@@ -582,6 +582,8 @@ if test "x$HAVE_$1" != "xno"; then
 fi
 ])
 
+IMMATH_HEADERS=$(pkg-config --cflags Imath)
+
 CHECK_LIB([X11], [X11], [XOpenDisplay])
 CHECK_HEADERS([X11], [X11 headers], [X11/X.h X11/Xlib.h X11/Xutil.h X11/cursorfont.h])
 CHECK_HEADERS([X11], [X11 headers], [X11/keysym.h X11/Sunkeysym.h X11/Xatom.h X11/XF86keysym.h])
@@ -624,6 +626,7 @@ CHECK_LIB([libsndfile], [sndfile], [sf_open])
 CHECK_HEADERS([libsndfile], [sndfile headers], [sndfile.h])
 CHECK_LIB([ilmbase], [IlmImf], [ImfOpenInputFile])
 CHECK_HEADERS([ilmbase], [IlmImf headers], [OpenEXR/ImfCRgbaFile.h])
+CHECK_LIB([Imath], [Imath], [ImfOpenInputFile])
 CHECK_LIB([libvpx], [vpx], [vpx_codec_decode])
 CHECK_HEADERS([libvpx], [vpx headers], [vpx/vpx_decoder.h])
 CHECK_LIB([mjpegtools], [mjpegutils], [mjpeg_info])
@@ -847,7 +850,11 @@ CHECK_WANT([OPENEXR], [auto], [use openexr], [
  saved_LIBS="$LIBS"
  saved_CXXFLAGS="$CXXFLAGS"
  # ilmbase libs
+ if test "xHAVE_Imath"="xyes"; then
+ LIBS=" -lImath -lIlmThread -lIex -lpthread"
+ else
  LIBS=" -lIlmImf -lIlmThread -lIex -lpthread"
+ fi
  CXXFLAGS="-I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
  CXXFLAGS+=" $(pkg-config --cflags OpenEXR)"
  AC_LANG_PUSH(C++)
@@ -884,6 +891,13 @@ EXROStream() : Imf::OStream("mypath") {} };
  AC_LANG_POP(C++)
  AC_MSG_RESULT([$HAVE_OPENEXR])
 ])
+
+if test "x$WANT_CIN_3RDPARTY" = "xno"; then
+ if test "x$HAVE_OPENEXR" != "xyes" -a "x$WANT_OPENEXR" = "xyes"; then
+  AC_MSG_ERROR([requires OpenEXR but OpenEXR not found.])
+ fi
+fi
+
 AC_SUBST([HAVE_OPENEXR])
 # have all or none
 test "x$HAVE_openexr" = "xyes" && \

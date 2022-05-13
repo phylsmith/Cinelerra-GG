@@ -28,6 +28,9 @@ extern "C" {
 #include "libavformat/avformat.h"
 #include "libavformat/avio.h"
 #include "libavcodec/avcodec.h"
+#if LIBAVCODEC_VERSION_INT  >= AV_VERSION_INT(59,18,100)
+#include "libavcodec/bsf.h"
+#endif
 #include "libavfilter/avfilter.h"
 #include "libavutil/avutil.h"
 #include "libavfilter/buffersrc.h"
@@ -86,7 +89,11 @@ public:
 	virtual int encode_activate();
 	virtual int decode_activate();
 	virtual AVHWDeviceType decode_hw_activate();
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	virtual int decode_hw_format(const AVCodec *decoder, AVHWDeviceType type);
+#else
 	virtual int decode_hw_format(AVCodec *decoder, AVHWDeviceType type);
+#endif
 	virtual int write_packet(FFPacket &pkt);
 	int read_packet();
 	int seek(int64_t no, double rate);
@@ -246,7 +253,11 @@ public:
 	int is_video() { return 1; }
 	int decode_frame(AVFrame *frame);
 	AVHWDeviceType decode_hw_activate();
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	int decode_hw_format(const AVCodec *decoder, AVHWDeviceType type);
+#else
 	int decode_hw_format(AVCodec *decoder, AVHWDeviceType type);
+#endif
 	AVHWDeviceType encode_hw_activate(const char *hw_dev);
 	int encode_hw_write(FFrame *picture);
 	int encode_frame(AVFrame *frame);
@@ -290,7 +301,11 @@ class FFCodecRemaps : public ArrayList<FFCodecRemap>
 public:
 	FFCodecRemaps() {}
 	int add(const char *val);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	int update(AVCodecID &codec_id, const AVCodec *&decoder);
+#else
 	int update(AVCodecID &codec_id, AVCodec *&decoder);
+#endif
 };
 
 // for get_initial_timecode auto deletes
@@ -331,7 +346,11 @@ public:
 	static void ff_lock(const char *cp=0) { fflock.lock(cp); }
 	static void ff_unlock() { fflock.unlock(); }
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	int check_sample_rate(const AVCodec *codec, int sample_rate);
+#else
 	int check_sample_rate(AVCodec *codec, int sample_rate);
+#endif
 	AVRational check_frame_rate(const AVRational *p, double frame_rate);
 	AVRational to_sample_aspect_ratio(Asset *asset);
 	AVRational to_time_base(int sample_rate);

@@ -60,7 +60,11 @@ public:
 
 private:
 	AVPacket avpkt;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	const AVCodec *codec;
+#else
 	AVCodec *codec;
+#endif
 	AVCodecContext *codec_context;
 	SwrContext *resample_context;
 

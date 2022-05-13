@@ -913,14 +913,22 @@ int PluginFAClient::get_inchannels()
 {
 	AVFilterContext *fctx = ffilt->fctx;
 	AVFilterLink **links = !fctx->nb_inputs ? 0 : fctx->inputs;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,24,100)
+	return !links ? 0 : links[0]->ch_layout.nb_channels;
+#else
 	return !links ? 0 : links[0]->channels;
+#endif
 }
 
 int PluginFAClient::get_outchannels()
 {
 	AVFilterContext *fctx = ffilt->fctx;
 	AVFilterLink **links = !fctx->nb_outputs ? 0 : fctx->outputs;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,24,100)
+	return !links ? 0 : links[0]->ch_layout.nb_channels;
+#else
 	return !links ? 0 : links[0]->channels;
+#endif
 }
 
 int PluginFAClient::process_buffer(int64_t size, Samples **buffer, int64_t start_position, int sample_rate)

@@ -380,8 +380,11 @@ AVHWDeviceType FFStream::decode_hw_activate()
 {
 	return AV_HWDEVICE_TYPE_NONE;
 }
-
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+int FFStream::decode_hw_format(const AVCodec *decoder, AVHWDeviceType type)
+#else
 int FFStream::decode_hw_format(AVCodec *decoder, AVHWDeviceType type)
+#endif
 {
 	return 0;
 }
@@ -406,7 +409,11 @@ int FFStream::decode_activate()
 		}
 		while( ret >= 0 && st != 0 && !reading ) {
 			AVCodecID codec_id = st->codecpar->codec_id;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+			const AVCodec *decoder = 0;
+#else
 			AVCodec *decoder = 0;
+#endif
 			if( is_video() ) {
 				if( ffmpeg->opt_video_decoder )
 					decoder = avcodec_find_decoder_by_name(ffmpeg->opt_video_decoder);
@@ -722,10 +729,19 @@ int FFStream::seek(int64_t no, double rate)
 	double secs = pos < 0 ? 0. : pos / rate;
 	AVRational time_base = st->time_base;
 	int64_t tstmp = time_base.num > 0 ? secs * time_base.den/time_base.num : 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	int nb_index_entries = avformat_index_get_entries_count(st);
+#endif
 	if( !tstmp ) {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+		if( nb_index_entries > 0 ) tstmp = (avformat_index_get_entry(st, 0))->timestamp;
+#else
 		if( st->nb_index_entries > 0 ) tstmp = st->index_entries[0].timestamp;
+#endif
 		else if( st->start_time != AV_NOPTS_VALUE ) tstmp = st->start_time;
+#if LIBAVCODEC_VERSION_INT  <= AV_VERSION_INT(58,134,100)
 		else if( st->first_dts != AV_NOPTS_VALUE ) tstmp = st->first_dts;
+#endif
 		else tstmp = INT64_MIN+1;
 	}
 	else if( nudge != AV_NOPTS_VALUE ) tstmp += nudge;
@@ -1093,8 +1109,11 @@ AVHWDeviceType FFVideoStream::decode_hw_activate()
 	}
 	return type;
 }
-
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+int FFVideoStream::decode_hw_format(const AVCodec *decoder, AVHWDeviceType type)
+#else
 int FFVideoStream::decode_hw_format(AVCodec *decoder, AVHWDeviceType type)
+#endif
 {
 	int ret = 0;
 	hw_pix_fmt = AV_PIX_FMT_NONE;
@@ -1850,7 +1869,11 @@ FFMPEG::~FFMPEG()
 	delete [] opt_hw_dev;
 }
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+int FFMPEG::check_sample_rate(const AVCodec *codec, int sample_rate)
+#else
 int FFMPEG::check_sample_rate(AVCodec *codec, int sample_rate)
+#endif
 {
 	const int *p = codec->supported_samplerates;
 	if( !p ) return sample_rate;
@@ -2100,7 +2123,11 @@ void FFMPEG::scan_audio_options(Asset *asset, EDL *edl)
 		cin_fmt = (int)av_get_sample_fmt(cin_sample_fmt);
 	if( cin_fmt < 0 ) {
 		char audio_codec[BCSTRLEN]; audio_codec[0] = 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,18,100)
+		const AVCodec *av_codec = !FFMPEG::get_codec(audio_codec, "audio", asset->acodec) ?
+#else
 		AVCodec *av_codec = !FFMPEG::get_codec(audio_codec, "audio", asset->acodec) ?
+#endif
 			avcodec_find_encoder_by_name(audio_codec) : 0;
 		if( av_codec && av_codec->sample_fmts )
 			cin_fmt = find_best_sample_fmt_of_list(av_codec->sample_fmts, AV_SAMPLE_FMT_FLT);
@@ -2136,7 +2163,11 @@ void FFMPEG::scan_video_options(Asset *asset, EDL *edl)
 			cin_fmt = (int)av_get_pix_fmt(cin_pix_fmt);
 	if( cin_fmt < 0 ) {
 		char video_codec[BCSTRLEN];  video_codec[0] = 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,18,100)
+		const AVCodec *av_codec = !get_codec(video_codec, "video", asset->vcodec) ?
+#else
 		AVCodec *av_codec = !get_codec(video_codec, "video", asset->vcodec) ?
+#endif
 			avcodec_find_encoder_by_name(video_codec) : 0;
 		if( av_codec && av_codec->pix_fmts ) {
 			if( 0 && edl ) { // frequently picks a bad answer
@@ -2330,10 +2361,15 @@ int FFCodecRemaps::add(const char *val)
 	return 0;
 }
 
-
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+int FFCodecRemaps::update(AVCodecID &codec_id, const AVCodec *&decoder)
+{
+	const AVCodec *codec = avcodec_find_decoder(codec_id);
+#else
 int FFCodecRemaps::update(AVCodecID &codec_id, AVCodec *&decoder)
 {
 	AVCodec *codec = avcodec_find_decoder(codec_id);
+#endif
 	if( !codec ) return -1;
 	const char *name = codec->name;
 	FFCodecRemaps &map = *this;
@@ -2553,7 +2589,11 @@ int FFMPEG::init_decoder(const char *filename)
 	char *sp = strrchr(bp, '.');
 	if( !sp ) sp = bp + strlen(bp);
 	FILE *fp = 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,18,100)
+	const AVInputFormat *ifmt = 0;
+#else
 	AVInputFormat *ifmt = 0;
+#endif
 	if( sp ) {
 		strcpy(sp, ".opts");
 		fp = fopen(file_opts, "r");
@@ -2774,7 +2814,11 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 	AVCodecContext *ctx = 0;
 
 	const AVCodecDescriptor *codec_desc = 0;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	const AVCodec *codec = avcodec_find_encoder_by_name(codec_name);
+#else
 	AVCodec *codec = avcodec_find_encoder_by_name(codec_name);
+#endif
 	if( !codec ) {
 		eprintf(_("cant find codec %s:%s\n"), codec_name, filename);
 		ret = 1;
@@ -3027,7 +3071,11 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 		}
 		if( ret >= 0 ) {
 _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(58,134,100)
 			ret = avcodec_copy_context(st->codec, ctx);
+#else
+			ret = avcodec_parameters_to_context(ctx, st->codecpar);
+#endif
 _Pragma("GCC diagnostic warning \"-Wdeprecated-declarations\"")
 			if( ret < 0 )
 				fprintf(stderr, "Could not copy the stream context\n");
@@ -3672,7 +3720,11 @@ Preferences *FFMPEG::ff_prefs()
 
 double FFVideoStream::get_rotation_angle()
 {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	size_t size = 0;
+#else
 	int size = 0;
+#endif
 	int *matrix = (int*)av_stream_get_side_data(st, AV_PKT_DATA_DISPLAYMATRIX, &size);
 	int len = size/sizeof(*matrix);
 	if( !matrix || len < 5 ) return 0;
@@ -3897,7 +3949,11 @@ AVCodecContext *FFMPEG::activate_decoder(AVStream *st)
 	AVDictionary *copts = 0;
 	av_dict_copy(&copts, opts, 0);
 	AVCodecID codec_id = st->codecpar->codec_id;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	const AVCodec *decoder = 0;
+#else
 	AVCodec *decoder = 0;
+#endif
 	switch( st->codecpar->codec_type ) {
 	case AVMEDIA_TYPE_VIDEO:
 		if( opt_video_decoder )
@@ -4089,10 +4145,20 @@ void FFStream::load_markers(IndexMarks &marks, double rate)
 	int in = 0;
 	int64_t sz = marks.size();
 	int max_entries = fmt_ctx->max_index_size / sizeof(AVIndexEntry) - 1;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+	int nb_ent = avformat_index_get_entries_count(st);
+#endif
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(58,134,100)
 	int nb_ent = st->nb_index_entries;
+#endif
 // some formats already have an index
 	if( nb_ent > 0 ) {
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(58,134,100)
 		AVIndexEntry *ep = &st->index_entries[nb_ent-1];
+#endif
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+		const AVIndexEntry *ep = avformat_index_get_entry(st, nb_ent-1);
+#endif
 		int64_t tstmp = ep->timestamp;
 		if( nudge != AV_NOPTS_VALUE ) tstmp -= nudge;
 		double secs = ffmpeg->to_secs(tstmp, st->time_base);

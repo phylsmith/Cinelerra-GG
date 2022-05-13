@@ -2530,7 +2530,12 @@ static int field_probe(AVFormatContext *fmt_ctx, AVStream *st)
   AVDictionary *copts = 0;
   //av_dict_copy(&copts, opts, 0);
   AVCodecID codec_id = st->codecpar->codec_id;
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(58,134,100)
   AVCodec *decoder = avcodec_find_decoder(codec_id);
+#endif
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+  const AVCodec *decoder = avcodec_find_decoder(codec_id);
+#endif
   AVCodecContext *ctx = avcodec_alloc_context3(decoder);
   if( !ctx ) {
     fprintf(stderr,"codec alloc failed\n");
@@ -2604,7 +2609,13 @@ int media_info::scan()
     stream *s = new stream(type, i);
     s->pid = st->id;
     AVCodecID codec_id = st->codecpar->codec_id;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
+    const AVCodec *decoder = avcodec_find_decoder(codec_id);
+#endif
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(58,134,100)
     AVCodec *decoder = avcodec_find_decoder(codec_id);
+#endif
+
     s->ctx = avcodec_alloc_context3(decoder);
     if( !s->ctx ) {
       fprintf(stderr, "avcodec_alloc_context failed\n");
