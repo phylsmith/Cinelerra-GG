@@ -1,4 +1,5 @@
 #if defined(__i386__) || defined(__x86_64__)
+#if defined (__linux__)
 #ifndef __DB_H__
 #define __DB_H__
 #include <cstring>
@@ -1515,4 +1516,5 @@ public:
 };
 
 #endif
+#endif // linux
 #endif /* x86 */

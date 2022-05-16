@@ -160,9 +160,7 @@ DIRS = $(OPENCV_OBJS) \
 	yuvshift \
 	zoom \
 	zoomblur \
-	theme_blond \
 	theme_blond_cv \
-	theme_blue \
 	theme_blue_dot \
 	theme_bright \
 	theme_hulk \
@@ -174,7 +172,7 @@ DIRS = $(OPENCV_OBJS) \
 
 PLATFORM = $(shell uname -o)
 ifneq ($(PLATFORM), FreeBSD)
-DIRS += cdripper
+DIRS += cdripper theme_blond theme_blue 
 endif
 
 # not maintained

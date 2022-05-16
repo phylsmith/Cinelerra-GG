@@ -9,11 +9,11 @@ alias make=gmake
 ( ./autogen.sh
   BSD=1 CC=clang CXX=clang++ CFLAGS="-g -O2 " \
   ./configure --with-single-user \
-    --disable-static-build --without-lv2 --disable-lame --disable-twolame \
+    --disable-static-build --without-libzmpeg --disable-lame --disable-twolame \
     --with-oss --without-alsa --without-firewire --without-dv --without-dvb \
     --without-video4linux2 --without-xxf86vm --without-ladspa-build \
-    --without-libzmpeg --without-commercial --without-thirdparty \
-    --without-vaapi --without-vdpau --without-shuttle --without-shuttle-usb \
+    --without-commercial --without-thirdparty \
+    --without-shuttle --without-libdpx --without-shuttle-usb \
     --without-x10tv --with-jobs=4 --without-wintv
    gmake
    gmake install ) 2>&1 | tee log
