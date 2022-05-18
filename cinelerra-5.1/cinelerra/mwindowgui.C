@@ -1238,7 +1238,27 @@ int MWindowGUI::keypress_event()
 
 	case '!':
 		if( !ctrl_down() || !shift_down() ) break;
-/* code to execute is same as lines 383-401 in editpopup.C */
+		{
+			if( mwindow->session->current_operation != NO_OPERATION ) return 1;
+			first_track = mwindow->edl->tracks->first;
+			double start = mwindow->edl->local_session->get_selectionstart();
+			int64_t pos = first_track->to_units(start, 0);
+			Edit *edit=first_track->edits->editof(pos, PLAY_FORWARD, 0);
+			if( !edit || !edit->asset ) return 1;
+			Asset *asset = edit->asset;
+			double timecode = asset->timecode != -2 ? asset->timecode :
+				FFMPEG::get_timecode(asset->path,
+					edit->track->data_type, edit->channel,
+					mwindow->edl->session->frame_rate);
+			asset->timecode = timecode;
+			if( timecode >= 0 ) {
+				int64_t pos = edit->startproject + edit->startsource;
+				double position = edit->track->from_units(pos);
+				mwindow->set_timecode_offset(timecode - position);
+			}
+			else
+				mwindow->set_timecode_offset(0);
+		}
 		result = 1;
 		break;
 

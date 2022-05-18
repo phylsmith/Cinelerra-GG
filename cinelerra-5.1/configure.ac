@@ -296,7 +296,7 @@ PKG_3RD([opus],[auto],
   [ include ])
 
 PKG_3RD([openjpeg],[auto],
-  [openjpeg-2.4.0],
+  [openjpeg-2.5.0],
   [ bin/libopenjp2.a ],
   [ src/lib/openjp2 ])
 
