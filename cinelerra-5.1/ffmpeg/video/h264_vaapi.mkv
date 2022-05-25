@@ -1,0 +1,4 @@
+matroska h264_vaapi
+# Only works when there is vaapi capable hardware and software
+cin_hw_dev=vaapi
+profile=high
