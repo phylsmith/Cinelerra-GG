@@ -142,6 +142,7 @@ FormatQuality::~FormatQuality()
 int FormatQuality::handle_event()
 {
 	asset->quality = get_value();
+return 0;
 }
 
 
@@ -152,6 +153,7 @@ FormatBits::~FormatBits() {}
 int FormatBits::handle_event()
 {
 	asset->bits = get_bits();
+return 0;
 }
 
 
@@ -162,6 +164,7 @@ FormatDither::~FormatDither() {}
 int FormatDither::handle_event()
 {
 	*dither = get_value();
+return 0;
 }
 
 
@@ -174,6 +177,7 @@ FormatSigned::~FormatSigned() {}
 int FormatSigned::handle_event()
 {
 	asset->signed_ = get_value();
+return 0;
 }
 
 
@@ -188,6 +192,7 @@ int FormatHILO::handle_event()
 {
 	asset->byte_order = get_value() ^ 1;
 	lohi->update(get_value() ^ 1);
+return 0;
 }
 
 FormatLOHI::FormatLOHI(int x, int y, FormatHILO *hilo, Asset *asset)
@@ -202,5 +207,6 @@ int FormatLOHI::handle_event()
 {
 	asset->byte_order = get_value();
 	hilo->update(get_value() ^ 1);
+return 0;
 }
 

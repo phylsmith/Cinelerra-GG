@@ -93,6 +93,7 @@ PluginGlobalPathText::~PluginGlobalPathText() {}
 int PluginGlobalPathText::handle_event()
 {
 	strcpy(pwindow->thread->preferences->global_plugin_dir, get_text());
+return 0;
 }
 
 
@@ -110,4 +111,5 @@ PluginLocalPathText::~PluginLocalPathText() {}
 int PluginLocalPathText::handle_event()
 {
 	strcpy(pwindow->thread->preferences->local_plugin_dir, get_text());
+return 0;
 }

@@ -127,6 +127,7 @@ int RecordEngine::initialize()
 	current_jump_jumps[2] = 60;
 	current_jump_jumps[3] = 80;
 	current_jump_jumps[4] = 100;
+return 0;
 }
 
 int RecordEngine::run_script(FileXML *script)
@@ -199,6 +200,7 @@ long RecordEngine::get_dc_offset(int offset)
 int RecordEngine::set_dc_offset(long new_offset, int number)
 {
 	adevice->set_dc_offset(new_offset, number);
+return 0;
 }
 
 long int RecordEngine::get_dc_offset(long *dc_offset, RecordGUIDCOffsetText **dc_offset_text)
@@ -210,6 +212,7 @@ int RecordEngine::set_gui(RecordGUI *gui)
 {
 	this->gui = gui;
 	update_position(current_position);
+return 0;
 }
 
 int RecordEngine::get_duplex_enable()
@@ -491,11 +494,13 @@ int RecordEngine::close_output_devices()
 int RecordEngine::lock_window()
 {
 	gui->lock_window();
+return 0;
 }
 
 int RecordEngine::unlock_window()
 {
 	gui->unlock_window();
+return 0;
 }
 
 int RecordEngine::update_position(long new_position)
@@ -523,6 +528,7 @@ int RecordEngine::update_position(long new_position)
 
 		gui->update_next_label(next_label);
 	}
+return 0;
 }
 
 int RecordEngine::goto_prev_label()
@@ -540,6 +546,7 @@ int RecordEngine::goto_prev_label()
 			update_position(new_position);
 		}
 	}
+return 0;
 }
 
 int RecordEngine::goto_next_label()
@@ -588,6 +595,7 @@ int RecordEngine::calibrate_dc_offset(long new_value, int channel)
 
 int RecordEngine::reset_over()
 {
+return 0;
 }
 
 int RecordEngine::set_done(int value)
@@ -595,6 +603,7 @@ int RecordEngine::set_done(int value)
 	stop_operation(1);
 	stop_monitor();
 	gui->set_done(value);
+return 0;
 }
 
 int RecordEngine::start_over()
@@ -623,6 +632,7 @@ int RecordEngine::start_over()
 			record->startsource_frame = 0;
 		}
 	}
+return 0;
 }
 
 int RecordEngine::change_channel(Channel *channel)
@@ -648,6 +658,7 @@ int RecordEngine::get_format(char *string)
 {
 	File file;
 	strcpy(string, file.formattostr(mwindow->plugindb, asset->format));
+	return 0;
 }
 int RecordEngine::get_samplerate() { return asset->rate; }
 int RecordEngine::get_bits() { return asset->bits; }
@@ -665,25 +676,30 @@ float RecordEngine::get_frames_per_foot() { /* return mwindow->preferences->fram
 
 int RecordEngine::set_monitor_video(int value)
 {
+return 0;
 }
 
 int RecordEngine::set_monitor_audio(int value)
 {
+return 0;
 }
 
 int RecordEngine::set_record_mode(char *text)
 {
 	record->record_mode = text_to_mode(text);
+return 0;
 }
 
 int RecordEngine::get_record_mode(char *text)
 {
 	mode_to_text(text, record->record_mode);
+return 0;
 }
 
 int RecordEngine::get_record_mode()
 {
 	return record->record_mode;
+return 0;
 }
 
 int RecordEngine::mode_to_text(char *string, int mode)
@@ -694,6 +710,7 @@ int RecordEngine::mode_to_text(char *string, int mode)
 		case 1:        sprintf(string, _("Timed"));         break;
 		case 2:        sprintf(string, _("Loop"));          break;
 	}
+return 0;
 }
 
 int RecordEngine::text_to_mode(char *string)
@@ -701,6 +718,7 @@ int RecordEngine::text_to_mode(char *string)
 	if(!strcasecmp(string, _("Untimed"))) return 0;
 	if(!strcasecmp(string, _("Timed")))   return 1;
 	if(!strcasecmp(string, _("Loop")))    return 2;
+return 0;
 }
 
 long RecordEngine::get_current_delay()
@@ -718,11 +736,13 @@ int RecordEngine::reset_current_delay()
 {
 	current_jump_delay = 0;
 	current_jump_jump = current_jump_jumps[current_jump_delay];
+return 0;
 }
 
 int RecordEngine::set_loop_duration()
 {
 	record->set_loop_duration((long)record->get_samplerate() * (atol(gui->loop_sec->get_text()) + atol(gui->loop_min->get_text()) * 60 + atol(gui->loop_hr->get_text()) * 3600));
+return 0;
 }
 
 

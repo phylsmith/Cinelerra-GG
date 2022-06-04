@@ -840,8 +840,8 @@ DbWindowItem(int id, const char *source, const char *title,
 DbWindowItem::
 ~DbWindowItem()
 {
-	delete source;
-	delete title;
+	delete [] source;
+	delete [] title;
 }
 
 #define CmprFn(nm,key) int DbWindowGUI:: \

@@ -47,6 +47,7 @@ Scale::~Scale()
 int Scale::handle_event()
 {
 	thread->start();
+return 0;
 }
 
 ScaleThread::ScaleThread(MWindow *mwindow)
@@ -189,6 +190,7 @@ int ScaleThread::update_aspect(ScaleWindow *window)
 		sprintf(string, "%.0f", aspect_h);
 		window->aspect_h->update(string);
 	}
+return 0;
 }
 
 
@@ -307,6 +309,7 @@ int ScaleSizeText::handle_event()
 	if(*output > 10000) *output = 10000;
 	*output *= -1;
 	thread->update_window();
+return 0;
 }
 
 ScaleOffsetText::ScaleOffsetText(int x, int y, ScaleThread *thread, int *output)
@@ -320,6 +323,7 @@ int ScaleOffsetText::handle_event()
 	if(*output > 10000) *output = 10000;
 	if(*output < -10000) *output = -10000;
 	thread->update_window(1);
+return 0;
 }
 
 ScaleRatioText::ScaleRatioText(int x, int y, ScaleThread *thread, float *output)
@@ -334,6 +338,7 @@ int ScaleRatioText::handle_event()
 	if(*output < -10000) *output = -10000;
 	*output *= -1;
 	thread->update_window();
+return 0;
 }
 
 
@@ -346,6 +351,7 @@ ScaleConstrain::~ScaleConstrain() {}
 int ScaleConstrain::handle_event()
 {
 	thread->constrain_ratio = get_value();
+return 0;
 }
 
 ScaleData::ScaleData(int x, int y, ScaleThread *thread)
@@ -356,6 +362,7 @@ int ScaleData::handle_event()
 {
 	thread->scale_data = get_value();
 	thread->update_window();
+return 0;
 }
 
 
@@ -371,6 +378,7 @@ int ScaleAspectAuto::handle_event()
 {
 	thread->auto_aspect = get_value();
 	thread->update_aspect(thread->window);
+return 0;
 }
 
 
@@ -389,6 +397,7 @@ ScaleAspectW::~ScaleAspectW()
 int ScaleAspectW::handle_event()
 {
 	*output = atof(get_text());
+return 0;
 }
 
 
@@ -405,6 +414,7 @@ ScaleAspectH::~ScaleAspectH()
 int ScaleAspectH::handle_event()
 {
 	*output = atof(get_text());
+return 0;
 }
 
 
