@@ -10,7 +10,7 @@ AM_MAKEFLAGS := -j$(WANT_JOBS)
 AUTOMAKE_OPTIONS=foreign
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = thirdparty libzmpeg3 mpeg2enc mplexlo \
+SUBDIRS = thirdparty libbthread-master libzmpeg3 mpeg2enc mplexlo  \
 	db guicast cinelerra plugins doc po db/utils
 
 BUILT_SOURCES := bin

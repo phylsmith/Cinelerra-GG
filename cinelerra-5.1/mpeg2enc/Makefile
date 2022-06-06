@@ -60,7 +60,7 @@ ifeq ($(WANT_CIN_3RDPARTY),no)
 LIBS += -la52
 endif
 ifeq ($(shell uname -o), Android)
-LIBS += jpt.a
+LIBS += ../libbthread-master/jpt.a
 endif
 
 HVEG2LIB = $(OBJDIR)/hveg2enc.a

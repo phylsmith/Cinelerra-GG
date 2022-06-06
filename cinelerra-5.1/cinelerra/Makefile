@@ -453,7 +453,7 @@ LIBS += -la52 -ltwolame -lmp3lame
 endif
 LIBS += -lgif -ltheoraenc -ltheoradec -lvorbisfile -lvorbisenc -ltiff
 ifeq ($(shell uname -o), Android)
-LIBS += -landroid-shmem -liconv jpt.a
+LIBS += -landroid-shmem -liconv ../libbthread-master/jpt.a
 endif
 LIBS += $(shared_libs)
 LIBS += $(system_libs)
