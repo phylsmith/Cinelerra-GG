@@ -58,7 +58,7 @@ pthread_cancel (pthread_t t)
 
   return err;
 }
-/* Cancel a thread.
+/* Cancel a thread. */
 
 #include <pthread.h>
 

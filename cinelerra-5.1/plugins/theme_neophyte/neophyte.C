@@ -56,7 +56,7 @@
 // traffic lights, light green: 0x27ae60/0x37c871 - just on the buttons.
 #define ComicYellow 0xffcc00       // heads up!
 #define DarkRed 0xaa0000           // locked or not switched on. 
-#define LockedRed 0x400000
+#define LockedRed 0xda4453
 
 PluginClient* new_plugin(PluginServer *server)
 {
