@@ -7,7 +7,7 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 <os>"
-  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch]"
+  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch | debian-testing | ubuntu-testing]"
 fi
 
 dir="$1"
@@ -104,7 +104,33 @@ case "$dir" in
     libpulse-dev libtool python \
     patchelf libboost-filesystem-dev libboost-regex-dev
   ;;
- *)
+#ubuntu testing for upcoming versions
+"ubuntu-testing")
+  apt-get -y install apt-file sox nasm yasm g++ build-essential libz-dev \
+    texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
+    libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
+    libtiff5-dev exuberant-ctags ttf-bitstream-vera xfonts-75dpi xfonts-100dpi \
+    fonts-dejavu libopenexr-dev libavc1394-dev festival-dev fftw3-dev gdb \
+    libdc1394-25 libdc1394-dev libiec61883-dev libflac-dev libjbig-dev libusb-1.0-0-dev \
+    libvdpau-dev libva-dev libsndfile1-dev libtheora-dev cmake udftools \
+    libxml2-utils git inkscape autoconf automake debhelper libgtk2.0-dev \
+    libpulse-dev libtool 2to3 python-is-python3 python2-minimal python2 dh-python \
+    patchelf libboost-filesystem-dev libboost-regex-dev
+  ;;
+#debian testing for upcoming versions
+"debian-testing")
+  apt-get -f -y install apt-file sox nasm yasm g++ build-essential zlib1g-dev \
+    texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
+    libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
+    libtiff5-dev exuberant-ctags ttf-bitstream-vera xfonts-75dpi xfonts-100dpi \
+    fonts-dejavu libopenexr-dev festival libfftw3-dev gdb libusb-1.0-0-dev \
+    libdc1394-25 libdc1394-dev libflac-dev libjbig-dev libvdpau-dev libva-dev \
+    inkscape libsndfile1-dev libtheora-dev cmake udftools libxml2-utils git \
+    autoconf automake debhelper libgtk2.0-dev libpulse-dev 2to3 python-is-python3 python2-minimal python2 dh-python \
+    patchelf libboost-filesystem-dev libboost-regex-dev fuse
+  ;;
+
+*)
   echo "unknown os: $dir"
   exit 1;
   ;;

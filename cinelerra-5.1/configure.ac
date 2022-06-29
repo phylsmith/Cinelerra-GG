@@ -12,6 +12,18 @@ AC_LANG([C++])
 AC_LANG([C])
 AC_PROG_CXX
 
+
+AC_CHECK_PROG(MAKEINFO,[makeinfo],[makeinfo],[no])
+if test x"$MAKEINFO" == x"no" ; then
+AC_MSG_ERROR([Please install texinfo])
+fi
+
+AC_CHECK_PROG(GETTEXT,[gettext],[gettext],[no])
+if test x"$GETTEXT" == x"no" ; then
+AC_MSG_ERROR([Please install gettext])
+fi
+
+
 CFG_CFLAGS+=" -fno-omit-frame-pointer -fno-math-errno -fno-signed-zeros"
 CFG_CFLAGS+=" -pthread -Wall"
 # misguided pedantic warnings
