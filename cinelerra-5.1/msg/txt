@@ -3,6 +3,7 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 June - there are no changes of note
 2022 May changes of note:
   OpenJPEG upgraded from 2.4.0 to 2.5.0
   Many Makefile build changes incorporated for less used O/S-s.
