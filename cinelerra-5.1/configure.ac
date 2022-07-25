@@ -422,7 +422,7 @@ PKG_3RD([x265],[auto],
   [ . source ])
 
 PKG_3RD([libvpx],[auto],
-  [libvpx-1.11.0],
+  [libvpx-1.12.0],
   [ libvpx.a ],
   [ . ])
 
@@ -457,7 +457,7 @@ PKG_3RD([suil],[auto],
   [ usr/local/include ])
 
 PKG_3RD([libaom],[auto],
-  [libaom-v3.2.0],
+  [libaom-v3.4.0],
   [ usr/local/lib*/libaom*.a ],
   [ usr/local/include ])
 

@@ -1,0 +1,11 @@
+--- libaom-v3.4.0/CMakeLists.txt.orig	2022-07-23 22:33:18.090606192 +0300
++++ libaom-v3.4.0/CMakeLists.txt	2022-07-23 22:41:42.114605831 +0300
+@@ -11,7 +11,7 @@
+ if(CONFIG_TFLITE)
+   cmake_minimum_required(VERSION 3.11)
+ else()
+-  cmake_minimum_required(VERSION 3.7)
++  cmake_minimum_required(VERSION 3.5)
+ endif()
+ 
+ set(AOM_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
