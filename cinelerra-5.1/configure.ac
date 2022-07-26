@@ -6,6 +6,7 @@ AC_INIT([cinelerra],[5.1],[mail@lists.cinelerra-gg.org])
 # externally. This macro must be set before calling AC_INIT_AUTOMAKE
 AC_CONFIG_AUX_DIR(m4)
 AM_INIT_AUTOMAKE([foreign])
+LT_INIT()
 
 AM_PROG_AS
 AC_LANG([C++])
@@ -23,6 +24,10 @@ if test x"$GETTEXT" == x"no" ; then
 AC_MSG_ERROR([Please install gettext])
 fi
 
+AC_CHECK_PROG(LIBTOOL,[libtool],[libtool],[no])
+if test x"$LIBTOOL" == x"no" ; then
+AC_MSG_ERROR([Please install libtool])
+fi
 
 CFG_CFLAGS+=" -fno-omit-frame-pointer -fno-math-errno -fno-signed-zeros"
 CFG_CFLAGS+=" -pthread -Wall"
