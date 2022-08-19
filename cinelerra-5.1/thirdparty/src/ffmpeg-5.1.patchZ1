@@ -1,0 +1,55 @@
+--- a/libavcodec/wrapped_avframe.c
++++ b/libavcodec/wrapped_avframe.c
+@@ -33,6 +33,38 @@
+ #include "libavutil/buffer.h"
+ #include "libavutil/pixdesc.h"
+ 
++
++
++static const enum AVPixelFormat pix_fmts_all[] = {
++    AV_PIX_FMT_YUV411P,
++    AV_PIX_FMT_YUV420P,
++    AV_PIX_FMT_YUVJ420P,
++    AV_PIX_FMT_YUV422P,
++    AV_PIX_FMT_YUVJ422P,
++    AV_PIX_FMT_YUV444P,
++    AV_PIX_FMT_YUVJ444P,
++    AV_PIX_FMT_YUV420P10,
++    AV_PIX_FMT_YUV422P10,
++    AV_PIX_FMT_YUV444P10,
++    AV_PIX_FMT_YUV420P12,
++    AV_PIX_FMT_YUV422P12,
++    AV_PIX_FMT_YUV444P12,
++    AV_PIX_FMT_YUV420P14,
++    AV_PIX_FMT_YUV422P14,
++    AV_PIX_FMT_YUV444P14,
++    AV_PIX_FMT_YUV420P16,
++    AV_PIX_FMT_YUV422P16,
++    AV_PIX_FMT_YUV444P16,
++    AV_PIX_FMT_GRAY8,
++    AV_PIX_FMT_GRAY9,
++    AV_PIX_FMT_GRAY10,
++    AV_PIX_FMT_GRAY12,
++    AV_PIX_FMT_GRAY16,
++    AV_PIX_FMT_NONE
++};
++
++
++
+ static void wrapped_avframe_release_buffer(void *unused, uint8_t *data)
+ {
+     AVFrame *frame = (AVFrame *)data;
+@@ -109,6 +141,7 @@
+     .p.id           = AV_CODEC_ID_WRAPPED_AVFRAME,
+     FF_CODEC_ENCODE_CB(wrapped_avframe_encode),
+     .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
++    .p.pix_fmts       = pix_fmts_all,
+ };
+ 
+ const FFCodec ff_wrapped_avframe_decoder = {
+@@ -118,4 +151,5 @@
+     .p.id           = AV_CODEC_ID_WRAPPED_AVFRAME,
+     FF_CODEC_DECODE_CB(wrapped_avframe_decode),
+     .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,
++    
+ };

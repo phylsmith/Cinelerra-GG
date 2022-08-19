@@ -1,0 +1,34 @@
+--- a/libavutil/hwcontext_cuda.c
++++ b/libavutil/hwcontext_cuda.c
+@@ -286,9 +286,11 @@
+         CudaFunctions *cu = hwctx->internal->cuda_dl;
+ 
+         if (hwctx->internal->is_allocated && hwctx->cuda_ctx) {
++#ifdef CUDA_PRIMARY_CTX
+             if (hwctx->internal->flags & AV_CUDA_USE_PRIMARY_CONTEXT)
+                 CHECK_CU(cu->cuDevicePrimaryCtxRelease(hwctx->internal->cuda_device));
+             else
++#endif
+                 CHECK_CU(cu->cuCtxDestroy(hwctx->cuda_ctx));
+ 
+             hwctx->cuda_ctx = NULL;
+@@ -338,7 +340,7 @@
+     cu = hwctx->internal->cuda_dl;
+ 
+     hwctx->internal->flags = flags;
+-
++#ifdef CUDA_PRIMARY_CTX
+     if (flags & AV_CUDA_USE_PRIMARY_CONTEXT) {
+         ret = CHECK_CU(cu->cuDevicePrimaryCtxGetState(hwctx->internal->cuda_device,
+                        &dev_flags, &dev_active));
+@@ -359,7 +361,9 @@
+                                                     hwctx->internal->cuda_device));
+         if (ret < 0)
+             return ret;
+-    } else {
++    } else
++#endif
++    {
+         ret = CHECK_CU(cu->cuCtxCreate(&hwctx->cuda_ctx, desired_flags,
+                                        hwctx->internal->cuda_device));
+         if (ret < 0)
