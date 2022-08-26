@@ -1,0 +1,7 @@
+mov rpza
+# mostly useful for old 160x120 videos
+# this encoder requires manual tuning
+skip_frame_thresh=13 
+start_one_color_thresh=8
+continue_one_color_thresh=0
+sixteen_color_thresh=24

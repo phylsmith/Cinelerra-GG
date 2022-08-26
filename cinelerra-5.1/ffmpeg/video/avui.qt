@@ -1,0 +1,4 @@
+mov avui
+strict=-2
+# AVID  Meridien uncompressed
+# Only 720x486 and 720x576 are supported
