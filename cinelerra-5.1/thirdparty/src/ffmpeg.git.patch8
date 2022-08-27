@@ -1,16 +1,11 @@
-diff --git a/libavformat/mpegenc.c b/libavformat/mpegenc.c
-index 9bd0a555d4..111a9f3a46 100644
---- a/libavformat/mpegenc.c
-+++ b/libavformat/mpegenc.c
-@@ -976,9 +976,9 @@ static int remove_decoded_packets(AVFormatContext *ctx, int64_t scr)
-         PacketDesc *pkt_desc;
+--- a/libavcodec/h263dec.c
++++ b/libavcodec/h263dec.c
+@@ -685,7 +685,7 @@
+     if (CONFIG_MPEG4_DECODER && avctx->codec_id == AV_CODEC_ID_MPEG4)
+         ff_mpeg4_frame_end(avctx, buf, buf_size);
  
-         while ((pkt_desc = stream->predecode_packet) &&
-+               pkt_desc != stream->premux_packet &&
-                scr > pkt_desc->dts) { // FIXME: > vs >=
--            if (stream->buffer_index < pkt_desc->size ||
--                stream->predecode_packet == stream->premux_packet) {
-+            if (stream->buffer_index < pkt_desc->size) {
-                 av_log(ctx, AV_LOG_ERROR,
-                        "buffer underflow st=%d bufi=%d size=%d\n",
-                        i, stream->buffer_index, pkt_desc->size);
+-    if (!s->divx_packed && avctx->hwaccel)
++    if (s->divx_packed && avctx->hwaccel)
+         ff_thread_finish_setup(avctx);
+ 
+     av_assert1(s->current_picture.f->pict_type == s->current_picture_ptr->f->pict_type);
