@@ -3,6 +3,8 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 August changes of note:
+  FFmpeg has been upgraded to 5.1 from 4.4.
 2022 July changes of note:
   Libaom upgraded from 3.2.0 to 3.4.0.
   Libvpx upgraded from 1.11.0 to 1.12.0

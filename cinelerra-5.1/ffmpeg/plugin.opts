@@ -86,7 +86,7 @@ cellauto p=@:s=100x400:full=0:rule=18
 #channelsplit ###Operation not permitted
 chorus in_gain=0.400000:out_gain=0.400000:delays=1|1:decays=1|1:speeds=1|1:depths=1|1
 chromakey
-chromakey_cuda
+#chromakey_cuda ###Operation not permitted
 #codecview
 color
 colorbalance

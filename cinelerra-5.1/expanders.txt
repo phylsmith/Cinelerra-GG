@@ -43,10 +43,13 @@ Video Effects
 		F_exposure
 		F_fftfilt
 		F_floodfill
+		F_grayworld
 		F_greyedge
 		F_haldclutsrc
 		F_histeq
 		F_histogram
+		F_hsvhold
+		F_hsvkey
 		F_limiter
 		F_lut
 		F_lut1d
@@ -186,15 +189,20 @@ Video Effects
 		F_tmix
 		F_vfrdet
 	- Artistic
-		F_shufflepixels
 		F_epx
 		F_kirsch
+		F_pixelize
+		F_shufflepixels
 	- Test
 		F_bench
 		F_bbox
+		F_blockdetect
+		F_blurdetect
 		F_ciescope
 		F_color
+		F_colorchart
 		F_colorize
+		F_colorspectrum
 		F_datascope
 		F_entropy
 		F_graphmonitor
