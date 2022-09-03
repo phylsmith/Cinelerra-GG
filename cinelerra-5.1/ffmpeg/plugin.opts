@@ -5,11 +5,8 @@ abench
 acompressor
 #acrossfade ###Input/output error
 acrusher
-adecorrelate
 adelay delays=1
 #adrawgraph signalstats,drawgraph=lavfi.signalstats.YAVG:min=0:max=255 ###Input/output error
-adynamicequalizer
-adynamicsmooth
 aecho
 aemphasis
 aeval exprs=(sin(2*PI*t*440)+sin(2*PI*t*350))/2*mod(floor(2*t),2):channel_layout=1c
@@ -18,11 +15,9 @@ afade
 #afftfilt 1-clip((b/nb)*b,0,1)
 #afifo  ###will not work within cin
 aformat sample_fmts=u8|s16:channel_layouts=stereo
-afwtdn
 agate
 #ahistogram dmode=single:r=25:s=hd720:scale=log:ascale=log:slide=replace ###Input/output error
 #ainterleave
-alatency
 #alimiter
 allpass
 allrgb
@@ -43,7 +38,6 @@ anoisesrc d=60:c=pink:r=48000:a=0.5
 aperms
 #aphasemeter r=25:s=800x400:rc=2:gc=7:bc=1 ###Operation not permitted
 aphaser
-apsyclip
 #apulsator
 arealtime
 aresample sample_rate=48000
@@ -57,12 +51,10 @@ asetrate r=48000
 #ashowinfo ###not part of frame data
 #asidedata ###Invalid argument
 #asplit ###Operation not permitted
-aspectralstats
 astats
 #astreamselect ###Operation not permitted
 atadenoise
 atempo
-atilt
 atrim start=1:end=240:start_pts=1:end_pts=2:duration=1:start_sample=1:end_sample=2
 #avectorscope ###Input/output error
 avgblur
@@ -72,11 +64,10 @@ bass channels=0x1
 bbox
 bench
 biquad
-blackdetect
 blackframe
 #blend ###Input/output error
+blackdetect
 blockdetect
-blurdetect
 boxblur
 #buffer size=320x240:pixfmt=6:time_base=1/24:pixel_aspect=1/1 ###Invalid argument
 #buffersink ###Input/output error
@@ -86,17 +77,14 @@ cellauto p=@:s=100x400:full=0:rule=18
 #channelsplit ###Operation not permitted
 chorus in_gain=0.400000:out_gain=0.400000:delays=1|1:decays=1|1:speeds=1|1:depths=1|1
 chromakey
-#chromakey_cuda ###Operation not permitted
 #codecview
 color
 colorbalance
 colorchannelmixer
-colorchart
 colorkey
 colorlevels
 colormatrix src=bt601:dst=bt709
 colorspace iall=smpte170m:all=bt709
-colorspectrum
 compand
 compensationdelay
 #concat ###Operation not permitted
@@ -155,7 +143,6 @@ fspp
 gblur
 #geq ###Invalid argument
 gradfun
-grayworld
 #haldclut ###not working due to need for multiple video streams ###Input/output error
 haldclutsrc
 #hdcd
@@ -166,8 +153,6 @@ histogram
 hqdn3d
 hqx
 #hstack ###Operation not permitted
-hsvhold
-hsvkey
 hue
 #hwdownload ###Operation not permitted
 #hwmap ###Input/output error
@@ -181,7 +166,6 @@ inflate
 #interleave ###Operation not permitted
 #join
 kerndeint
-latency
 lenscorrection
 life ratio=2/3:s=200x200
 #loudnorm ###Invalid argument
@@ -221,7 +205,6 @@ perms
 perspective
 phase
 #pixdesctest ###not appropriate
-pixelize
 pp
 pp7
 #premultiply ###Operation not permitted
@@ -247,7 +230,6 @@ scale 200:100
 #scale_cuda ###Operation not implemented when you try to use it
 #scale_vaapi ###Operation not permitted
 #scale2ref ###Input/output error
-scharr
 #select ###Operation not permitted
 selectivecolor greens=.5 0 -.33 0:blues=0 .27
 #sendcmd ###Invalid argument
@@ -278,7 +260,6 @@ signalstats
 #silencedetect n=0.001  ###does not appear to work
 silenceremove
 sine
-siti
 smartblur
 smptebars
 smptehdbars
@@ -302,7 +283,6 @@ testsrc2 duration=5.3:size=qcif:rate=10
 #thumbnail n=50
 #thumbnail_cuda
 tile layout=3x2:nb_frames=5:padding=7:margin=2
-tiltshelf
 tinterlace
 transpose
 treble
@@ -315,7 +295,6 @@ vectorscope
 vflip
 vibrato
 vignette
-virtualbass
 volume
 volumedetect
 #vstack ###Operation not permitted
@@ -450,6 +429,22 @@ monochrome
 #frei0r
 #frei0r_src
 #libvmaf
+; new in 5.0
+adecorrelate
+adynamicequalizer
+adynamicsmooth
+afwtdn
+alatency
+apsyclip
+aspectralstats
+atilt
+colorspectrum
+grayworld
+hsvhold
+hsvkey
+huesaturation
+latency
+scharr
 ; broken in 5.0
 #anlmf ###Input/output error
 #asdr ###Input/output error
@@ -463,8 +458,17 @@ monochrome
 #segment ###Operation not permitted
 #varblur ###Input/output error
 #xcorrelate ###Input/output error
+; new in 5.1
+blurdetect
+colorchart
+pixelize
+siti
+tiltshelf
+virtualbass
 ; broken in 5.1
 #avsynctest ###Input/output error
+#chromakey_cuda ###Operation not permitted
 #colormap ###Input/output error
+#dialoguenhance ###Invalid argument
 #feedback ###Input/output error
 #multiply ###Input/output error
