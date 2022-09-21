@@ -25,6 +25,7 @@
 #include "bitspopup.inc"
 #include "edl.inc"
 #include "file.inc"
+#include "fileflac.inc"
 #include "filebase.h"
 
 class FileFLAC : public FileBase
@@ -84,8 +85,15 @@ public:
 	BitsPopup *bits_popup;
 	BC_WindowBase *parent_window;
 	Asset *asset;
+	FLACCompression *compression;
 };
 
-
+class FLACCompression : public BC_TumbleTextBox
+{
+public:
+	FLACCompression(FLACConfigAudio *gui, int x, int y);
+        int handle_event();
+        FLACConfigAudio *gui;
+};
 
 #endif

@@ -213,6 +213,7 @@ int FileFLAC::open_file(int rd, int wr)
 		FLAC__stream_encoder_set_channels(flac_encode, asset->channels);
 		FLAC__stream_encoder_set_bits_per_sample(flac_encode, asset->bits);
 		FLAC__stream_encoder_set_sample_rate(flac_encode, asset->sample_rate);
+		FLAC__stream_encoder_set_compression_level(flac_encode, asset->flac_compression);
 		FLAC__stream_encoder_init_file(flac_encode, asset->path, 0, 0);
 	}
 
@@ -343,25 +344,49 @@ FLACConfigAudio::FLACConfigAudio(BC_WindowBase *parent_window,
 {
 	this->parent_window = parent_window;
 	this->asset = asset;
+	compression = 0;
 // *** CONTEXT_HELP ***
 	context_help_set_keyword("Single File Rendering");
 }
 
 FLACConfigAudio::~FLACConfigAudio()
 {
+	delete compression;
 }
 
 void FLACConfigAudio::create_objects()
 {
+	BC_Title *title;
+	int ys5 = yS(5), xs100 = xS(100);
 	int x = xS(10), y = yS(10);
 	lock_window("FLACConfigAudio::create_objects");
 	bits_popup = new BitsPopup(this, x, y, &asset->bits, 0, 0, 0, 0, 0);
 	bits_popup->create_objects();
-
+	y += bits_popup->get_h() + ys5;
+	add_subwindow(title = new BC_Title(x,y,_("Compression:")));
+        int x1 = x + title->get_w() + xs100;
+        compression = new FLACCompression(this, x1, y);
+        compression->create_objects();
+        y += compression->get_h() + ys5;
 	add_subwindow(new BC_OKButton(this));
 	show_window(1);
 	unlock_window();
 }
+
+FLACCompression::FLACCompression(FLACConfigAudio *gui, int x, int y)
+: BC_TumbleTextBox(gui, (int64_t)gui->asset->flac_compression,
+  (int64_t)0, (int64_t)8, x, y, xS(40))
+
+{
+	this->gui = gui;
+}
+
+int FLACCompression::handle_event()
+{
+        gui->asset->flac_compression = atol(get_text());
+        return 1;
+}
+
 
 int FLACConfigAudio::close_event()
 {

@@ -132,6 +132,8 @@ int Asset::init_values()
 
 	ac3_bitrate = 128;
 
+	flac_compression = 0;
+
 	png_use_alpha = 0;
 	png_depth = 8;
 	png_compression = 0;
@@ -292,6 +294,8 @@ void Asset::copy_format(Asset *asset, int do_index)
 
 	tiff_cmodel = asset->tiff_cmodel;
 	tiff_compression = asset->tiff_compression;
+
+	flac_compression = asset->flac_compression;
 
 	mov_sphere = asset->mov_sphere;
 	jpeg_sphere = asset->jpeg_sphere;
@@ -803,6 +807,7 @@ void Asset::load_defaults(BC_Hash *defaults,
 	exr_compression = GET_DEFAULT("EXR_COMPRESSION", exr_compression);
 	tiff_cmodel = GET_DEFAULT("TIFF_CMODEL", tiff_cmodel);
 	tiff_compression = GET_DEFAULT("TIFF_COMPRESSION", tiff_compression);
+	flac_compression = GET_DEFAULT("FLAC_COMPRESSION", flac_compression);
 
 	mov_sphere = GET_DEFAULT("MOV_SPHERE", mov_sphere);
 	jpeg_sphere = GET_DEFAULT("JPEG_SPHERE", jpeg_sphere);
@@ -902,7 +907,7 @@ void Asset::save_defaults(BC_Hash *defaults,
 		UPDATE_DEFAULT("TIFF_CMODEL", tiff_cmodel);
 		UPDATE_DEFAULT("TIFF_COMPRESSION", tiff_compression);
 
-
+		UPDATE_DEFAULT("FLAC_COMPRESSION", flac_compression);
 
 		UPDATE_DEFAULT("MOV_SPHERE", mov_sphere);
 		UPDATE_DEFAULT("JPEG_SPHERE", jpeg_sphere);

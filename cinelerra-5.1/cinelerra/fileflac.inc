@@ -23,7 +23,7 @@
 #define FILEFLAC_INC
 
 class FileFLAC;
-
+class FLACCompression;
 
 
 #endif

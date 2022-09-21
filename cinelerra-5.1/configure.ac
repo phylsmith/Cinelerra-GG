@@ -255,7 +255,7 @@ PKG_3RD([fftw],[auto],
   [ api ])
 
 PKG_3RD([flac],[auto],
-  [flac-1.3.2],
+  [flac-1.4.0],
   [ src/libFLAC/.libs/libFLAC.a \
     src/libFLAC++/.libs/libFLAC++.a \
     src/share/replaygain_analysis/.libs/libreplaygain_analysis.a \

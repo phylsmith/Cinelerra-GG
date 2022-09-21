@@ -224,9 +224,10 @@ public:
 // TIFF video compression.  An enumeration from filetiff.h
 	int tiff_cmodel;
 	int tiff_compression;
-
+// AC3 bitrate
 	int ac3_bitrate;
-
+// FLAC compression
+	int flac_compression;
 // Insert tag for spherical playback
 	int mov_sphere, jpeg_sphere;
 

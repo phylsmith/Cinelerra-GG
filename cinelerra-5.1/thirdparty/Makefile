@@ -193,8 +193,9 @@ djbfft.cfg_vars?=echo "$(call bld_path,djbfft)" > conf-home; \
  (CFLAGS="$(CFLAGS)"; $(CFG_VARS)$(if $(CFG_VARS),; )echo "$(CC) $$$$CFLAGS") > conf-cc; \
  echo "exec true" > ./configure; chmod +x ./configure;
 djbfft.mak_params?=; cd $(call bld_path,djbfft); ln -sf djbfft.a libdjbfft.a
-audiofile.cfg_params?=--enable-shared=no
+audiofile.cfg_params?=--enable-shared=no --disable-doxygen-docs --enable-debug=no --enable-examples=no
 audiofile.mak_params?=LIBS="-lm -lstdc++"
+flac.cfg_vars?= CFLAGS+=" -O3 -funroll-loops " CPPFLAGS+=" -DNDEBUG " CXXFLAGS+=" -O2 "
 flac.cfg_params?= --enable-shared=no
 flac.cflags?="$(call inc_path,libogg) $(call ld_path,libogg,src/.libs)"
 ffnvcodec.cfg_vars=echo "exec true" > ./configure; chmod +x ./configure;
