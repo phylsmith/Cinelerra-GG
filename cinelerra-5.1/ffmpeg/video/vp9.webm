@@ -1,0 +1,5 @@
+webm libvpx-vp9
+# Miroslav improved VP9 webm setting and simplification
+b=0
+crf=31
+row-mt=1
