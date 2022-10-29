@@ -111,7 +111,7 @@ dilation
 #displace
 drawbox
 drawgraph
-drawgrid
+drawgrid x=-1:y=-1:width=iw/3:height=ih/3:color=invert:thickness=2
 #dynaudnorm ###Invalid argument
 earwax
 #ebur128 ###Operation not permitted
