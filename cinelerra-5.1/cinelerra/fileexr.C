@@ -506,6 +506,15 @@ int FileEXR::write_frame(VFrame *frame, VFrame *data, FrameWriterUnit *unit)
 	return 0;
 }
 
+int FileEXR::can_copy_from(Asset *asset, int64_t position)
+{
+	if(asset->format == FILE_EXR ||
+		asset->format == FILE_EXR_LIST)
+		return 1;
+
+	return 0;
+}
+
 FrameWriterUnit* FileEXR::new_writer_unit(FrameWriter *writer)
 {
 	return new EXRUnit(this, writer);

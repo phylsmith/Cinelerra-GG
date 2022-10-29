@@ -183,6 +183,15 @@ int FilePPM::write_frame(VFrame *frame, VFrame *output,
 	return 0;
 }
 
+int FilePPM::can_copy_from(Asset *asset, int64_t position)
+{
+	if(asset->format == FILE_PPM ||
+		asset->format == FILE_PPM_LIST)
+		return 1;
+
+	return 0;
+}
+
 int FilePPM::colormodel_supported(int colormodel)
 {
 	return BC_RGB888;

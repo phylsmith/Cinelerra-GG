@@ -44,6 +44,7 @@ public:
 	int read_frame_header(char *path);
 	int read_frame(VFrame *frame, VFrame *data);
 	int64_t get_memory_usage();
+	int can_copy_from(Asset *asset, int64_t position);
 	int write_frame(VFrame *frame, VFrame *data, FrameWriterUnit *unit);
 	FrameWriterUnit* new_writer_unit(FrameWriter *writer);
 

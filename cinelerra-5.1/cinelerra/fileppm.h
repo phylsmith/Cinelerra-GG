@@ -43,6 +43,7 @@ public:
 	int check_frame_header(FILE *fp);
 	int read_frame_header(char *path);
 	int write_frame(VFrame *frame, VFrame *output, FrameWriterUnit *unit);
+	int can_copy_from(Asset *asset, int64_t position);
 	FrameWriterUnit* new_writer_unit(FrameWriter *writer);
 	static void get_parameters(BC_WindowBase *parent_window,
 		Asset *asset, BC_WindowBase* &format_window,
