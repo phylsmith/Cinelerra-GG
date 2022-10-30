@@ -115,7 +115,7 @@ case "$dir" in
     libvdpau-dev libva-dev libsndfile1-dev libtheora-dev cmake udftools \
     libxml2-utils git inkscape autoconf automake debhelper libgtk2.0-dev \
     libpulse-dev libtool 2to3 python-is-python3 python2-minimal python2 dh-python \
-    patchelf libboost-filesystem-dev libboost-regex-dev
+    patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl libimath-dev liblilv-dev
   ;;
 #debian testing for upcoming versions
 "debian-testing")

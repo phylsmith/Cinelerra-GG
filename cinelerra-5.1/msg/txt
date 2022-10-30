@@ -3,6 +3,8 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 October changes of note:
+  Speed up using direct copy for EXR and PPM sequences.
 2022 September changes of note:
   Flac has been upgraded to 1.4.0 from 1.3.2.
   Tiff has been upgraded to 4.4.0 from 4.3.0.
