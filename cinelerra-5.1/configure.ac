@@ -599,7 +599,7 @@ if test "x$HAVE_$1" != "xno"; then
 fi
 ])
 
-IMMATH_HEADERS=$(pkg-config --cflags Imath)
+IMMATH_HEADERS=$(pkg-config --cflags Imath 2>/dev/null)
 
 CHECK_LIB([X11], [X11], [XOpenDisplay])
 CHECK_HEADERS([X11], [X11 headers], [X11/X.h X11/Xlib.h X11/Xutil.h X11/cursorfont.h])
@@ -821,16 +821,16 @@ CHECK_WANT([LV2], [auto], [use lv2], [
  CHECK_LIB([sord], [sord-0], [sord_world_new])
  CHECK_LIB([serd], [serd-0], [serd_reader_new])
  CHECK_LIB([sratom], [sratom-0], [sratom_new])
- CFLAGS="-I/usr/include/lilv-0 -I/usr/local/include/lilv-0 `pkg-config --cflags lilv-0`"
+ CFLAGS="-I/usr/include/lilv-0 -I/usr/local/include/lilv-0 `pkg-config --cflags lilv-0 2>/dev/null`"
  CHECK_HEADERS([lilv], [lilv headers], [lilv/lilv.h])
- CFLAGS="-I/usr/include/serd-0 -I/usr/local/include/serd-0 `pkg-config --cflags serd-0`"
+ CFLAGS="-I/usr/include/serd-0 -I/usr/local/include/serd-0 `pkg-config --cflags serd-0 2>/dev/null`"
  CHECK_HEADERS([serd], [serd headers], [serd/serd.h])
- CFLAGS="-I/usr/include/sord-0 -I/usr/local/include/sord-0 `pkg-config --cflags sord-0`"
+ CFLAGS="-I/usr/include/sord-0 -I/usr/local/include/sord-0 `pkg-config --cflags sord-0 2>/dev/null`"
  CHECK_HEADERS([sord], [sord headers], [sord/sord.h])
- CFLAGS="-I/usr/include/sratom-0 -I/usr/local/include/sratom-0 `pkg-config --cflags sratom-0`"
+ CFLAGS="-I/usr/include/sratom-0 -I/usr/local/include/sratom-0 `pkg-config --cflags sratom-0 2>/dev/null`"
  CHECK_HEADERS([sratom], [sratom headers], [sratom/sratom.h])
  CHECK_LIB([suil], [suil-0], [suil_instance_new])
- CFLAGS="-I/usr/include/suil-0 -I/usr/local/include/suil-0 `pkg-config --cflags  suil-0`"
+ CFLAGS="-I/usr/include/suil-0 -I/usr/local/include/suil-0 `pkg-config --cflags  suil-0 2>/dev/null`"
  CHECK_HEADERS([suil], [suil headers], [suil/suil.h])
  CFG_CFLAGS+=" $(pkg-config --cflags lilv-0) $(pkg-config --cflags suil-0)"
  LIBS="$saved_LIBS"
@@ -1082,6 +1082,7 @@ done
 # build extras
 if test "x$WANT_CLANG" = "xyes" ; then
   FFMPEG_EXTRA_CFG+=' --cc=clang --cxx=clang++'
+  CFG_CFLAGS+=" -Wno-unknown-warning-option"
 fi
 if test "x$HAVE_tiff" = "xyes"; then
   if test "x$HAVE_jbig" = "xyes"; then
