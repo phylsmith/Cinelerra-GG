@@ -6,4 +6,4 @@ export CFLAGS
     --without-dv \
     --without-firewire --without-vaapi \
     --without-vdpau --without-libdpx \
-    --without-gl
+    --without-gl --with-clang

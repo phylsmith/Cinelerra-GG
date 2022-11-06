@@ -441,13 +441,13 @@ ifneq (, $(filter $(PLATFORM), FreeBSD NetBSD))
 LIBS += -lintl -liconv
 LIBS += -lexecinfo
 endif
-LIBS += `pkg-config --libs OpenEXR`
-LIBS += `pkg-config --libs flac`
-LIBS += `pkg-config --libs libjpeg`
-LIBS += `pkg-config --libs uuid`
-LIBS += `pkg-config --libs theora`
-LIBS += `pkg-config --libs vorbis`
-LIBS += `pkg-config --libs sndfile`
+LIBS += `pkg-config --libs OpenEXR 2>/dev/null`
+LIBS += `pkg-config --libs flac 2>/dev/null`
+LIBS += `pkg-config --libs libjpeg 2>/dev/null`
+LIBS += `pkg-config --libs uuid 2>/dev/null`
+LIBS += `pkg-config --libs theora 2>/dev/null`
+LIBS += `pkg-config --libs vorbis 2>/dev/null`
+LIBS += `pkg-config --libs sndfile 2>/dev/null`
 ifeq ($(WANT_LIBZMPEG),yes)
 LIBS += -la52 -ltwolame -lmp3lame
 endif
