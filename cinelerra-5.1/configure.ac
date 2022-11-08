@@ -816,7 +816,7 @@ CHECK_WANT([LV2], [auto], [use lv2], [
  AC_MSG_CHECKING([for lv2 availability])
  saved_LIBS="$LIBS"
  saved_CFLAGS="$CFLAGS"
- LIBS=" $(pkg-config --libs lilv-0)"
+ LIBS=" $(pkg-config --libs lilv-0 2>/dev/null)"
  CHECK_LIB([lilv], [lilv-0], [lilv_world_new])
  CHECK_LIB([sord], [sord-0], [sord_world_new])
  CHECK_LIB([serd], [serd-0], [serd_reader_new])
@@ -832,7 +832,7 @@ CHECK_WANT([LV2], [auto], [use lv2], [
  CHECK_LIB([suil], [suil-0], [suil_instance_new])
  CFLAGS="-I/usr/include/suil-0 -I/usr/local/include/suil-0 `pkg-config --cflags  suil-0 2>/dev/null`"
  CHECK_HEADERS([suil], [suil headers], [suil/suil.h])
- CFG_CFLAGS+=" $(pkg-config --cflags lilv-0) $(pkg-config --cflags suil-0)"
+ CFG_CFLAGS+=" $(pkg-config --cflags lilv-0 2>/dev/null) $(pkg-config --cflags suil-0 2>/dev/null)"
  LIBS="$saved_LIBS"
  CFLAGS="$saved_CFLAGS"])
 # have all or none
