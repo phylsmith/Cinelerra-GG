@@ -368,7 +368,7 @@ int VirtualANode::render_fade(double *buffer, int64_t len,
 	int64_t input_position, int64_t sample_rate,
 	Autos *autos, int direction, int use_nudge)
 {
-	double fade_value;
+	double fade_value = 0.0;
 	FloatAuto *previous = 0;
 	FloatAuto *next = 0;
 	EDL *edl = vconsole->renderengine->get_edl();

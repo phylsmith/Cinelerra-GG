@@ -104,10 +104,10 @@ CICache* VModule::get_cache()
 int VModule::import_frame(VFrame *output, VEdit *current_edit,
 	int64_t input_position, double frame_rate, int direction, int use_opengl)
 {
-	int64_t direction_position;
+	int64_t direction_position=0;
 // Translation of edit
-	float in_x, in_y, in_w, in_h;
-	float out_x, out_y, out_w, out_h;
+	float in_x=0.0, in_y=0.0, in_w=0.0, in_h=0.0;
+	float out_x=0.0, out_y=0.0, out_w=0.0, out_h=0.0;
 	int result = 0;
 	const int debug = 0;
 	double edl_rate = get_edl()->session->frame_rate;
