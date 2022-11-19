@@ -449,6 +449,11 @@ LIBS += `pkg-config --libs theora 2>/dev/null`
 LIBS += `pkg-config --libs vorbis 2>/dev/null`
 LIBS += `pkg-config --libs sndfile 2>/dev/null`
 LIBS += `pkg-config --libs x11 2>/dev/null`
+ifeq ($(WANT_DV),yes)
+LIBS += `pkg-config --libs libiec61883 2>/dev/null`
+LIBS += `pkg-config --libs libdv 2>/dev/null`
+LIBS += `pkg-config --libs libavc1394  2>/dev/null`
+endif
 ifeq ($(WANT_LIBZMPEG),yes)
 LIBS += -la52 -ltwolame -lmp3lame
 endif

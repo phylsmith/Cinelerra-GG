@@ -101,7 +101,7 @@ int VirtualVConsole::process_buffer(int64_t input_position,
 
 	EDLSession *session = renderengine->get_edl()->session;
 	int clr_color = session->cwindow_clear_color;
-	vrender->video_out->set_clear_color(clr_color, 0xff);
+	vrender->video_out->set_clear_color(clr_color, 0x00);
 
 	if(use_opengl)
 	{
