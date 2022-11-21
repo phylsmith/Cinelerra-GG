@@ -585,6 +585,10 @@ int FFStream::write_packet(FFPacket &pkt)
 		ret = av_interleaved_write_frame(ffmpeg->fmt_ctx, pkt);
 	}
 	else {
+	bsfc->time_base_in = st->time_base;
+	avcodec_parameters_copy(bsfc->par_in, st->codecpar);
+	av_bsf_init(bsfc);
+	
 		ret = av_bsf_send_packet(bsfc, pkt);
 		while( ret >= 0 ) {
 			FFPacket bs;
@@ -593,6 +597,9 @@ int FFStream::write_packet(FFPacket &pkt)
 				if( ret == AVERROR_EOF ) return -1;
 				break;
 			}
+			//printf(" filter name %s \n", bsfc->filter[0].name);
+			//avcodec_parameters_copy(ffmpeg->fmt_ctx->streams[0]->codecpar, bsfc->par_out);
+			//avcodec_parameters_copy(st->codecpar, bsfc->par_out);
 			av_packet_rescale_ts(bs, avctx->time_base, st->time_base);
 			bs->stream_index = st->index;
 			ret = av_interleaved_write_frame(ffmpeg->fmt_ctx, bs);
