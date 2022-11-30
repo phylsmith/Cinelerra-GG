@@ -3,6 +3,12 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 November changes of note:
+  New render format - h264-rgb.mp4 fixes problem in OBS 28.
+  Alpha channel fix when using nested or reference EDL and
+   displaying images with transparencies in Compositor/Viewer.
+  In the doc subdirectory there is now a script available, 
+   vaapi_proxy.sh, that speeds up proxy creation if have vaapi.
 2022 October changes of note:
   Speed up using direct copy for EXR and PPM sequences.
 2022 September changes of note:
