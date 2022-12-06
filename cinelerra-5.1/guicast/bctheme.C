@@ -455,7 +455,10 @@ void BC_Theme::overlay(VFrame *dst, VFrame *src, int in_x1, int in_x2, int shift
 
 void BC_Theme::set_data(unsigned char *ptr)
 {
-	int hdr_sz = *(int*)ptr - sizeof(int);
+	//int hdr_sz = *(int*)ptr - sizeof(int);
+	int hdr_sz = 0;
+	memcpy(&hdr_sz, ptr, sizeof(int));
+	hdr_sz -= sizeof(int);
 	unsigned char *cp = ptr + sizeof(int);
 	unsigned char *dp = cp + hdr_sz;
 	int start_item = images.size();
