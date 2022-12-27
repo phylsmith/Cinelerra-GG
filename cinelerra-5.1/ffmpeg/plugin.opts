@@ -472,3 +472,8 @@ virtualbass
 #dialoguenhance ###Invalid argument
 #feedback ###Input/output error
 #multiply ###Input/output error
+#overlay_opencl ###Input/output error
+#program_opencl ###Operation not permitted
+#remap_opencl ###Input/output error
+#xfade_opencl ###Input_output error
+#openclsrc ###invalid argument

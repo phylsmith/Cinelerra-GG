@@ -2575,6 +2575,22 @@ static int field_probe(AVFormatContext *fmt_ctx, AVStream *st)
   av_packet_unref(&ipkt);
   av_frame_free(&ipic);
   avcodec_free_context(&ctx);
+  
+  if (ilaced < 0) {
+  fprintf(stderr, "warning bdwrite uses field into from stream \n", st->codecpar->field_order);
+  switch(st->codecpar->field_order) {
+  case AV_FIELD_TT:
+  case AV_FIELD_TB:   
+  case AV_FIELD_BB:    
+  case AV_FIELD_BT:      
+     return 1;
+  case AV_FIELD_PROGRESSIVE:   
+    return 0;
+  default:
+   return -1;
+   }
+  }
+  
   return ilaced;
 }
 
