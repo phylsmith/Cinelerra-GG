@@ -3638,7 +3638,7 @@ float FFMPEG::ff_aspect_ratio(int stream)
 	AVCodecParameters *par = ffvideo[stream]->st->codecpar;
 	AVRational dar;
 	AVRational sar = av_guess_sample_aspect_ratio(fmt_ctx, strm, NULL);
-        if (sar.num) {
+        if (sar.num && ffvideo[stream]->get_rotation_angle() == 0) {
             av_reduce(&dar.num, &dar.den,
                       par->width  * sar.num,
                       par->height * sar.den,
