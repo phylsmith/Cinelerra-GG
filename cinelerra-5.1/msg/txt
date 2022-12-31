@@ -3,6 +3,8 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2022 December changes of note:
+  Minor fixes have been added and Help from the Manual updated.
 2022 November changes of note:
   New render format - h264-rgb.mp4 fixes problem in OBS 28.
   Alpha channel fix when using nested or reference EDL and
