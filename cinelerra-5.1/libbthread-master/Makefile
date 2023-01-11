@@ -4,7 +4,7 @@ all:
 #
 #	mv pt-test.c pt-test
 #	cat `ls *.c` > just-pt.c
-	g++ -c -o jpt.o just-pt.cc -I.
+	$(CXX) -c -o jpt.o just-pt.cc -I.
 	ar crs jpt.a jpt.o
 clean:
 	rm -f *.a *.o
