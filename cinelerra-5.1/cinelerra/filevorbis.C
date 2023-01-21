@@ -2,6 +2,7 @@
 /*
  * CINELERRA
  * Copyright (C) 2008 Adam Williams <broadcast at earthling dot net>
+ * Copyright (C) 2003-2016 Cinelerra CV contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +31,6 @@
 #include "language.h"
 #include "mainerror.h"
 #include "mwindow.inc"
-#include "mainerror.h"
 
 #include <errno.h>
 #include <stdio.h>
