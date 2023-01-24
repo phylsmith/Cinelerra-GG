@@ -118,13 +118,9 @@ File* CICache::check_out(Asset *asset, EDL *edl, int block)
 // cache deleted during checkout, destroy this
 	if( users == 1 ) {
 		remove_user();
-		total_lock->unlock();
 		return 0;
 	}
-
 	//printf("users: %i \n", users );
-	EDL *parent = edl->parent_edl;
-	if(parent)
 	remove_user();
 	total_lock->unlock();
 //printf("check out %p %lx %s\n", current, tid, asset->path);
