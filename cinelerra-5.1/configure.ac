@@ -1274,6 +1274,22 @@ if test "x$BSD" != "x" ; then
   echo "CFLAGS += -DNO_GDB"
 fi
 
+if test [ "$(uname)"] = "NetBSD" ; then
+echo "CFLAGS += -DNO_BTRACE"
+echo "CFLAGS += -DNO_CTX"
+echo "system_libs += -L/usr/pkg/lib/ffmpeg4"
+echo "system_libs += -L/usr/pkg/lib/"
+echo "system_libs += -lpng16"
+echo "system_libs += -lintl"
+echo "system_libs += -lossaudio"
+echo "CFLAGS += -I/usr/X11R7/include"
+echo "CFLAGS += -I/usr/pkg/include/ffmpeg4"
+echo "CFLAGS += $(pkg-config --cflags xft)"
+echo "CFLAGS += -I/usr/pkg/include"
+echo "CFLAGS += -I/usr/pkg/include/uuid"
+
+fi
+
 if test "x$WANT_X264_HIDEPTH" = "xyes" ; then
   X264_CFG_PARAMS="$X264_CFG_PARAMS --bit-depth=10"
 fi

@@ -17,6 +17,6 @@ alias make=gmake
     --without-video4linux2 --without-xxf86vm --without-ladspa-build \
     --without-libzmpeg --without-commercial --without-thirdparty \
     --without-vaapi --without-openexr --with-jobs=4 --without-vdpau --without-shuttle --without-shuttle-usb \
-    --without-x10tv --without-wintv
+    --without-x10tv --without-wintv --without-libdpx
    gmake
    gmake install ) 2>&1 | tee log

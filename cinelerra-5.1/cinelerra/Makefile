@@ -437,7 +437,10 @@ ifeq ($(WANT_CIN_3RDPARTY),no)
 LIBS += -lavfilter -lavformat -lavcodec -lavutil
 LIBS += -lswresample -lswscale
 PLATFORM = $(shell uname -s)
-ifneq (, $(filter $(PLATFORM), FreeBSD NetBSD))
+ifneq (, $(filter $(PLATFORM), NetBSD))
+LIBS += -lintl
+endif
+ifneq (, $(filter $(PLATFORM), FreeBSD))
 LIBS += -lintl -liconv
 LIBS += -lexecinfo
 endif

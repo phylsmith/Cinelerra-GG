@@ -170,9 +170,17 @@ DIRS = $(OPENCV_OBJS) \
 	theme_unflat \
 	theme_cakewalk \
 
-PLATFORM = $(shell uname -o)
+PLATFORM = $(shell uname)
+ifneq ($(PLATFORM), NetBSD)
+DIRS += cdripper theme_blond theme_blue
+endif
+
 ifneq ($(PLATFORM), FreeBSD)
-DIRS += cdripper theme_blond theme_blue 
+DIRS += theme_blond theme_blue 
+endif
+
+ifeq ($(PLATFORM), Linux)
+DIRS += cdripper
 endif
 
 # not maintained

@@ -115,7 +115,7 @@ OUTPUT = $(OBJDIR)/libguicast.a
 UTILS = $(OBJDIR)/bootstrap $(OBJDIR)/pngtoh $(OBJDIR)/pngtoraw
 BCXFER = xfer/$(OBJDIR)/xfer.stamp
 
-CFLAGS += $(static_incs)
+CFLAGS += $(static_incs) `pkg-config --cflags libpng` `pkg-config --cflags libjpeg`
 
 $(shell echo $(CFLAGS) > $(OBJDIR)/c_flags)
 $(shell echo $(OBJS) > $(OBJDIR)/objs)

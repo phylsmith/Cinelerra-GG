@@ -26,10 +26,19 @@
 #include <errno.h>
 #if !defined(__FreeBSD__)
 #include <sys/stat.h>
+#if !defined(__NetBSD__)
 #include <sys/statfs.h>
+#endif
 #else
 #include <sys/param.h>
 #include <sys/mount.h>
+#endif
+
+#if defined(__NetBSD__)
+#include <sys/statvfs.h>
+#ifndef statfs
+#define statfs statvfs
+#endif
 #endif
 
 #define DVD_PAL_4x3	0

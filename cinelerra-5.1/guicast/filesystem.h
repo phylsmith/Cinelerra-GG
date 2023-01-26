@@ -26,7 +26,7 @@
 #include "bcwindowbase.inc"
 #include "sizes.h"
 
-#if defined (__FreeBSD__)
+#if defined (__FreeBSD__) || (__NetBSD__)
 #define dirent64 dirent
 #define readdir64 readdir
 #endif
