@@ -1,0 +1,72 @@
+From c13d95934327ddad4db30f6aee93cd2aa6a26a57 Mon Sep 17 00:00:00 2001
+From: OvchinnikovDmitrii <ovchinnikov.dmitrii@gmail.com>
+Date: Thu, 6 Oct 2022 15:49:59 +0200
+Subject: [PATCH 1/1] lavc/libvpx: increase thread limit to 64
+
+This change improves the performance and multicore scalability of the vp9
+codec for streaming single-pass encoded videos by taking advantage of up
+to 64 cores in the system. The current thread limit for ffmpeg codecs is 16
+(MAX_AUTO_THREADS in pthread_internal.h) due to a limitation in H.264 codec
+that prevents more than 16 threads being used.
+
+Experiments show that increasing the thread limit to 64 for vp9 improves
+the performance for encoding 4K raw videos for streaming by up to 47%
+compared to 16 threads, and from 20-30% for 32 threads, with the same quality
+as measured by the VMAF score.
+
+Rationale for this change:
+Vp9 uses tiling to split the video frame into multiple columns; tiles must
+be at least 256 pixels wide, so there is a limit to how many tiles can be
+used. The tiles can be processed in parallel, and more tiles mean more CPU
+threads can be used. 4K videos can make use of 16 threads, and 8K videos
+can use 32. Row-mt can double the number of threads so 64 threads can be used.
+
+Signed-off-by: James Zern <jzern@google.com>
+---
+ libavcodec/libvpx.h    | 2 ++
+ libavcodec/libvpxdec.c | 2 +-
+ libavcodec/libvpxenc.c | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/libavcodec/libvpx.h b/libavcodec/libvpx.h
+index 0caed8cdcb..331feb8745 100644
+--- a/libavcodec/libvpx.h
++++ b/libavcodec/libvpx.h
+@@ -25,6 +25,8 @@
+ 
+ #include "codec_internal.h"
+ 
++#define MAX_VPX_THREADS 64
++
+ void ff_vp9_init_static(FFCodec *codec);
+ #if 0
+ enum AVPixelFormat ff_vpx_imgfmt_to_pixfmt(vpx_img_fmt_t img);
+diff --git a/libavcodec/libvpxdec.c b/libavcodec/libvpxdec.c
+index 9cd2c56caf..0ae19c3f72 100644
+--- a/libavcodec/libvpxdec.c
++++ b/libavcodec/libvpxdec.c
+@@ -88,7 +88,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
+                             const struct vpx_codec_iface *iface)
+ {
+     struct vpx_codec_dec_cfg deccfg = {
+-        .threads = FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), 16)
++        .threads = FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), MAX_VPX_THREADS)
+     };
+ 
+     av_log(avctx, AV_LOG_INFO, "%s\n", vpx_codec_version_str());
+diff --git a/libavcodec/libvpxenc.c b/libavcodec/libvpxenc.c
+index 9aa5510c28..339d4d8146 100644
+--- a/libavcodec/libvpxenc.c
++++ b/libavcodec/libvpxenc.c
+@@ -942,7 +942,7 @@ static av_cold int vpx_init(AVCodecContext *avctx,
+     enccfg.g_timebase.num = avctx->time_base.num;
+     enccfg.g_timebase.den = avctx->time_base.den;
+     enccfg.g_threads      =
+-        FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), 16);
++        FFMIN(avctx->thread_count ? avctx->thread_count : av_cpu_count(), MAX_VPX_THREADS);
+     enccfg.g_lag_in_frames= ctx->lag_in_frames;
+ 
+     if (avctx->flags & AV_CODEC_FLAG_PASS1)
+-- 
+2.25.1
+
