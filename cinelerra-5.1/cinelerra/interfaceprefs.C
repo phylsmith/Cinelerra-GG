@@ -100,7 +100,7 @@ void InterfacePrefs::create_objects()
 	add_subwindow(title = new BC_Title(x, y, _("Clicking on edit boundaries does what:")));
 	title->context_help_set_keyword("Using the Drag Handle with Trim");
 	y += title->get_h() + ys10;
-	add_subwindow(title = new BC_Title(x, y, _("Button 1:")));
+	add_subwindow(title = new BC_Title(x, y, _("LMB Bt.1:")));
 	title->context_help_set_keyword("Using the Drag Handle with Trim");
 	int x1 = x + xS(100);
 
@@ -112,7 +112,7 @@ void InterfacePrefs::create_objects()
 	text->create_objects();
 	text->context_help_set_keyword("Using the Drag Handle with Trim");
 	y += ys30;
-	add_subwindow(title = new BC_Title(x, y, _("Button 2:")));
+	add_subwindow(title = new BC_Title(x, y, _("MMB BT.2:")));
 	title->context_help_set_keyword("Using the Drag Handle with Trim");
 	add_subwindow(text = new ViewBehaviourText(x1,
 		y - ys5,
@@ -122,7 +122,7 @@ void InterfacePrefs::create_objects()
 	text->create_objects();
 	text->context_help_set_keyword("Using the Drag Handle with Trim");
 	y += ys30;
-	add_subwindow(title = new BC_Title(x, y, _("Button 3:")));
+	add_subwindow(title = new BC_Title(x, y, _("RMB Bt.3:")));
 	title->context_help_set_keyword("Using the Drag Handle with Trim");
 	add_subwindow(text = new ViewBehaviourText(x1, y - ys5,
 		behavior_to_text(pwindow->thread->edl->session->edit_handle_mode[2]),

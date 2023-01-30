@@ -3,42 +3,28 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
-2022 December changes of note:
-  Minor fixes have been added and Help from the Manual updated.
-2022 November changes of note:
-  New render format - h264-rgb.mp4 fixes problem in OBS 28.
-  Alpha channel fix when using nested or reference EDL and
-   displaying images with transparencies in Compositor/Viewer.
-  In the doc subdirectory there is now a script available, 
-   vaapi_proxy.sh, that speeds up proxy creation if have vaapi.
-2022 October changes of note:
-  Speed up using direct copy for EXR and PPM sequences.
-2022 September changes of note:
-  Flac has been upgraded to 1.4.0 from 1.3.2.
-  Tiff has been upgraded to 4.4.0 from 4.3.0.
-  New render formats - vp9.webm & ALAC, Apple Lossless audio.
-2022 August changes of note:
+2023 January changes of note:
+  New shell script added to delete background render files
+   that exist on /tmp named brenderX.
+  Speed up for rendering VP9 4K/8K videos on computers with
+   more than 16 cpu-s has been applied.
+.
+2022 New Features of note:
   FFmpeg has been upgraded to 5.1 from 4.4.
-2022 July changes of note:
-  Libaom upgraded from 3.2.0 to 3.4.0.
-  Libvpx upgraded from 1.11.0 to 1.12.0
-2022 June - there are no changes of note
-2022 May changes of note:
-  OpenJPEG upgraded from 2.4.0 to 2.5.0
-  Many Makefile build changes incorporated for less used O/S-s.
-2022 April changes of note:
   DPX image reader added to easily load a list file of DPX images.
-  Bluray lpcm and tsmuxer audio options added + chapter intervals.
-2022 March changes of note:
   A new script, bld_appimage.sh, includes rework of linuxdeploy
    in order to create appimages for aarch64 and armhf + x86_64/i686.
-  Context Help for the Shuttle has been improved for reliability.
-  New lossless render format for vp9 was added.
+  Speed up using direct copy for EXR and PPM sequences.
+  Updated libraries include:
+   Flac to 1.3.2, Tiff to 4.4.0, Libaom upgraded to 3.4.0,
+   Libvpx to 1.12.0, OpenJPEG to 2.5.0, libogg, and fftw.
   BSD compiled CinGG for version 13.0 and 12.3 is available.
-2022 February changes of note:
-  Updated libraries: libvpx, libogg, tiff, and fftw to current.
-2022 January changes of note:
-  This month has only had minor changes and fixes added.
+  New script, vaapi_proxy.sh, speeds up vaapi proxy creation.
+  Bluray lpcm and tsmuxer audio options added + chapter intervals.
+  Context Help for the Shuttle has been improved for reliability.
+  New render formats - h264-rgb.mp4 fixes problem in OBS 28,
+   vp9.webm, ALAC-Apple Lossless audio, and VP9 lossless.
+.
 2021 New Features of note:
   Context Help has been added using hotkey alt/h by Georgy. The
     help page will come up in your web browser tab for the item 
