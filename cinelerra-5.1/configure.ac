@@ -900,6 +900,7 @@ EXROStream() : Imf::OStream("mypath") {} };
     SHARED_LIBS+=" $LIBS"
     CFG_CFLAGS+=" -I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
     CFG_CFLAGS+=" $(pkg-config --cflags OpenEXR)"
+    CFG_CFLAGS+=" $(pkg-config --cflags Imath)"
   fi
   CFG_CFLAGS+=" $(pkg-config --cflags OpenEXR)"
  fi

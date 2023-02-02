@@ -244,7 +244,7 @@ libtheora.cfg_params?= --disable-examples --disable-spec --enable-shared=no
 libuuid.cfg_vars?= autoreconf -ifv -I m4 && automake -caf;
 libuuid.cfg_params?=--enable-shared=no
 libvorbis.cfg_params?= --disable-oggtest --enable-shared=no
-openjpeg.cfg_params?= -DBUILD_SHARED_LIBS:BOOL=OFF
+openjpeg.cfg_params?= -DBUILD_SHARED_LIBS:BOOL=OFF -DBUILD_CODEC:BOOL=OFF
 openjpeg.cfg_vars?=$(call cmake_config,.)
 openjpeg.mak_params?= ; cd $(call bld_path,openjpeg,src/lib/openjp2); ln -sf . openjpeg-2.1
 opencv.cfg_vars?=$(call cmake_config,.)

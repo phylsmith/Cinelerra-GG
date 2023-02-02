@@ -112,7 +112,7 @@ void InterfacePrefs::create_objects()
 	text->create_objects();
 	text->context_help_set_keyword("Using the Drag Handle with Trim");
 	y += ys30;
-	add_subwindow(title = new BC_Title(x, y, _("MMB BT.2:")));
+	add_subwindow(title = new BC_Title(x, y, _("MMB Bt.2:")));
 	title->context_help_set_keyword("Using the Drag Handle with Trim");
 	add_subwindow(text = new ViewBehaviourText(x1,
 		y - ys5,

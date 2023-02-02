@@ -121,11 +121,18 @@ $(shell echo $(CFLAGS) > $(OBJDIR)/c_flags)
 $(shell echo $(OBJS) > $(OBJDIR)/objs)
 
 all: $(OUTPUT) $(UTILS)
-ifeq ($(uname -s), FreeBSD)
-python = $(shell find /usrlocal/bin -name python3\* | head -n 1)
-else
-python = `which python`
+PLATFORM = $(uname -s)
+ifneq ($(PLATFORM), FreeBSD)
+python = $(shell find /usr/local/bin -name python3\* | head -n 1)
 endif
+ifneq ($(PLATFORM), Linux)
+python = $(shell which python)
+endif
+
+ifeq ($(python),)
+python += $(shell which python3.8)
+endif
+
 
 $(BCXFER):	bccmdl.py bcxfer.C bcxfer.h
 	$(python) < ./bccmdl.py
