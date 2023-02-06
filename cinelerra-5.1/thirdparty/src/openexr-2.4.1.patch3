@@ -1,0 +1,10 @@
+--- openexr-2.4.1/OpenEXR/IlmImf/ImfMisc.cpp.orig	2023-02-06 20:35:13.691479571 +0300
++++ openexr-2.4.1/OpenEXR/IlmImf/ImfMisc.cpp	2023-02-06 20:35:59.535479538 +0300
+@@ -53,6 +53,7 @@
+ #include <ImfPartType.h>
+ #include <ImfTileDescription.h>
+ #include "ImfNamespace.h"
++#include <cstdint>
+ 
+ OPENEXR_IMF_INTERNAL_NAMESPACE_SOURCE_ENTER
+ 
