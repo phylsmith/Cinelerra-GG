@@ -54,12 +54,14 @@ int VideoWindow::load_defaults(BC_Hash *defaults)
 {
 	video_visible = defaults->get("VIDEOVISIBLE", 1);
 	video_window_w = defaults->get("PLAYVIDEOW", video_window_w);
+	return 0;
 }
 
 int VideoWindow::update_defaults(BC_Hash *defaults)
 {
 	defaults->update("VIDEOVISIBLE", video_visible);
 	defaults->update("PLAYVIDEOW", video_window_w);
+	return 0;
 }
 
 void VideoWindow::create_objects()
@@ -89,6 +91,7 @@ int VideoWindow::show_window()
 		gui->show_window();
 		mwindow->gui->mainmenu->set_show_video(1);
 	}
+	return 0;
 }
 
 int VideoWindow::hide_window()
@@ -99,6 +102,7 @@ int VideoWindow::hide_window()
 		gui->hide_window();
 		mwindow->gui->mainmenu->set_show_video(0);
 	}
+	return 0;
 }
 
 int VideoWindow::resize_window()
@@ -118,12 +122,14 @@ int VideoWindow::resize_window()
 		if(video_cropping) gui->canvas->draw_crop_box();
 		gui->flash();
 	}
+	return 0;
 }
 
 int VideoWindow::fix_size(int &w, int &h, int width_given, float aspect_ratio)
 {
 	w = width_given;
 	h = (int)((float)width_given / aspect_ratio);
+	return 0;
 }
 
 int VideoWindow::original_size()
@@ -132,6 +138,7 @@ int VideoWindow::original_size()
 	get_full_sizes(w, h);
 	video_window_w = w;
 	resize_window();
+	return 0;
 }
 
 int VideoWindow::get_full_sizes(int &w, int &h)
@@ -160,6 +167,7 @@ int VideoWindow::init_video()
 	{
 		gui->canvas->start_video();
 	}
+	return 0;
 }
 
 int VideoWindow::stop_video()
@@ -168,6 +176,7 @@ int VideoWindow::stop_video()
 	{
 		gui->canvas->stop_video();
 	}
+	return 0;
 }
 
 int VideoWindow::update(BC_Bitmap *frame)
@@ -178,6 +187,7 @@ int VideoWindow::update(BC_Bitmap *frame)
 //		gui->canvas->draw_bitmap(frame, 1);
 		gui->unlock_window();
 	}
+	return 0;
 }
 
 int VideoWindow::get_w()
@@ -199,6 +209,7 @@ BC_Bitmap* VideoWindow::get_bitmap()
 
 int VideoWindow::reset()
 {
+	return 0;
 }
 
 int VideoWindow::start_cropping()
@@ -210,6 +221,7 @@ int VideoWindow::start_cropping()
 	gui->y2 = gui->get_h();
 	gui->canvas->draw_crop_box();
 	gui->canvas->flash();
+	return 0;
 }
 
 int VideoWindow::get_aspect_ratio(float &aspect_w, float &aspect_h)
@@ -222,6 +234,7 @@ int VideoWindow::get_aspect_ratio(float &aspect_w, float &aspect_h)
 	new_h = (int)((float)(gui->y2 - gui->y1) / zoom_factor);
 
 	mwindow->create_aspect_ratio(aspect_w, aspect_h, new_w, new_h);
+	return 0;
 }
 
 int VideoWindow::stop_cropping()

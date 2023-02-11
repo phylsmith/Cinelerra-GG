@@ -72,4 +72,5 @@ int VideoConfig::save_defaults(BC_Hash *defaults)
 	defaults->update("VIDEO_CAPTURE_LENGTH", capture_length);
 
 	defaults->update("VIDEO_OUT_DRIVER", video_out_driver);
+	return 0;
 }

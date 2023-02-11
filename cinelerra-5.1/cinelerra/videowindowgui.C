@@ -105,6 +105,7 @@ int VideoWindowGUI::update_title()
 int VideoWindowGUI::close_event()
 {
 	thread->hide_window();
+	return 0;
 }
 
 
@@ -153,6 +154,7 @@ int VideoWindowCanvas::button_press()
 			gui->y_offset = y - gui->y1;
 		}
 	}
+	return 0;
 }
 
 int VideoWindowCanvas::button_release()
@@ -162,6 +164,7 @@ int VideoWindowCanvas::button_release()
 		button_down = 0;
 		corner_selected = 0;
 	}
+	return 0;
 }
 
 int VideoWindowCanvas::cursor_motion()
@@ -199,6 +202,7 @@ int VideoWindowCanvas::cursor_motion()
 		draw_crop_box();
 		flash();
 	}
+	return 0;
 }
 
 int VideoWindowCanvas::draw_crop_box()
@@ -214,5 +218,6 @@ int VideoWindowCanvas::draw_crop_box()
 	draw_box(gui->x2 - CROPHANDLE_W, gui->y1 + 1, CROPHANDLE_W, CROPHANDLE_H - 1);
 	draw_rectangle(gui->x1, gui->y1, w, h);
 	set_opaque();
+	return 0;
 }
 
