@@ -7,7 +7,7 @@ bag@hotmail.ru  http://avisynth.org.ru
 This program is FREE software under GPL licence v2.
 
 This plugin removes vertical scratches from digitized films.
-Reworked for cin5 by GG. 03/2018, from the laws of Fizick's
+Reworked for cin5 by William Morrow. 03/2018, from the laws of Fizick's
 Adapted strategy to mark, test, draw during port.
 */
 

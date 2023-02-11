@@ -1,3 +1,17 @@
+/*
+DeScratch - Scratches Removing Filter
+Plugin for Avisynth 2.5
+Copyright (c)2003-2016 Alexander G. Balakhnin aka Fizick
+bag@hotmail.ru  http://avisynth.org.ru
+
+This program is FREE software under GPL licence v2.
+
+This plugin removes vertical scratches from digitized films.
+Reworked for cin5 by William Morrow. 03/2018, from the laws of Fizick's
+Adapted strategy to mark, test, draw during port.
+*/
+
+
 #ifndef __DESCRATCH_H__
 #define __DESCRATCH_H__
 
