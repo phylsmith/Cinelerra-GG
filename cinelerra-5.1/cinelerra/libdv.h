@@ -1,3 +1,7 @@
+/*
+ * Grabbing algorithm is from dvgrab
+ */
+
 #ifndef LIBDV_H
 #define LIBDV_H
 

@@ -1,3 +1,6 @@
+// Copyright 2013 Eric Messick (FixedImagePhoto.com/Contact)
+// reworked 2019 for cinelerra-gg by William Morrow
+
 #ifndef __SHUTTLE_H__
 #define __SHUTTLE_H__
 #ifdef HAVE_SHUTTLE

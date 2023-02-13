@@ -1,3 +1,4 @@
+// from ffmpeg vf_boxblur
 #ifndef __BOXBLUR_INC__
 #define __BOXBLUR_INC__
 
