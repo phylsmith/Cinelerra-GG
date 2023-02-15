@@ -74,8 +74,8 @@ LocalSession::LocalSession(EDL *edl)
 	preview_start = 0;  preview_end = -1;
 	zoom_sample = DEFAULT_ZOOM_TIME;
 	zoom_y = 0;
-	zoom_atrack = 0;
-	zoom_vtrack = 0;
+	zoom_atrack = 64;
+	zoom_vtrack = 64;
 	x_pane = y_pane = -1;
 	gang_tracks = GANG_NONE;
 
