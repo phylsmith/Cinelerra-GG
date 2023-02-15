@@ -544,6 +544,7 @@ all:	$(OUTPUT) $(CUTADS) $(BDWRITE) $(LV2UI)
 $(OUTPUT): $(OBJS) $(THEME_DATA) $(DCRAW) $(LIBRARIES)
 	$(LINKER) `cat $(OBJDIR)/objs`
 	$(if $(findstring -g,$(CFLAGS)),objcopy --only-keep-debug $(OUTPUT) $(OUTPUT_G))
+	$(if $(findstring -g,$(CFLAGS)),objcopy --add-gnu-debuglink=$(OUTPUT_G) $(OUTPUT))
 	$(if $(findstring -ggdb,$(CFLAGS)),,strip $(OUTPUT))
 	ln -f -s ../bin/$(WANT_CIN) ci
 
@@ -552,6 +553,7 @@ $(CUTADS):	$(CUTOBJS) $(CUTLIBS) $(LIBRARIES)
 	@echo $(CXX) -o $@ $(CUTOBJS)
 	@$(CXX) $(CFLAGS) -pthread -o $@ $(CUTOBJS) $(CUTLIBS) $(LIBS)
 	$(if $(findstring -g,$(CFLAGS)),objcopy --only-keep-debug $(CUTADS) $(CUTADS).debuginfo)
+	$(if $(findstring -g,$(CFLAGS)),objcopy --add-gnu-debuglink=$(CUTADS).debuginfo $(CUTADS))
 	$(if $(findstring -ggdb,$(CFLAGS)),,strip $(CUTADS))
 
 install-cutads:
