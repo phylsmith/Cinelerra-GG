@@ -3,6 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2023 February changes of note:
+  GPL headers have been added to essentially all program 
+   files with contributor attribution for CV or known author.
 2023 January changes of note:
   New shell script added to delete background render files
    that exist on /tmp named brenderX.
