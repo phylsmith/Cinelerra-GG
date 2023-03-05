@@ -526,7 +526,7 @@ CFLAGS += -DUSE_ALPHA
 
 else
 
-LDFLAGS1 = -Wl,-export-dynamic -g
+LDFLAGS1 = -Wl,-export-dynamic -g -Wl,-z,noexecstack
 LDFLAGS2 = $(LDFLAGS)
 LINKER = $(CXX) -o $(OUTPUT)
 
