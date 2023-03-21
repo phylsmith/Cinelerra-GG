@@ -255,7 +255,7 @@ PKG_3RD([fftw],[auto],
   [ api ])
 
 PKG_3RD([flac],[auto],
-  [flac-1.4.0],
+  [flac-1.4.2],
   [ src/libFLAC/.libs/libFLAC.a \
     src/libFLAC++/.libs/libFLAC++.a \
     src/share/replaygain_analysis/.libs/libreplaygain_analysis.a \
@@ -302,7 +302,7 @@ PKG_3RD([libdv],[auto],
   [ . ])
 
 PKG_3RD([libjpeg],[auto],
-  [libjpeg-turbo-2.1.2],
+  [libjpeg-turbo-2.1.5.1],
   [ build/libjpeg.a \
     build/libturbojpeg.a ],
   [ opt/libjpeg-turbo/include ])
@@ -405,7 +405,7 @@ PKG_3RD([ilmBase],[auto], [ilmBase], [] [])
 #  [])
 #
 PKG_3RD([tiff],[auto],
-  [tiff-4.4.0],
+  [tiff-4.5.0],
   [ libtiff/.libs/libtiff.a \
     libtiff/.libs/libtiffxx.a \
     port/.libs/libport.a ],[
