@@ -1,5 +1,5 @@
---- Makefile.am
-+++ Makefile.am
+--- ./Makefile.am
++++ ./Makefile.am
 @@ -60,7 +60,7 @@
  	rm -rf $(distdir)/_build/cmake
  	rm -rf $(distdir)/_inst/cmake

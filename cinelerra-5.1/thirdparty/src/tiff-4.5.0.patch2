@@ -1,5 +1,5 @@
---- configure.ac
-+++ configure.ac
+--- ./configure.ac
++++ ./configure.ac
 @@ -888,6 +888,7 @@
  if test "x$enable_webp" != "xno" ; then
  
