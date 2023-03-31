@@ -3,6 +3,11 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2023 March changes of note:
+  Flac has been upgraded to 1.4.2
+  Tiff has been upgraded to 4.5.0
+  Libjpeg-turbo upgraded to 2.1.5.1
+  Libvpx is now upgraded to 1.13.0
 2023 February changes of note:
   GPL headers have been added to essentially all program 
    files with contributor attribution for CV or known author.
