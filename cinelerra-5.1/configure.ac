@@ -417,7 +417,7 @@ PKG_3RD([twolame],[auto],
   [  libtwolame ])
 
 PKG_3RD([x264],[auto],
-  [x264-snapshot-20210615-master],
+  [x264-stable],
   [ libx264.a ],
   [ . ])
 
