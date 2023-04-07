@@ -3,6 +3,9 @@ mov prores_ks
 # Do not render audio as it will fail with current opts
 profile=3
 quant_mat=auto
+# Option to make players believe that
+# the original Apple engine was used
+vendor=apl0
 # cin_pix_fmt=yuv422p10le; yuva444p10le; gbrp10le
 # The possible video profile values for the ProRes codec are:
 # 5 = 4444xq

@@ -190,7 +190,7 @@ a52dec.ldflags?= "$(call ld_path,djbfft)"
 a52dec.cfg_vars?= CFLAGS+=" -U__FreeBSD__ $(call inc_path,djbfft)" LIBS+=" $(call ld_path,djbfft)"; autoreconf -ifv && automake -caf;
 a52dec.cfg_params?=--enable-djbfft --disable-oss
 djbfft.cfg_vars?=echo "$(call bld_path,djbfft)" > conf-home; \
- (CFLAGS="$(CFLAGS)"; $(CFG_VARS)$(if $(CFG_VARS),; )echo "$(CC) $$$$CFLAGS") > conf-cc; \
+ (CFLAGS="$(CFLAGS) -std=gnu89"; $(CFG_VARS)$(if $(CFG_VARS),; )echo "$(CC) $$$$CFLAGS") > conf-cc; \
  echo "exec true" > ./configure; chmod +x ./configure;
 djbfft.mak_params?=; cd $(call bld_path,djbfft); ln -sf djbfft.a libdjbfft.a
 audiofile.cfg_params?=--enable-shared=no --disable-doxygen-docs --enable-debug=no --enable-examples=no
@@ -212,7 +212,7 @@ dav1d.mak_params?=; $(MAKE) -C dav1d* install DESTDIR="$(call bld_path,dav1d)"
 libwebp.cfg_vars?= mkdir build && cd build && $(call cmake_config,..)
 libwebp.mak_params?= -C build all install DESTDIR=$(call bld_path,libwebp)
 mjpegtools.cflags?="$(call inc_path,libjpeg) $(call ld_path,libjpeg,build)"
-mjpegtools.cfg_vars?= ./autogen.sh; 
+mjpegtools.cfg_vars?= ./autogen.sh; export CXXFLAGS+="-std=c++11";
 mjpegtools.cfg_params?= --enable-shared=no --without-libquicktime --without-libdv \
  --without-libpng --without-dga --without-gtk --without-libsdl --without-sdlgfx
 mjpegtools.mak_params?= all
