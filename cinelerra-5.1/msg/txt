@@ -3,6 +3,11 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+<<<<<<< HEAD
+2023 April changes of note:
+  X264 has been upgraded to r3106 stable release. 
+=======
+>>>>>>> 3a4fc0d9ea25818f9de852a0a7e3eab22ceaaebd
 2023 March changes of note:
   Flac has been upgraded to 1.4.2
   Tiff has been upgraded to 4.5.0
