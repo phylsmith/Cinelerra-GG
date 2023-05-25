@@ -136,8 +136,7 @@ void DelayAudio::reconfigure()
 
 	if(buffer)
 	{
-		int size = MIN(new_allocation, allocation);
-
+		int size = new_allocation;
 		memcpy(new_buffer->get_data(),
 			buffer->get_data(),
 			(size - PluginClient::in_buffer_size) * sizeof(double));
@@ -154,7 +153,8 @@ int DelayAudio::process_realtime(int64_t size, Samples *input_ptr, Samples *outp
 {
 
 	load_configuration();
-	if(need_reconfigure) reconfigure();
+//	if(need_reconfigure) reconfigure();
+	reconfigure();
 
 // printf("DelayAudio::process_realtime %d %d\n",
 // input_start, size);
