@@ -8,7 +8,8 @@
 +
  #include "libavcodec/aaccoder_trellis.h"
  
- /**
+ typedef float (*quantize_and_encode_band_func)(struct AACEncContext *s, PutBitContext *pb,
+
 --- a/libavcodec/hevc_mvs.c
 +++ b/libavcodec/hevc_mvs.c
 @@ -25,6 +25,8 @@
@@ -22,7 +23,7 @@
      { 1, 0, },
 --- a/libavcodec/opus_pvq.c
 +++ b/libavcodec/opus_pvq.c
-@@ -31,6 +31,8 @@
+@@ -36,6 +36,8 @@
  #define CELT_PVQ_U(n, k) (ff_celt_pvq_u_row[FFMIN(n, k)][FFMAX(n, k)])
  #define CELT_PVQ_V(n, k) (CELT_PVQ_U(n, k) + CELT_PVQ_U(n, (k) + 1))
  

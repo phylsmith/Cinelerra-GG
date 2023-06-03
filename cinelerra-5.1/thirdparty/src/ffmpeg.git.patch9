@@ -1,6 +1,6 @@
 --- a/libavformat/mpegenc.c
 +++ b/libavformat/mpegenc.c
-@@ -976,9 +976,9 @@
+@@ -977,9 +977,9 @@
          PacketDesc *pkt_desc;
  
          while ((pkt_desc = stream->predecode_packet) &&

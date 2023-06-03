@@ -1,16 +1,16 @@
 --- a/libavcodec/encode.c
 +++ b/libavcodec/encode.c
-@@ -191,7 +191,7 @@
+@@ -290,7 +290,7 @@
      }
  
      if (!frame->buf[0]) {
 -        if (!(avctx->codec->capabilities & AV_CODEC_CAP_DELAY ||
 +        if (avci->draining && !(avctx->codec->capabilities & AV_CODEC_CAP_DELAY ||
-               (avci->frame_thread_encoder && avctx->active_thread_type & FF_THREAD_FRAME)))
+               avci->frame_thread_encoder))
              return AVERROR_EOF;
  
-@@ -243,8 +243,10 @@
-         avpkt->flags |= avci->intra_only_flag;
+@@ -309,8 +309,10 @@
+         ret = ff_encode_encode_cb(avctx, avpkt, frame, &got_packet);
      }
  
 -    if (avci->draining && !got_packet)
@@ -19,9 +19,9 @@
          avci->draining_done = 1;
 +    }
  
- end:
-     if (ret < 0 || !got_packet)
-@@ -365,10 +367,16 @@
+     return ret;
+ }
+@@ -491,10 +493,16 @@
      if (avci->draining)
          return AVERROR_EOF;
  

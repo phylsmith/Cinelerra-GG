@@ -1,6 +1,6 @@
 --- a/libavformat/avidec.c
 +++ b/libavformat/avidec.c
-@@ -1995,6 +1995,7 @@
+@@ -2006,6 +2006,7 @@
      .priv_data_size = sizeof(AVIContext),
      .flags_internal = FF_FMT_INIT_CLEANUP,
      .extensions     = "avi",
