@@ -632,6 +632,28 @@ int FileMPEG::open_file(int rd, int wr)
 				sprintf(string, " -V 500");
 				strncat(mjpeg_command, string, sizeof(mjpeg_command));
 			}
+			
+			if(asset->vmpeg_preset == 13) /* set high profile for 1080 */
+			{
+			sprintf(string, " -l high");
+			strncat(mjpeg_command, string, sizeof(mjpeg_command));
+			}
+			
+			if(asset->vmpeg_preset == 6) /* set -T for vcd */
+			{
+			sprintf(string, " -T 35");
+			strncat(mjpeg_command, string, sizeof(mjpeg_command));
+			}
+			
+			if(asset->vmpeg_preset == 7) /* set -T for svcd */
+			{
+			sprintf(string, " -T 120");
+			strncat(mjpeg_command, string, sizeof(mjpeg_command));
+			}
+			
+			sprintf(string, " -c"); /* set closed gop */
+			strncat(mjpeg_command, string, sizeof(mjpeg_command));
+		
 
 			strncat(mjpeg_command,
 				asset->vmpeg_progressive ? " -I 0" : " -I 1",

@@ -20,7 +20,7 @@ CONFIG_OPTIONS="--with-single-user --with-booby --enable-static-build"
 if [ $target = "aarch64" ] ; then
 CONFIG_OPTIONS="$CONFIG_OPTIONS --disable-dav1d"
 elif [ $target = "armv7l" ] ; then
-CONFIG_OPTIONS="$CONFIG_OPTIONS --disable-dav1d --disable-libaom --disable libwebp --without-nv"
+CONFIG_OPTIONS="$CONFIG_OPTIONS --disable-dav1d --disable-libaom --disable-libwebp --without-nv"
 fi
 echo configure script options are $CONFIG_OPTIONS
 

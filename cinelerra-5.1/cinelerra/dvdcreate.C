@@ -28,6 +28,7 @@
 #include "edlsession.h"
 #include "file.h"
 #include "filexml.h"
+#include "interlacemodes.h"
 #include "keyframe.h"
 #include "labels.h"
 #include "mainerror.h"
@@ -466,12 +467,17 @@ int CreateDVD_Thread::create_dvd_jobs(ArrayList<BatchRenderJob*> *jobs, const ch
 		asset->vmpeg_bitrate = vid_bitrate;
 		asset->vmpeg_quantization = 15;
 		asset->vmpeg_iframe_distance = 15;
-		asset->vmpeg_progressive = 0;
+		if(session->interlace_mode == ILACE_MODE_NOTINTERLACED || use_deinterlace)
+		{ asset->vmpeg_progressive = 1; } else {
+		asset->vmpeg_progressive = 0; }
 		asset->vmpeg_denoise = 0;
 		asset->vmpeg_seq_codes = 0;
 		asset->vmpeg_derivative = 2;
 		asset->vmpeg_preset = 8;
 		asset->vmpeg_field_order = 0;
+		if(session->interlace_mode == ILACE_MODE_BOTTOM_FIRST && !use_deinterlace)
+		{ asset->vmpeg_field_order = 1; } else {
+		asset->vmpeg_field_order = 0; }
 		asset->vmpeg_pframe_distance = 0;
 		use_farmed = job->farmed;
 		job = new BatchRenderJob(mwindow->preferences, 0, 0);
