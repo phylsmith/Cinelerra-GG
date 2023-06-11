@@ -727,6 +727,11 @@ void RenderThread::render_single(int test_overwrite, Asset *asset, EDL *edl,
 	if( !render->result ) {
 // Get total range to render
 		render->total_start = command->start_position;
+#if 0
+		render->default_asset->timecode = command->start_position;
+		printf("tc: %f \n", render->default_asset->timecode);
+		render->default_asset->timecode += edl->session->timecode_offset;
+#endif
 		render->total_end = command->end_position;
 		total_length = render->total_end - render->total_start;
 

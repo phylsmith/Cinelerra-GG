@@ -350,6 +350,10 @@ int CreateDVD_Thread::create_dvd_jobs(ArrayList<BatchRenderJob*> *jobs, const ch
 	double old_samplerate = session->sample_rate;
 	double old_framerate = session->frame_rate;
 
+	if(use_deinterlace) {
+	session->interlace_mode = ILACE_MODE_NOTINTERLACED;
+	}
+
 	session->video_channels = DVD_STREAMS;
 	session->video_tracks = DVD_STREAMS;
 	session->frame_rate = dvd_framerate;

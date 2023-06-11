@@ -2965,6 +2965,14 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			vid->width = asset->width;
 			vid->height = asset->height;
 			vid->frame_rate = asset->frame_rate;
+#if 0
+			char tc_str[20] = "00:00:00:00";
+			double tc_offset;
+			if(asset->timecode > 0)
+			Units::totext(tc_str, asset->timecode, TIME_HMSF, 0, asset->frame_rate, 0);
+			//printf("tc: %s \n", tc_str);
+			av_dict_set(&st->metadata, "timecode", tc_str, 0);
+#endif
 			if( (vid->color_range = asset->ff_color_range) < 0 )
 				vid->color_range = file_base->file->preferences->yuv_color_range;
 			switch( vid->color_range ) {
