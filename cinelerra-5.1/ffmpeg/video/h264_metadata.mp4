@@ -1,0 +1,6 @@
+mp4 libx264 | h264_metadata=crop_left=20:crop_right=20
+# use framerate for 1 keyframe/sec, needed for seeks
+keyint_min=25
+x264-params keyint=25
+
+

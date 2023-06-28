@@ -1,4 +1,12 @@
 Video Effects
+	- Favorites
+		Brightness/Contrast
+		Color 3 Way
+		Color Balance
+		Gradient
+		Histogram
+		Title
+		VideoScope
 	- Color_Correction
 		Blue Banana
 		Brightness/Contrast
