@@ -3,6 +3,8 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2023 June changes of note:
+  Capability to create DVDs with BFF interlace added.
 2023 April changes of note:
   X264 has been upgraded to r3106 stable release. 
 2023 March changes of note:
