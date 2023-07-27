@@ -22,7 +22,7 @@
 #ifndef GAIN_H
 #define GAIN_H
 
-class Gain;
+class GainMain;
 class GainEngine;
 
 #include "gainwindow.h"
@@ -32,6 +32,7 @@ class GainConfig
 {
 public:
 	GainConfig();
+	void reset();
 	int equivalent(GainConfig &that);
 	void copy_from(GainConfig &that);
 	void interpolate(GainConfig &prev,
@@ -43,11 +44,11 @@ public:
 	double level;
 };
 
-class Gain : public PluginAClient
+class GainMain : public PluginAClient
 {
 public:
-	Gain(PluginServer *server);
-	~Gain();
+	GainMain(PluginServer *server);
+	~GainMain();
 
 	int process_realtime(int64_t size, Samples *input_ptr, Samples *output_ptr);
 

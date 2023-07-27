@@ -7,7 +7,7 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 <os>"
-  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch | debian-testing | ubuntu-testing]"
+  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch | debian-older | ubuntu-older]"
 fi
 
 dir="$1"
@@ -79,7 +79,7 @@ case "$dir" in
     fi
   ;;
 #debian 32bit: export ac_cv_header_xmmintrin_h=no
-"debian")
+"debian-older")
   apt-get -f -y install apt-file sox nasm yasm g++ build-essential zlib1g-dev \
     texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
     libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
@@ -92,7 +92,7 @@ case "$dir" in
   ;;
 #"ub16-10")
 #  apt-get -y install libx264-dev libx265-dev libvpx-dev libmjpegtools-dev
-"ubuntu" | "mint" | "ub14" | "ub15" | "ub16" | "ub17" | "ub18" )
+"ubuntu-older" | "mint" | "ub14" | "ub15" | "ub16" | "ub17" | "ub18" )
   apt-get -y install apt-file sox nasm yasm g++ build-essential libz-dev \
     texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
     libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
@@ -104,8 +104,8 @@ case "$dir" in
     libpulse-dev libtool python \
     patchelf libboost-filesystem-dev libboost-regex-dev
   ;;
-#ubuntu testing for upcoming versions
-"ubuntu-testing")
+#ubuntu for newest versions since about 06/2022
+"ubuntu")
   apt-get -y install apt-file sox nasm yasm g++ build-essential libz-dev \
     texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
     libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
@@ -117,8 +117,8 @@ case "$dir" in
     libpulse-dev libtool 2to3 python-is-python3 python2-minimal python2 dh-python \
     patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl libimath-dev liblilv-dev
   ;;
-#debian testing for upcoming versions
-"debian-testing")
+#debian for newest versions since about 06/2022
+"debian")
   apt-get -f -y install apt-file sox nasm yasm g++ build-essential zlib1g-dev \
     texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
     libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
@@ -126,7 +126,7 @@ case "$dir" in
     fonts-dejavu libopenexr-dev festival libfftw3-dev gdb libusb-1.0-0-dev \
     libdc1394-25 libdc1394-dev libflac-dev libjbig-dev libvdpau-dev libva-dev \
     inkscape libsndfile1-dev libtheora-dev cmake udftools libxml2-utils git \
-    autoconf automake debhelper libgtk2.0-dev libpulse-dev 2to3 python-is-python3 python2-minimal python2 dh-python \
+    autoconf automake debhelper libgtk2.0-dev libpulse-dev 2to3 python-is-python3  python3 dh-python \
     patchelf libboost-filesystem-dev libboost-regex-dev fuse
   ;;
 

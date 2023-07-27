@@ -23,9 +23,13 @@
 #define GAINWINDOW_H
 
 #define TOTAL_LOADS 5
+#define GAINLEVEL_MAX 40
 
 class GainThread;
 class GainWindow;
+class GainLevelText;
+class GainLevelSlider;
+class GainLevelClr;
 
 #include "filexml.h"
 #include "gain.h"
@@ -35,26 +39,52 @@ class GainWindow;
 
 
 
-class GainLevel;
-
 class GainWindow : public PluginClientWindow
 {
 public:
-	GainWindow(Gain *gain);
+	GainWindow(GainMain *plugin);
 	~GainWindow();
 
 	void create_objects();
+        void update();
 
-	Gain *gain;
-	GainLevel *level;
+	GainMain *plugin;
+	GainLevelText *level_text;
+	GainLevelSlider *level_slider;
+	GainLevelClr *level_clr;
 };
 
-class GainLevel : public BC_FSlider
+class GainLevelText : public BC_TumbleTextBox
 {
 public:
-	GainLevel(Gain *gain, int x, int y);
+	GainLevelText(GainWindow *window, GainMain *plugin, int x, int y);
+	~GainLevelText();
 	int handle_event();
-	Gain *gain;
+
+	GainWindow *window;
+	GainMain *plugin;
+};
+
+class GainLevelSlider : public BC_FSlider
+{
+public:
+	GainLevelSlider(GainWindow *window, GainMain *plugin, int x, int y);
+	~GainLevelSlider();
+	int handle_event();
+
+	GainWindow *window;
+	GainMain *plugin;
+};
+
+class GainLevelClr : public BC_Button
+{
+public:
+	GainLevelClr(GainWindow *window, GainMain *plugin, int x, int y);
+	~GainLevelClr();
+	int handle_event();
+
+	GainWindow *window;
+	GainMain *plugin;
 };
 
 

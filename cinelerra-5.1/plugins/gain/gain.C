@@ -34,10 +34,15 @@
 #include <string.h>
 
 
-REGISTER_PLUGIN(Gain)
+REGISTER_PLUGIN(GainMain)
 
 
 GainConfig::GainConfig()
+{
+	reset();
+}
+
+void GainConfig::reset()
 {
 	level = 0.0;
 }
@@ -71,25 +76,25 @@ void GainConfig::interpolate(GainConfig &prev,
 
 
 
-Gain::Gain(PluginServer *server)
+GainMain::GainMain(PluginServer *server)
  : PluginAClient(server)
 {
 
 }
 
-Gain::~Gain()
+GainMain::~GainMain()
 {
 
 }
 
-const char* Gain::plugin_title() { return N_("Gain"); }
-int Gain::is_realtime() { return 1; }
+const char* GainMain::plugin_title() { return N_("Gain"); }
+int GainMain::is_realtime() { return 1; }
 
 
-NEW_WINDOW_MACRO(Gain, GainWindow)
-LOAD_CONFIGURATION_MACRO(Gain, GainConfig)
+NEW_WINDOW_MACRO(GainMain, GainWindow)
+LOAD_CONFIGURATION_MACRO(GainMain, GainConfig)
 
-int Gain::process_realtime(int64_t size, Samples *input_ptr, Samples *output_ptr)
+int GainMain::process_realtime(int64_t size, Samples *input_ptr, Samples *output_ptr)
 {
 	load_configuration();
 
@@ -108,7 +113,7 @@ int Gain::process_realtime(int64_t size, Samples *input_ptr, Samples *output_ptr
 
 
 
-void Gain::save_data(KeyFrame *keyframe)
+void GainMain::save_data(KeyFrame *keyframe)
 {
 	FileXML output;
 
@@ -124,7 +129,7 @@ void Gain::save_data(KeyFrame *keyframe)
 	output.terminate_string();
 }
 
-void Gain::read_data(KeyFrame *keyframe)
+void GainMain::read_data(KeyFrame *keyframe)
 {
 	FileXML input;
 // cause xml file to read directly from text
@@ -142,13 +147,14 @@ void Gain::read_data(KeyFrame *keyframe)
 	}
 }
 
-void Gain::update_gui()
+void GainMain::update_gui()
 {
 	if(thread)
 	{
 		load_configuration();
 		thread->window->lock_window();
-		((GainWindow*)thread->window)->level->update(config.level);
+		((GainWindow*)thread->window)->level_text->update((float)config.level);
+		((GainWindow*)thread->window)->level_slider->update(config.level);
 		thread->window->unlock_window();
 	}
 }
