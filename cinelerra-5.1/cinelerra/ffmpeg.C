@@ -1160,7 +1160,14 @@ int FFVideoStream::decode_hw_format(AVCodec *decoder, AVHWDeviceType type)
 	if( hw_pix_fmt >= 0 ) {
 		hw_pixfmt = hw_pix_fmt;
 		avctx->get_format  = get_hw_format;
+		const char *drm_node = getenv("CIN_DRM_DEC");
+		if(drm_node && type==AV_HWDEVICE_TYPE_VAAPI) {
+		    ret = av_hwdevice_ctx_create(&hw_device_ctx, type, drm_node, 0, 0);
+		}
+		else {
 		ret = av_hwdevice_ctx_create(&hw_device_ctx, type, 0, 0, 0);
+		}
+
 		if( ret >= 0 ) {
 			avctx->hw_device_ctx = av_buffer_ref(hw_device_ctx);
 			ret = 1;
@@ -1176,6 +1183,7 @@ int FFVideoStream::decode_hw_format(AVCodec *decoder, AVHWDeviceType type)
 
 AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev)
 {
+	const char *drm_node_enc = getenv("CIN_DRM_ENC");
 	AVBufferRef *hw_device_ctx = 0;
 	AVBufferRef *hw_frames_ref = 0;
 	AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
@@ -1187,7 +1195,12 @@ AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev)
 		}
 	}
 	if( type != AV_HWDEVICE_TYPE_NONE ) {
-		int ret = av_hwdevice_ctx_create(&hw_device_ctx, AV_HWDEVICE_TYPE_VAAPI, 0, 0, 0);
+		int ret = 0;
+		if (drm_node_enc) {
+		ret = av_hwdevice_ctx_create(&hw_device_ctx, AV_HWDEVICE_TYPE_VAAPI, drm_node_enc, 0, 0);
+		} else {
+		ret = av_hwdevice_ctx_create(&hw_device_ctx, AV_HWDEVICE_TYPE_VAAPI, 0, 0, 0);
+		}
 		if( ret < 0 ) {
 			ff_err(ret, "Failed to create a HW device.\n");
 			type = AV_HWDEVICE_TYPE_NONE;

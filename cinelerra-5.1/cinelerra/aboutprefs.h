@@ -32,6 +32,7 @@ public:
 	~AboutPrefs();
 
 	static const char *build_timestamp;
+	static const char *ffmpeg_version;
 	void create_objects();
 	ArrayList<BC_ListBoxItem*> about;
 };

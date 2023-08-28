@@ -28,10 +28,12 @@
 #include "vframe.h"
 #include "versioninfo.h"
 
+
 #ifndef COMPILEDATE
 #define COMPILEDATE "built: " __DATE__ " " __TIME__
 #endif
 const char *AboutPrefs::build_timestamp = COMPILEDATE;
+const char *AboutPrefs::ffmpeg_version  = CINELERRA_LIBAV_VERSION;
 
 AboutPrefs::AboutPrefs(MWindow *mwindow, PreferencesWindow *pwindow)
  : PreferencesDialog(mwindow, pwindow)
@@ -51,11 +53,6 @@ void AboutPrefs::create_objects()
 	int x, y;
 	BC_Resources *resources = BC_WindowBase::get_resources();
 
-// 	add_subwindow(new BC_Title(mwindow->theme->preferencestitle_x,
-// 		mwindow->theme->preferencestitle_y,
-// 		_("About"),
-// 		LARGEFONT,
-// 		resources->text_default));
 
 	x = mwindow->theme->preferencesoptions_x;
 	y = mwindow->theme->preferencesoptions_y +
@@ -72,7 +69,12 @@ void AboutPrefs::create_objects()
 	COPYRIGHTTEXT2
 #endif
 	);
-	y += get_text_height(MEDIUMFONT) * 3;
+	y += 2*get_text_height(MEDIUMFONT);
+	draw_text(x,y, COPYRIGHTTEXT3);
+	y += get_text_height(MEDIUMFONT);
+	draw_text(x,y, COPYRIGHTTEXT4);
+	
+	y += get_text_height(MEDIUMFONT) * 2;
 
 
 	const char *cfg_path = File::get_cindat_path();
@@ -99,7 +101,7 @@ void AboutPrefs::create_objects()
 			about.append(new BC_ListBoxItem(msg));
 		}
 		BC_ListBox *listbox;
-		add_subwindow(listbox = new BC_ListBox(x, y, xS(450), yS(280),
+		add_subwindow(listbox = new BC_ListBox(x, y, xS(450), yS(250),
 			LISTBOX_TEXT, &about, 0, 0, 1));
 		y += listbox->get_h() + get_text_height(LARGEFONT) + yS(10);
 	}
@@ -125,6 +127,12 @@ void AboutPrefs::create_objects()
 	y += get_text_height(MEDIUMFONT, license3);
 
 	draw_text(x, y, build_timestamp);
+	x += get_text_width(MEDIUMFONT, build_timestamp);
+	draw_text(x,y, " ");
+	x += get_text_width(MEDIUMFONT, " ");
+	draw_text(x,y, ffmpeg_version);
+	x -= get_text_width(MEDIUMFONT, build_timestamp);
+	x -= get_text_width(MEDIUMFONT, " ");
 #if defined(REPOMAINTXT)
 	y += get_text_height(MEDIUMFONT, build_timestamp);
 	draw_text(x, y, REPOMAINTXT);

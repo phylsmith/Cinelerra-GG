@@ -309,9 +309,18 @@ int main(int argc, char *argv[])
 #ifndef COPYRIGHTTEXT2
 #define COPYRIGHTTEXT2 ""
 #endif
+#ifndef COPYRIGHTTEXT3
+#define COPYRIGHTTEXT3 ""
+#endif
+
 		fprintf(stderr, "%s %s - %s\n%s",
 			PROGRAM_NAME,CINELERRA_VERSION, AboutPrefs::build_timestamp,
 			REPOMAINTXT COPYRIGHTTEXT1 COPYRIGHTTEXT2);
+		fprintf(stderr, "%s", COPYRIGHTTEXT3);
+		fprintf(stderr, "%s", COPYRIGHTTEXT4);
+		fprintf(stderr,"\n");
+		fprintf(stderr, "%s \n", AboutPrefs::ffmpeg_version);
+		fprintf(stderr,"\n");
 		fprintf(stderr, "%s is free software, covered by the GNU General Public License,\n"
 			"and you are welcome to change it and/or distribute copies of it under\n"
 			"certain conditions. There is absolutely no warranty for %s.\n\n",

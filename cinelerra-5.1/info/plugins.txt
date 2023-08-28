@@ -124,6 +124,9 @@ Live Video:	Reads video directly from the capture card input and
 		replaces any video on the track.
 Loop video:	Loop video by specifying the length of the region to
 		loop.
+Mirror:		Mirror horizontal or vertical with the ability to 
+		swap left to right or top to bottom. And if enable
+		reflection center checked, can vary X/Y centering.
 Mandelbrot:	Render a Mandelbrot fractal using Cuda.
 Motion:		Tracks translation and rotation motion to stabilize
 		shaky video.
