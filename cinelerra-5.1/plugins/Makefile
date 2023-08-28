@@ -98,6 +98,7 @@ DIRS = $(OPENCV_OBJS) \
 	$(LIVEDVB) \
 	loopaudio \
 	loopvideo \
+	mirror \
 	motion \
 	motion51 \
 	motion2point \

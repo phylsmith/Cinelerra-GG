@@ -76,6 +76,7 @@ video := \
 	liveaudio \
 	livevideo \
 	loopvideo \
+	mirror \
 	motion \
 	motion2 \
 	motion51 \

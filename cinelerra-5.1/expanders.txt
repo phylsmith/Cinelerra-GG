@@ -134,6 +134,7 @@ Video Effects
 		Crop & Position
 		Flip
 		Lens
+		Mirror
 		Perspective
 		Polar
 		Rotate
