@@ -261,6 +261,11 @@ int FilePNG::read_frame(VFrame *output, VFrame *input)
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, 0, 0, 0);
 	if(!png_ptr) return 0;
 	info_ptr = png_create_info_struct(png_ptr);
+	if(!info_ptr) return 0;
+	if (setjmp(png_jmpbuf(png_ptr))) {
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+	return 0;
+	}
 	png_set_read_fn(png_ptr, input, (png_rw_ptr)read_function);
 	png_read_info(png_ptr, info_ptr);
 

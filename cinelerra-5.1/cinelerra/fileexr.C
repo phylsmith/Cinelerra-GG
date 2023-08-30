@@ -312,6 +312,9 @@ int FileEXR::read_frame_header(char *path)
 
 int FileEXR::read_frame(VFrame *frame, VFrame *data)
 {
+
+    try {
+
 	Imf::setGlobalThreadCount(file->cpus);
 	EXRIStream exr_stream((char*)data->get_data(), data->get_compressed_size());
 	Imf::InputFile file(exr_stream);
@@ -426,6 +429,10 @@ int FileEXR::read_frame(VFrame *frame, VFrame *data)
 		}
 	}
 	return 0;
+    } catch (const std::exception &e) {
+    std::cerr << "error reading EXR image file:" << e.what() << std::endl;
+    return 1;
+    }
 }
 
 
