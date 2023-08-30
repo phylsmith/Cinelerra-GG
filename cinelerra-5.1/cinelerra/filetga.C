@@ -337,6 +337,8 @@ void FileTGA::read_tga(Asset *asset, VFrame *frame, VFrame *data, VFrame* &temp)
 		case 24:
 			source_cmodel = BC_RGB888;
 			break;
+		default:
+			return;
 	}
 
 // Read image

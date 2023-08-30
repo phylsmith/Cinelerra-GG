@@ -323,6 +323,9 @@ int FileTIFF::read_frame(VFrame *output, VFrame *input)
 	    tiff_mmap,
 		tiff_unmap);
 
+	if(!stream)
+	return 0;
+
 // This loads the original TIFF data into each scanline of the output frame,
 // assuming the output scanlines are bigger than the input scanlines.
 // Then it expands the input data in reverse to fill the row.
