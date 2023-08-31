@@ -3,6 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2023 August changes of note:
+  Mirror new video plugin has been added.
+  Copyright messages now include GG team & earlier CV team.
 2023 June changes of note:
   Capability to create DVDs with BFF interlace added.
 2023 April changes of note:

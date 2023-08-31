@@ -445,6 +445,8 @@ hsvkey
 huesaturation
 latency
 scharr
+#azmq
+#zmq
 ; broken in 5.0
 #anlmf ###Input/output error
 #asdr ###Input/output error
