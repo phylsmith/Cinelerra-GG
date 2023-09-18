@@ -1,4 +1,12 @@
 Video Effects
+	- Favoritos
+		Brightness/Contrast
+		Color 3 Way
+		Color Balance
+		Gradient
+		Histogram
+		Title
+		VideoScope
 	- Corrección_de_Color
 		Blue Banana
 		Brightness/Contrast
@@ -103,7 +111,6 @@ Video Effects
 		Time Average
 		F_atadenoise
 		F_bitplanenoise
-		F_chromanr
 		F_dctdnoiz
 		F_fftdnoiz
 		F_hqdn3d
@@ -126,6 +133,7 @@ Video Effects
 		Crop & Position
 		Flip
 		Lens
+		Mirror
 		Perspective
 		Polar
 		Rotate

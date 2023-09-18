@@ -472,9 +472,11 @@ PKG_3RD([dav1d],[auto],
   [ usr/local/include ])
 
 PKG_3RD([libwebp],[auto],
-  [libwebp-1.1.0],
-  [ usr/local/lib*/libwebp*.a ],
-  [ usr/local/include ])
+  [libwebp-1.3.2],
+  [ usr/local/lib*/libwebp*.a \
+   usr/local/lib*/libsharpyuv*.a ],
+  [ usr/local/include/webp \
+    usr/local/include/ ])
 
 PKG_3RD([ffnvcodec],[auto],
   [ffnvcodec],

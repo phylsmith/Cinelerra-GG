@@ -129,6 +129,7 @@ esound.cfg_params= --enable-shared=no --with-pic
 esound.mak_vars+= CFLAGS="" 
 esound.ldflags=" -lm -lstdc++"
 fftw.cfg_params= --disable-fortran --enable-shared=no
+ffmpeg.cfg_vars?= PKG_CONFIG_PATH="$(call bld_path,libwebp)/usr/local/lib/pkgconfig"
 ffmpeg.cfg_params= \
 	--enable-pthreads --disable-avdevice --enable-gpl --disable-ffplay \
 	$(call if_want,VAAPI,--enable-vaapi,--disable-vaapi) \
@@ -209,8 +210,9 @@ libaom.cfg_params?=  -DENABLE_TESTS=no -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=
 libaom.mak_params?= ; $(MAKE) -C libaom*/aom.build install
 dav1d.cfg_vars?=echo "echo dav1d custom make" >> configure; chmod +x ./configure;
 dav1d.mak_params?=; $(MAKE) -C dav1d* install DESTDIR="$(call bld_path,dav1d)"
-libwebp.cfg_vars?= mkdir build && cd build && $(call cmake_config,..)
-libwebp.mak_params?= -C build all install DESTDIR=$(call bld_path,libwebp)
+libwebp.cfg_vars?= ./autogen.sh;
+libwebp.cfg_params?= --prefix=$(call bld_path,libwebp)usr/local --enable-static --disable-shared --disable-libwebpdemux --disable-libwebpmux; \
+    make install;
 mjpegtools.cflags?="$(call inc_path,libjpeg) $(call ld_path,libjpeg,build)"
 mjpegtools.cfg_vars?= ./autogen.sh; export CXXFLAGS+="-std=c++11";
 mjpegtools.cfg_params?= --enable-shared=no --without-libquicktime --without-libdv \
