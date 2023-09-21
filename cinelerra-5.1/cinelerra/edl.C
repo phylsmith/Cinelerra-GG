@@ -903,8 +903,8 @@ static void get_edit_regions(ArrayList<Edit*> *edits, ArrayList<Range> &regions)
 // move edit inclusive labels by regions
 	for( int i=0; i<edits->size(); ++i ) {
 		Edit *edit = edits->get(i);
-		double pos = edit->track->from_units(edit->startproject);
-		double end = edit->track->from_units(edit->startproject + edit->length);
+		volatile double pos = edit->track->from_units(edit->startproject);
+		volatile double end = edit->track->from_units(edit->startproject + edit->length);
 		int n = regions.size(), k = n;
 		while( --k >= 0 ) {
 			Range &range = regions[k];
