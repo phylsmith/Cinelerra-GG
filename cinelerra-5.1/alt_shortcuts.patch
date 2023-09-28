@@ -1,0 +1,1508 @@
+diff -ur cinelerra-5.1/cinelerra/assetpopup.C cinelerra-5.1_after/cinelerra/assetpopup.C
+--- cinelerra-5.1/cinelerra/assetpopup.C	2022-03-15 21:47:37.298381693 -0600
++++ cinelerra-5.1_after/cinelerra/assetpopup.C	2023-09-28 11:55:17.347859646 -0600
+@@ -563,10 +563,11 @@
+ }
+ 
+ AssetPopupLoadFile::AssetPopupLoadFile(MWindow *mwindow, AWindowGUI *gui)
+- : BC_MenuItem(_("Load files..."), "o", 'o')
++ : BC_MenuItem(_("Load files..."), "Ctrl+O", 'o')
+ {
+ 	this->mwindow = mwindow;
+ 	this->gui = gui;
++	set_ctrl(1);
+ }
+ 
+ AssetPopupLoadFile::~AssetPopupLoadFile()
+diff -ur cinelerra-5.1/cinelerra/awindowgui.C cinelerra-5.1_after/cinelerra/awindowgui.C
+--- cinelerra-5.1/cinelerra/awindowgui.C	2023-02-09 09:50:37.229375332 -0700
++++ cinelerra-5.1_after/cinelerra/awindowgui.C	2023-09-28 11:55:17.348859658 -0600
+@@ -1890,8 +1890,8 @@
+ 		tip_info = !tip_info ? 1 : 0;
+ 		if( !tip_info ) hide_tip_info();
+ 		return 1;
+-	case 'o':
+-		if( !ctrl_down() && !shift_down() ) {
++	case 'o':	// Ctrl+O (Oscar letter)
++		if( ctrl_down() && !shift_down() ) {
+ 			assetlist_menu->load_file->handle_event();
+ 			return 1;
+ 		}
+@@ -3622,7 +3622,7 @@
+ }
+ 
+ AWindowListFormat::AWindowListFormat(MWindow *mwindow, AWindowGUI *gui)
+- : BC_MenuItem("","v",'v')
++ : BC_MenuItem("","V",'v')
+ {
+ 	this->mwindow = mwindow;
+ 	this->gui = gui;
+diff -ur cinelerra-5.1/cinelerra/batchrender.C cinelerra-5.1_after/cinelerra/batchrender.C
+--- cinelerra-5.1/cinelerra/batchrender.C	2023-02-09 09:50:37.229375332 -0700
++++ cinelerra-5.1_after/cinelerra/batchrender.C	2023-09-28 11:55:17.349859671 -0600
+@@ -69,7 +69,7 @@
+ };
+ 
+ BatchRenderMenuItem::BatchRenderMenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("Batch Render..."), _("Shift-B"), 'B')
++ : BC_MenuItem(_("Batch Render..."), _("Shift+B"), 'B')
+ {
+ 	set_shift(1);
+ 	this->mwindow = mwindow;
+@@ -1100,7 +1100,7 @@
+  : BC_GenericButton(x, y, _("Save Jobs"))
+ {
+ 	this->thread = thread;
+-	set_tooltip(_("Save a Batch Render List"));
++	set_tooltip(_("Save a Batch Render List (Ctrl+S)"));
+ 	gui = 0;
+ 	startup_lock = new Mutex("BatchRenderSaveList::startup_lock");
+ }
+@@ -1166,8 +1166,13 @@
+ }
+ 
+ int BatchRenderSaveList::keypress_event() {
+-	if( get_keypress() == 's' ||
+-	    get_keypress() == 'S' ) return handle_event();
++// Ctrl+S pressed?
++	switch( get_keypress() ) {
++		case 's':
++		case 'S':
++			if( ctrl_down() && !alt_down() && !shift_down() ) return handle_event();
++		break;
++	}
+ 	return context_help_check_and_show();
+ }
+ 
+@@ -1179,7 +1184,7 @@
+     Thread()
+ {
+ 	this->thread = thread;
+-	set_tooltip(_("Load a previously saved Batch Render List"));
++	set_tooltip(_("Load a previously saved Batch Render List (Ctrl+O)"));
+ 	gui = 0;
+ 	startup_lock = new Mutex("BatchRenderLoadList::startup_lock");
+ }
+@@ -1247,8 +1252,13 @@
+ }
+ 
+ int BatchRenderLoadList::keypress_event() {
+-	if( get_keypress() == 'o' ||
+-	    get_keypress() == 'O' ) return handle_event();
++// Ctrl+O pressed?
++	switch( get_keypress() ) {
++		case 'o':
++		case 'O':
++			if( ctrl_down() && !alt_down() && !shift_down() ) return handle_event();
++		break;
++	}
+ 	return context_help_check_and_show();
+ }
+ 
+diff -ur cinelerra-5.1/cinelerra/bdcreate.C cinelerra-5.1_after/cinelerra/bdcreate.C
+--- cinelerra-5.1/cinelerra/bdcreate.C	2023-02-09 09:50:37.229375332 -0700
++++ cinelerra-5.1_after/cinelerra/bdcreate.C	2023-09-28 11:55:17.349859671 -0600
+@@ -122,10 +122,8 @@
+ const int CreateBD_Thread::BD_INTERLACE_MODE = ILACE_MODE_NOTINTERLACED;
+ 
+ CreateBD_MenuItem::CreateBD_MenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("BD Render..."), _("Ctrl-Shift-D"), 'D')
++ : BC_MenuItem(_("BD Render..."))
+ {
+-	set_ctrl(1);
+-	set_shift(1);
+ 	this->mwindow = mwindow;
+ }
+ 
+diff -ur cinelerra-5.1/cinelerra/canvas.C cinelerra-5.1_after/cinelerra/canvas.C
+--- cinelerra-5.1/cinelerra/canvas.C	2022-03-15 21:47:37.304381729 -0600
++++ cinelerra-5.1_after/cinelerra/canvas.C	2023-09-28 11:55:17.350859683 -0600
+@@ -1025,7 +1025,7 @@
+ 
+ 
+ CanvasPopupCameraKeyframe::CanvasPopupCameraKeyframe(Canvas *canvas)
+- : BC_MenuItem(_("Camera keyframe"), _("Shift-F11"), KEY_F11)
++ : BC_MenuItem(_("Camera keyframe"), _("Shift+F11"), KEY_F11)
+ {
+ 	this->canvas = canvas;
+ 	set_shift(1);
+@@ -1037,7 +1037,7 @@
+ }
+ 
+ CanvasPopupProjectorKeyframe::CanvasPopupProjectorKeyframe(Canvas *canvas)
+- : BC_MenuItem(_("Projector keyframe"), _("Shift-F12"), KEY_F12)
++ : BC_MenuItem(_("Projector keyframe"), _("Shift+F12"), KEY_F12)
+ {
+ 	this->canvas = canvas;
+ 	set_shift(1);
+@@ -1062,7 +1062,7 @@
+ 
+ 
+ CanvasFullScreenItem::CanvasFullScreenItem(Canvas *canvas)
+- : BC_MenuItem(_("Fullscreen"), "f", 'f')
++ : BC_MenuItem(_("Fullscreen"), "F", 'f')
+ {
+ 	this->canvas = canvas;
+ }
+diff -ur cinelerra-5.1/cinelerra/channelinfo.C cinelerra-5.1_after/cinelerra/channelinfo.C
+--- cinelerra-5.1/cinelerra/channelinfo.C	2023-02-09 09:50:37.229375332 -0700
++++ cinelerra-5.1_after/cinelerra/channelinfo.C	2023-09-28 11:55:17.350859683 -0600
+@@ -1815,7 +1815,7 @@
+ }
+ 
+ ChannelScan::ChannelScan(MWindow *mwindow)
+- : BC_MenuItem(_("Scan..."), _("Ctrl-Alt-s"), 's')
++ : BC_MenuItem(_("Scan..."), _("Ctrl+Alt+S"), 's')
+ {
+ 	set_ctrl();
+ 	set_alt();
+diff -ur cinelerra-5.1/cinelerra/convert.C cinelerra-5.1_after/cinelerra/convert.C
+--- cinelerra-5.1/cinelerra/convert.C	2022-03-15 21:47:37.307381747 -0600
++++ cinelerra-5.1_after/cinelerra/convert.C	2023-09-28 11:55:17.351859696 -0600
+@@ -637,7 +637,7 @@
+ 
+ 
+ ConvertMenuItem::ConvertMenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("Transcode..."),  _("Alt-e"), 'e')
++ : BC_MenuItem(_("Transcode..."),  _("Alt+E"), 'e')
+ {
+ 	this->mwindow = mwindow;
+ 	set_alt();
+diff -ur cinelerra-5.1/cinelerra/cwindowgui.C cinelerra-5.1_after/cinelerra/cwindowgui.C
+--- cinelerra-5.1/cinelerra/cwindowgui.C	2022-03-15 21:47:37.308381753 -0600
++++ cinelerra-5.1_after/cinelerra/cwindowgui.C	2023-09-28 11:55:17.351859696 -0600
+@@ -487,6 +487,8 @@
+ 		}
+ 		break;
+ 
++// *** 2023. REM Original code. (editpanel.C take its place, for me)
++/*
+ 	case ',':
+ 		if( !ctrl_down() && !alt_down() ) {
+ 			unlock_window();
+@@ -498,6 +500,8 @@
+ 			result = 1;
+ 		}
+ 		break;
++*/
++// *** END rem***
+ 
+ 	case RIGHT:
+ 		if( !ctrl_down() ) {
+@@ -516,6 +520,8 @@
+ 		}
+ 		break;
+ 
++// *** 2023. REM Original code. (editpanel.C take its place, for me)
++/*
+ 	case '.':
+ 		if( !ctrl_down() && !alt_down() ) {
+ 			unlock_window();
+@@ -527,6 +533,8 @@
+ 			result = 1;
+ 		}
+ 		break;
++*/
++// *** END rem***
+ 	}
+ 
+ 	if( !result && cwindow_operation < 0 && ctrl_down() && shift_down() ) {
+diff -ur cinelerra-5.1/cinelerra/cwindowtool.C cinelerra-5.1_after/cinelerra/cwindowtool.C
+--- cinelerra-5.1/cinelerra/cwindowtool.C	2023-02-09 09:50:37.231375772 -0700
++++ cinelerra-5.1_after/cinelerra/cwindowtool.C	2023-09-28 11:55:17.352859708 -0600
+@@ -1645,7 +1645,7 @@
+ 	add_subwindow(t_bump = new CWindowCurveToggle(Projector_Crv_Bump, mwindow, this, x1, y));
+ 	t_bump->context_help_set_keyword("Bump autos");
+ 	x1 += button->get_w() + xs25;
+-	y += yS(5);
++// 2023 REM	y += yS(5);
+ 	add_subwindow(add_keyframe = new CWindowProjectorAddKeyframe(mwindow, this, x1, y));
+ 	add_keyframe->context_help_set_keyword("Using Autos");
+ 	x1 += add_keyframe->get_w() + xs15;
+@@ -1910,7 +1910,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->gui = gui;
+-	set_tooltip(_("Add Keyframe: Shift-F12"));
++	set_tooltip(_("Add Keyframe: Shift+F12"));
+ }
+ 
+ int CWindowProjectorAddKeyframe::handle_event()
+diff -ur cinelerra-5.1/cinelerra/dvdcreate.C cinelerra-5.1_after/cinelerra/dvdcreate.C
+--- cinelerra-5.1/cinelerra/dvdcreate.C	2023-06-28 10:24:09.241079904 -0600
++++ cinelerra-5.1_after/cinelerra/dvdcreate.C	2023-09-28 11:55:17.353859720 -0600
+@@ -117,9 +117,8 @@
+ 
+ 
+ CreateDVD_MenuItem::CreateDVD_MenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("DVD Render..."), _("Alt-d"), 'd')
++ : BC_MenuItem(_("DVD Render..."))
+ {
+-	set_alt(1);
+ 	this->mwindow = mwindow;
+ }
+ 
+diff -ur cinelerra-5.1/cinelerra/editpanel.C cinelerra-5.1_after/cinelerra/editpanel.C
+--- cinelerra-5.1/cinelerra/editpanel.C	2023-02-09 09:50:37.245378853 -0700
++++ cinelerra-5.1_after/cinelerra/editpanel.C	2023-09-28 11:55:17.354859733 -0600
+@@ -484,7 +484,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Toggle label at current position ( l )"));
++	set_tooltip(_("Toggle label at current position ( ' )")); // single quote
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Labels");
+ }
+@@ -494,7 +494,7 @@
+ }
+ int EditLabelbutton::keypress_event()
+ {
+-	if( get_keypress() == 'l' && !alt_down() )
++	if( get_keypress() == '\'' && !alt_down() )  // single quote
+ 		return handle_event();
+ 	return context_help_check_and_show();
+ }
+@@ -511,7 +511,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Next label ( ctrl -> )"));
++	set_tooltip(_("Next label ( Ctrl+Right Arrow )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Labels");
+ }
+@@ -547,7 +547,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Previous label ( ctrl <- )"));
++	set_tooltip(_("Previous label ( Ctrl+Left Arrow )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Labels");
+ }
+@@ -583,7 +583,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Previous edit (alt <- )"));
++	set_tooltip(_("Previous edit ( Alt+Left Arrow, 'A' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Snapping while Cutting and Dragging");
+ }
+@@ -594,7 +594,7 @@
+ {
+ 	if( alt_down() ) {
+ 		int key = get_keypress();
+-		if( (key == LEFT || key == ',') && !ctrl_down() ) {
++		if( key == LEFT && !ctrl_down() ) {
+ 			panel->panel_prev_edit(0);
+ 			return 1;
+ 		}
+@@ -603,6 +603,13 @@
+ 			return 1;
+ 		}
+ 	}
++	else {
++		int key = get_keypress();
++		if( key == 'a' && !ctrl_down() && !shift_down() ) {
++			panel->panel_prev_edit(0);
++			return 1;
++		}
++	}
+ 	return context_help_check_and_show();
+ }
+ int EditPrevEdit::handle_event()
+@@ -619,7 +626,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Next edit ( alt -> )"));
++	set_tooltip(_("Next edit ( Alt+Right Arrow, 'S' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Snapping while Cutting and Dragging");
+ }
+@@ -630,7 +637,7 @@
+ {
+ 	if( alt_down() ) {
+ 		int key = get_keypress();
+-		if( (key == RIGHT || key == '.') && !ctrl_down() ) {
++		if( key == RIGHT && !ctrl_down() ) {
+ 			panel->panel_next_edit(0);
+ 			return 1;
+ 		}
+@@ -639,6 +646,13 @@
+ 			return 1;
+ 		}
+ 	}
++	else {
++		int key = get_keypress();
++		if( key == 's' && !ctrl_down() && !shift_down() ) {
++			panel->panel_next_edit(0);
++			return 1;
++		}
++	}
+ 	return context_help_check_and_show();
+ }
+ int EditNextEdit::handle_event()
+@@ -654,7 +668,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Copy ( c )"));
++	set_tooltip(_("Copy ( C )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Cut and Paste Editing");
+ }
+@@ -683,7 +697,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Overwrite ( b )"));
++	set_tooltip(_("Overwrite ( B )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Two Screen Editing");
+ }
+@@ -713,7 +727,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("In point ( [ or < )"));
++	set_tooltip(_("In point ( '[', '<', 'I' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("In\\/Out Points");
+ }
+@@ -735,7 +749,7 @@
+ 		}
+ 	}
+ 	else if( !alt_down() ) {
+-		if( key == '[' || key == '<' ) {
++		if( key == '[' || key == '<' || key == 'i' ) {
+ 			panel->panel_set_inpoint();
+ 			return 1;
+ 		}
+@@ -750,7 +764,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Out point ( ] or > )"));
++	set_tooltip(_("Out point ( ']', '>', 'O' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("In\\/Out Points");
+ }
+@@ -772,7 +786,7 @@
+ 		}
+ 	}
+ 	else if( !alt_down() ) {
+-		if( key == ']' || key == '>' ) {
++		if( key == ']' || key == '>' || key == 'o' ) {
+ 			panel->panel_set_outpoint();
+ 			return 1;
+ 		}
+@@ -786,7 +800,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Splice ( v )"));
++	set_tooltip(_("Splice ( V )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Two Screen Editing");
+ }
+@@ -815,7 +829,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("To clip ( i )"));
++	set_tooltip(_("To clip ( Ctrl+I )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Two Screen Editing");
+ }
+@@ -831,8 +845,8 @@
+ int EditToClip::keypress_event()
+ {
+ 	if( alt_down() ) return context_help_check_and_show();
+-	if( get_keypress() == 'i' ||
+-	    (panel->is_vwindow() && get_keypress() == 'I') ) {
++	if( (get_keypress() == 'i' && ctrl_down()) ||
++	    (panel->is_vwindow() && (get_keypress() == 'I' && ctrl_down()) ) ) {
+ 		handle_event();
+ 		return 1;
+ 	}
+@@ -845,7 +859,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Split | Cut ( x )"));
++	set_tooltip(_("Split | Cut ( X )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Cut and Paste Editing");
+ }
+@@ -873,7 +887,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Paste ( v )"));
++	set_tooltip(_("Paste ( V )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Cut and Paste Editing");
+ }
+@@ -899,7 +913,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Fit selection to display ( f )"));
++	set_tooltip(_("Fit selection to display ( F )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport and Buttons Bar");
+ }
+@@ -926,7 +940,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Fit all autos to display ( Alt + f )"));
++	set_tooltip(_("Fit all autos to display ( Alt+F )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Using Autos");
+ }
+@@ -1001,7 +1015,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Generate keyframes while tweeking (j)"));
++	set_tooltip(_("Generate keyframes while tweeking ( G )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Generate Keyframes while Tweaking");
+ }
+@@ -1015,7 +1029,7 @@
+ int KeyFrameButton::keypress_event()
+ {
+ 	int key = get_keypress();
+-	if( key == 'j' && !ctrl_down() && !shift_down() && !alt_down() ) {
++	if( key == 'g' && !ctrl_down() && !shift_down() && !alt_down() ) {
+ 		int value = get_value() ? 0 : 1;
+ 		update(value);
+ 		panel->panel_set_auto_keyframes(value);
+@@ -1072,7 +1086,7 @@
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+ 	mangoto = new ManualGoto(mwindow, panel);
+-	set_tooltip(_("Manual goto ( g )"));
++	set_tooltip(_("Manual goto ( Ctrl+G )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport and Buttons Bar");
+ }
+@@ -1088,7 +1102,7 @@
+ 
+ int EditManualGoto::keypress_event()
+ {
+-	if( get_keypress() == 'g' ) {
++	if( get_keypress() == 'g' && ctrl_down() ) {
+ 		handle_event();
+ 		return 1;
+ 	}
+@@ -1104,7 +1118,7 @@
+ {
+         this->mwindow = mwindow;
+         this->panel = panel;
+-        set_tooltip(_("Click to play (p)"));
++        set_tooltip(_("Click to play ( P )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Click to Play in Viewer and Compositor");
+ }
+@@ -1132,7 +1146,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Commercial ( shift A )"));
++	set_tooltip(_("Commercial ( Shift+A )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("The commercial DB");
+ }
+@@ -1174,7 +1188,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Undo ( z or Ctrl-z)"));
++	set_tooltip(_("Undo ( 'Z', Ctrl+Z )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport and Buttons Bar");
+ }
+@@ -1200,7 +1214,7 @@
+ {
+ 	this->mwindow = mwindow;
+ 	this->panel = panel;
+-	set_tooltip(_("Redo ( shift Z )"));
++	set_tooltip(_("Redo ( Shift+Z )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport and Buttons Bar");
+ }
+diff -ur cinelerra-5.1/cinelerra/editpopup.C cinelerra-5.1_after/cinelerra/editpopup.C
+--- cinelerra-5.1/cinelerra/editpopup.C	2022-04-11 14:29:13.599769890 -0600
++++ cinelerra-5.1_after/cinelerra/editpopup.C	2023-09-28 11:55:17.354859733 -0600
+@@ -147,7 +147,7 @@
+ }
+ 
+ EditPopupClearSelect::EditPopupClearSelect(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Clear Select"),_("Ctrl-Shift-A"),'A')
++ : BC_MenuItem(_("Clear Select"),_("Ctrl+Shift+A"),'A')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -162,7 +162,7 @@
+ }
+ 
+ EditPopupSelectEdits::EditPopupSelectEdits(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Select Edits"),_("Ctrl-Alt-'"),'\'')
++ : BC_MenuItem(_("Select Edits"),_("Ctrl+Alt+A"),'a')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -190,7 +190,7 @@
+ }
+ 
+ EditPopupCopy::EditPopupCopy(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Copy"),_("Ctrl-c"),'c')
++ : BC_MenuItem(_("Copy"),_("Ctrl+C"),'c')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -204,7 +204,7 @@
+ }
+ 
+ EditPopupCopyPack::EditPopupCopyPack(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Copy pack"),_("Ctrl-Shift-C"),'C')
++ : BC_MenuItem(_("Copy pack"),_("Ctrl+Shift+C"),'C')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -219,7 +219,7 @@
+ }
+ 
+ EditPopupCut::EditPopupCut(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Cut"),_("Ctrl-x"),'x')
++ : BC_MenuItem(_("Cut"),_("Ctrl+X"),'x')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -233,7 +233,7 @@
+ }
+ 
+ EditPopupCutPack::EditPopupCutPack(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Cut pack"),_("Ctrl-Alt-z"),'z')
++ : BC_MenuItem(_("Cut pack"),_("Ctrl+Alt+Z"),'z')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -248,7 +248,7 @@
+ }
+ 
+ EditPopupMute::EditPopupMute(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(C_("Mute"),_("Ctrl-m"),'m')
++ : BC_MenuItem(_("Mute"),_("Ctrl+M"),'m')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -262,7 +262,7 @@
+ }
+ 
+ EditPopupMutePack::EditPopupMutePack(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Mute pack"),_("Ctrl-Shift-M"),'M')
++ : BC_MenuItem(_("Mute pack"),_("Ctrl+Shift+M"),'M')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -277,7 +277,7 @@
+ }
+ 
+ EditPopupPaste::EditPopupPaste(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Paste"),_("Ctrl-v"),'v')
++ : BC_MenuItem(_("Paste"),_("Ctrl+V"),'v')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -297,7 +297,7 @@
+ }
+ 
+ EditPopupOverwrite::EditPopupOverwrite(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Overwrite"),_("Ctrl-b"),'b')
++ : BC_MenuItem(_("Overwrite"),_("Ctrl+B"),'b')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -317,7 +317,7 @@
+ }
+ 
+ EditPopupOverwritePlugins::EditPopupOverwritePlugins(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Overwrite Plugins"),_("Ctrl-Shift-P"),'P')
++ : BC_MenuItem(_("Overwrite Plugins"),_("Ctrl+Shift+P"),'P')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+@@ -372,12 +372,11 @@
+ }
+ 
+ EditPopupTimecode::EditPopupTimecode(MWindow *mwindow, EditPopup *popup)
+- : BC_MenuItem(_("Timecode"),_("Ctrl-!"),'!')
++ : BC_MenuItem(_("Timecode"),_("Ctrl+!"),'!')
+ {
+ 	this->mwindow = mwindow;
+ 	this->popup = popup;
+ 	set_ctrl(1);
+-	set_shift(1);
+ }
+ 
+ int EditPopupTimecode::handle_event()
+diff -ur cinelerra-5.1/cinelerra/exportedl.C cinelerra-5.1_after/cinelerra/exportedl.C
+--- cinelerra-5.1/cinelerra/exportedl.C	2023-01-28 12:41:13.742539792 -0700
++++ cinelerra-5.1_after/cinelerra/exportedl.C	2023-09-28 11:55:17.354859733 -0600
+@@ -292,7 +292,7 @@
+ 
+ 
+ ExportEDLItem::ExportEDLItem(MWindow *mwindow)
+- : BC_MenuItem(_("Export EDL..."), "Shift-E", 'E')
++ : BC_MenuItem(_("Export EDL..."), "Shift+E", 'E')
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift(1);
+diff -ur cinelerra-5.1/cinelerra/gwindowgui.C cinelerra-5.1_after/cinelerra/gwindowgui.C
+--- cinelerra-5.1/cinelerra/gwindowgui.C	2022-03-15 21:47:37.364382093 -0600
++++ cinelerra-5.1_after/cinelerra/gwindowgui.C	2023-09-28 11:55:17.354859733 -0600
+@@ -324,11 +324,11 @@
+ 			switch( ref ) {
+ 			case NONAUTOTOGGLES_CAMERA_XYZ:
+ 				camera_xyz = toggle;
+-				accel = _("Shift-F1");
++				accel = _("Shift+F1");
+ 				break;
+ 			case NONAUTOTOGGLES_PROJECTOR_XYZ:
+ 				projector_xyz = toggle;
+-				accel = _("Shift-F2");
++				accel = _("Shift+F2");
+ 				break;
+ 			case NON_AUTOMATION_HARD_EDGES:
+ 				VFrame *vframe = mwindow->theme->hardedge_data;
+diff -ur cinelerra-5.1/cinelerra/loadfile.C cinelerra-5.1_after/cinelerra/loadfile.C
+--- cinelerra-5.1/cinelerra/loadfile.C	2023-02-09 09:50:37.250379954 -0700
++++ cinelerra-5.1_after/cinelerra/loadfile.C	2023-09-28 11:55:17.354859733 -0600
+@@ -45,8 +45,9 @@
+ #include <string.h>
+ 
+ Load::Load(MWindow *mwindow, MainMenu *mainmenu)
+- : BC_MenuItem(_("Load files..."), "o", 'o')
++ : BC_MenuItem(_("Load files..."), "Ctrl+O", 'o')
+ {
++	set_ctrl(1);
+ 	this->mwindow = mwindow;
+ 	this->mainmenu = mainmenu;
+ 	this->thread = 0;
+diff -ur cinelerra-5.1/cinelerra/mainmenu.C cinelerra-5.1_after/cinelerra/mainmenu.C
+--- cinelerra-5.1/cinelerra/mainmenu.C	2022-03-15 21:47:37.368382117 -0600
++++ cinelerra-5.1_after/cinelerra/mainmenu.C	2023-09-28 11:55:17.355859745 -0600
+@@ -263,17 +263,17 @@
+ 	viewmenu->add_item(mask_automation = new ShowAutomation(mwindow, _("Mask"), "8", AUTOMATION_MASK));
+ 	viewmenu->add_item(speed_automation = new ShowAutomation(mwindow, _("Speed"), "9", AUTOMATION_SPEED));
+ 
+-	camera_x = new ShowAutomation(mwindow, _("Camera X"), "Ctrl-Shift-X", AUTOMATION_CAMERA_X);
++	camera_x = new ShowAutomation(mwindow, _("Camera X"), "Ctrl+Shift+X", AUTOMATION_CAMERA_X);
+ 	camera_x->set_ctrl();  camera_x->set_shift();   viewmenu->add_item(camera_x);
+-	camera_y = new ShowAutomation(mwindow, _("Camera Y"), "Ctrl-Shift-Y", AUTOMATION_CAMERA_Y);
++	camera_y = new ShowAutomation(mwindow, _("Camera Y"), "Ctrl+Shift+Y", AUTOMATION_CAMERA_Y);
+ 	camera_y->set_ctrl();  camera_y->set_shift();   viewmenu->add_item(camera_y);
+-	camera_z = new ShowAutomation(mwindow, _("Camera Z"), "Ctrl-Shift-Z", AUTOMATION_CAMERA_Z);
++	camera_z = new ShowAutomation(mwindow, _("Camera Z"), "Ctrl+Shift+Z", AUTOMATION_CAMERA_Z);
+ 	camera_z->set_ctrl();  camera_z->set_shift();  viewmenu->add_item(camera_z);
+-	project_x = new ShowAutomation(mwindow, _("Projector X"), "Alt-Shift-X", AUTOMATION_PROJECTOR_X);
++	project_x = new ShowAutomation(mwindow, _("Projector X"), "Alt+Shift+X", AUTOMATION_PROJECTOR_X);
+ 	project_x->set_alt();  project_x->set_shift();  viewmenu->add_item(project_x);
+-	project_y = new ShowAutomation(mwindow, _("Projector Y"), "Alt-Shift-Y", AUTOMATION_PROJECTOR_Y);
++	project_y = new ShowAutomation(mwindow, _("Projector Y"), "Alt+Shift+Y", AUTOMATION_PROJECTOR_Y);
+ 	project_y->set_alt();  project_y->set_shift();  viewmenu->add_item(project_y);
+-	project_z = new ShowAutomation(mwindow, _("Projector Z"), "Alt-Shift-Z", AUTOMATION_PROJECTOR_Z);
++	project_z = new ShowAutomation(mwindow, _("Projector Z"), "Alt+Shift+Z", AUTOMATION_PROJECTOR_Z);
+ 	project_z->set_alt();  project_z->set_shift();  viewmenu->add_item(project_z);
+ 
+ 	add_menu(windowmenu = new BC_Menu(_("Window")));
+@@ -291,7 +291,7 @@
+ 	windowmenu->add_item(new TileWindows(mwindow,_("Tile right"),1));
+ 	windowmenu->add_item(new BC_MenuItem("-"));
+ 
+-	windowmenu->add_item(new TileWindows(mwindow,_("Default positions"),-1,_("Ctrl-P"),'p'));
++	windowmenu->add_item(new TileWindows(mwindow,_("Default positions"),-1,_("Ctrl+P"),'p'));
+ 	windowmenu->add_item(load_layout = new LoadLayout(mwindow, _("Load layout..."),LAYOUT_LOAD));
+ 	load_layout->create_objects();
+ 	windowmenu->add_item(save_layout = new LoadLayout(mwindow, _("Save layout..."),LAYOUT_SAVE));
+@@ -639,7 +639,7 @@
+ 
+ // ================================================= edit
+ 
+-Undo::Undo(MWindow *mwindow) : BC_MenuItem(_("Undo"), "z or Ctrl-z", 'z')
++Undo::Undo(MWindow *mwindow) : BC_MenuItem(_("Undo"), "Z, Ctrl+Z", 'z')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -658,7 +658,7 @@
+ }
+ 
+ 
+-Redo::Redo(MWindow *mwindow) : BC_MenuItem(_("Redo"), _("Shift-Z"), 'Z')
++Redo::Redo(MWindow *mwindow) : BC_MenuItem(_("Redo"), _("Shift+Z"), 'Z')
+ {
+ 	set_shift(1);
+ 	this->mwindow = mwindow;
+@@ -679,7 +679,7 @@
+ }
+ 
+ CutKeyframes::CutKeyframes(MWindow *mwindow)
+- : BC_MenuItem(_("Cut keyframes"), _("Shift-X"), 'X')
++ : BC_MenuItem(_("Cut keyframes"), _("Shift+X"), 'X')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -693,7 +693,7 @@
+ }
+ 
+ CopyKeyframes::CopyKeyframes(MWindow *mwindow)
+- : BC_MenuItem(_("Copy keyframes"), _("Shift-C"), 'C')
++ : BC_MenuItem(_("Copy keyframes"), _("Shift+C"), 'C')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -707,7 +707,7 @@
+ }
+ 
+ PasteKeyframes::PasteKeyframes(MWindow *mwindow)
+- : BC_MenuItem(_("Paste keyframes"), _("Shift-V"), 'V')
++ : BC_MenuItem(_("Paste keyframes"), _("Shift+V"), 'V')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -721,7 +721,7 @@
+ }
+ 
+ ClearKeyframes::ClearKeyframes(MWindow *mwindow)
+- : BC_MenuItem(_("Clear keyframes"), _("Shift-Del"), DELETE)
++ : BC_MenuItem(_("Clear keyframes"), _("Shift+Del"), DELETE)
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -886,7 +886,7 @@
+ 
+ 
+ CutDefaultKeyframe::CutDefaultKeyframe(MWindow *mwindow)
+- : BC_MenuItem(_("Cut default keyframe"), _("Alt-x"), 'x')
++ : BC_MenuItem(_("Cut default keyframe"), _("Alt+X"), 'x')
+ {
+ 	set_alt();
+ 	this->mwindow = mwindow;
+@@ -900,7 +900,7 @@
+ }
+ 
+ CopyDefaultKeyframe::CopyDefaultKeyframe(MWindow *mwindow)
+- : BC_MenuItem(_("Copy default keyframe"), _("Alt-c"), 'c')
++ : BC_MenuItem(_("Copy default keyframe"), _("Alt+C"), 'c')
+ {
+ 	set_alt();
+ 	this->mwindow = mwindow;
+@@ -914,7 +914,7 @@
+ }
+ 
+ PasteDefaultKeyframe::PasteDefaultKeyframe(MWindow *mwindow)
+- : BC_MenuItem(_("Paste default keyframe"), _("Alt-v"), 'v')
++ : BC_MenuItem(_("Paste default keyframe"), _("Alt+V"), 'v')
+ {
+ 	set_alt();
+ 	this->mwindow = mwindow;
+@@ -928,7 +928,7 @@
+ }
+ 
+ ClearDefaultKeyframe::ClearDefaultKeyframe(MWindow *mwindow)
+- : BC_MenuItem(_("Clear default keyframe"), _("Alt-Del"), DELETE)
++ : BC_MenuItem(_("Clear default keyframe"), _("Alt+Del"), DELETE)
+ {
+ 	set_alt();
+ 	this->mwindow = mwindow;
+@@ -942,7 +942,7 @@
+ }
+ 
+ Cut::Cut(MWindow *mwindow)
+- : BC_MenuItem(_("Split | Cut"), "x", 'x')
++ : BC_MenuItem(_("Split | Cut"), "X", 'x')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -955,7 +955,7 @@
+ }
+ 
+ Copy::Copy(MWindow *mwindow)
+- : BC_MenuItem(_("Copy"), "c", 'c')
++ : BC_MenuItem(_("Copy"), "C", 'c')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -968,7 +968,7 @@
+ }
+ 
+ Paste::Paste(MWindow *mwindow)
+- : BC_MenuItem(_("Paste"), "v", 'v')
++ : BC_MenuItem(_("Paste"), "V", 'v')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -1024,7 +1024,7 @@
+ }
+ 
+ PasteSilence::PasteSilence(MWindow *mwindow)
+- : BC_MenuItem(_("Paste silence"), _("Shift-Space"), ' ')
++ : BC_MenuItem(_("Paste silence"), _("Shift+Space"), ' ')
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift();
+@@ -1038,9 +1038,10 @@
+ }
+ 
+ SelectAll::SelectAll(MWindow *mwindow)
+- : BC_MenuItem(_("Select All"), "a", 'a')
++ : BC_MenuItem(_("Select All"), "Ctrl+A", 'a')
+ {
+ 	this->mwindow = mwindow;
++	set_ctrl(1);
+ }
+ 
+ int SelectAll::handle_event()
+@@ -1072,7 +1073,7 @@
+ 	return 1;
+ }
+ 
+-ClearSelect::ClearSelect(MWindow *mwindow) : BC_MenuItem(_("Clear Select"),"Ctrl-Shift-A",'A')
++ClearSelect::ClearSelect(MWindow *mwindow) : BC_MenuItem(_("Clear Select"),"Ctrl+Shift+A",'A')
+ {
+ 	set_ctrl(1);
+ 	set_shift(1);
+@@ -1109,7 +1110,7 @@
+ }
+ 
+ MuteSelection::MuteSelection(MWindow *mwindow)
+- : BC_MenuItem(_("Mute Region"), "m", 'm')
++ : BC_MenuItem(_("Mute Region"), "M", 'm')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -1148,7 +1149,7 @@
+ // ============================================= audio
+ 
+ AddAudioTrack::AddAudioTrack(MWindow *mwindow)
+- : BC_MenuItem(_("Add track"), "t", 't')
++ : BC_MenuItem(_("Add track"), "T", 't')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -1172,7 +1173,7 @@
+ }
+ 
+ DefaultATransition::DefaultATransition(MWindow *mwindow)
+- : BC_MenuItem(_("Default Transition"), "u", 'u')
++ : BC_MenuItem(_("Default Transition"), "U", 'u')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -1216,7 +1217,7 @@
+ 
+ 
+ AddVideoTrack::AddVideoTrack(MWindow *mwindow)
+- : BC_MenuItem(_("Add track"), _("Shift-T"), 'T')
++ : BC_MenuItem(_("Add track"), _("Shift+T"), 'T')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -1257,7 +1258,7 @@
+ 
+ 
+ DefaultVTransition::DefaultVTransition(MWindow *mwindow)
+- : BC_MenuItem(_("Default Transition"), _("Shift-U"), 'U')
++ : BC_MenuItem(_("Default Transition"), _("Shift+U"), 'U')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -1298,7 +1299,7 @@
+ }
+ 
+ DeleteFirstTrack::DeleteFirstTrack(MWindow *mwindow)
+- : BC_MenuItem(_("Delete first track"), "Shift-D", 'D')
++ : BC_MenuItem(_("Delete first track"), "Shift+D", 'D')
+ {
+ 	set_shift(1);
+ 	this->mwindow = mwindow;
+@@ -1314,7 +1315,7 @@
+ }
+ 
+ DeleteLastTrack::DeleteLastTrack(MWindow *mwindow)
+- : BC_MenuItem(_("Delete last track"), "Ctrl-d", 'd')
++ : BC_MenuItem(_("Delete last track"), "Ctrl+D", 'd')
+ {
+ 	set_ctrl(1);
+ 	this->mwindow = mwindow;
+@@ -1330,7 +1331,7 @@
+ }
+ 
+ MoveTracksUp::MoveTracksUp(MWindow *mwindow)
+- : BC_MenuItem(_("Move tracks up"), _("Shift-Up"), UP)
++ : BC_MenuItem(_("Move tracks up"), _("Shift+Up"), UP)
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift();
+@@ -1344,7 +1345,7 @@
+ }
+ 
+ MoveTracksDown::MoveTracksDown(MWindow *mwindow)
+- : BC_MenuItem(_("Move tracks down"), _("Shift-Down"), DOWN)
++ : BC_MenuItem(_("Move tracks down"), _("Shift+Down"), DOWN)
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift();
+@@ -1359,7 +1360,7 @@
+ 
+ 
+ RollTracksUp::RollTracksUp(MWindow *mwindow)
+- : BC_MenuItem(_("Roll tracks up"), _("Ctrl-Shift-Up"), UP)
++ : BC_MenuItem(_("Roll tracks up"), _("Ctrl+Shift+Up"), UP)
+ {
+ 	this->mwindow = mwindow;
+ 	set_ctrl();
+@@ -1374,7 +1375,7 @@
+ }
+ 
+ RollTracksDown::RollTracksDown(MWindow *mwindow)
+- : BC_MenuItem(_("Roll tracks down"), _("Ctrl-Shift-Down"), DOWN)
++ : BC_MenuItem(_("Roll tracks down"), _("Ctrl+Shift+Down"), DOWN)
+ {
+ 	this->mwindow = mwindow;
+ 	set_ctrl();
+@@ -1409,7 +1410,7 @@
+ 
+ 
+ LoopPlayback::LoopPlayback(MWindow *mwindow)
+- : BC_MenuItem(_("Loop Playback"), _("Shift-L"), 'L')
++ : BC_MenuItem(_("Loop Playback"), _("Shift+L"), 'L')
+ {
+ 	this->mwindow = mwindow;
+ 	set_checked(mwindow->edl->local_session->loop_playback);
+@@ -1431,7 +1432,7 @@
+ 
+ 
+ AddSubttlTrack::AddSubttlTrack(MWindow *mwindow)
+- : BC_MenuItem(_("Add subttl"), _("Shift-Y"), 'Y')
++ : BC_MenuItem(_("Add subttl"), _("Shift+Y"), 'Y')
+ {
+ 	set_shift();
+ 	this->mwindow = mwindow;
+@@ -1445,7 +1446,7 @@
+ }
+ 
+ PasteSubttl::PasteSubttl(MWindow *mwindow)
+- : BC_MenuItem(_("paste subttl"), "y", 'y')
++ : BC_MenuItem(_("paste subttl"), "Y", 'y')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -1459,7 +1460,7 @@
+ 
+ 
+ SetBRenderActive::SetBRenderActive(MWindow *mwindow)
+- : BC_MenuItem(_("Toggle background rendering"),_("Shift-G"),'G')
++ : BC_MenuItem(_("Toggle background rendering"),_("Shift+G"),'G')
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift(1);
+@@ -1526,7 +1527,7 @@
+ 
+ 
+ CursorOnFrames::CursorOnFrames(MWindow *mwindow)
+- : BC_MenuItem(_("Align cursor on frames"),_("Ctrl-a"),'a')
++ : BC_MenuItem(_("Align cursor on frames"),_("Ctrl+F"),'f')
+ {
+ 	this->mwindow = mwindow;
+ 	set_checked(mwindow->edl->session->cursor_on_frames);
+@@ -1578,11 +1579,10 @@
+ }
+ 
+ SaveSettingsNow::SaveSettingsNow(MWindow *mwindow)
+- : BC_MenuItem(_("Save settings now"),_("Ctrl-Shift-S"),'S')
++ : BC_MenuItem(_("Save settings now"),_("Shift+S"),'s')
+ {
+ 	this->mwindow = mwindow;
+-	set_ctrl(1);
+-	set_shift(1);
++	set_shift(1);	// set_ctrl(1);
+ }
+ 
+ int SaveSettingsNow::handle_event()
+@@ -1664,7 +1664,7 @@
+ 
+ 
+ ShowGWindow::ShowGWindow(MWindow *mwindow)
+- : BC_MenuItem(_("Show Overlays"), _("Ctrl-0"), '0')
++ : BC_MenuItem(_("Show Overlays"), _("Ctrl+0"), '0')
+ {
+ 	this->mwindow = mwindow;
+ 	set_ctrl(1);
+@@ -1728,7 +1728,7 @@
+ }
+ 
+ SplitX::SplitX(MWindow *mwindow)
+- : BC_MenuItem(_("Split X pane"), _("Ctrl-1"), '1')
++ : BC_MenuItem(_("Split X pane"), _("Ctrl+1"), '1')
+ {
+ 	this->mwindow = mwindow;
+ 	set_ctrl(1);
+@@ -1742,7 +1742,7 @@
+ }
+ 
+ SplitY::SplitY(MWindow *mwindow)
+- : BC_MenuItem(_("Split Y pane"), _("Ctrl-2"), '2')
++ : BC_MenuItem(_("Split Y pane"), _("Ctrl+2"), '2')
+ {
+ 	this->mwindow = mwindow;
+ 	set_ctrl(1);
+@@ -1826,7 +1826,7 @@
+ }
+ 
+ MixerViewer::MixerViewer(MixerItems *mixer_items)
+- : MixerItem(mixer_items, _("Mixer Viewer"), _("Shift-M"), 'M')
++ : MixerItem(mixer_items, _("Mixer Viewer"), _("Shift+M"), 'M')
+ {
+ 	set_shift(1);
+ }
+@@ -1839,7 +1839,7 @@
+ }
+ 
+ DragTileMixers::DragTileMixers(MixerItems *mixer_items)
+- : MixerItem(mixer_items, _("Drag Tile mixers"), "Alt-t", 't')
++ : MixerItem(mixer_items, _("Tile mixers"), "Alt+T", 't')
+ {
+ 	set_alt();
+ 	drag_box = 0;
+@@ -1933,7 +1933,7 @@
+ 	this->load_layout = load_layout;
+ 	if( hotkey ) {
+ 		char hot_txt[BCSTRLEN];
+-		sprintf(hot_txt, _("Ctrl-Shift+F%d"), hotkey-KEY_F1+1);
++		sprintf(hot_txt, _("Ctrl+Shift+F%d"), hotkey-KEY_F1+1);
+ 		set_ctrl();  set_shift();
+ 		set_hotkey_text(hot_txt);
+ 	}
+diff -ur cinelerra-5.1/cinelerra/mwindowgui.C cinelerra-5.1_after/cinelerra/mwindowgui.C
+--- cinelerra-5.1/cinelerra/mwindowgui.C	2022-05-30 15:03:35.152305163 -0600
++++ cinelerra-5.1_after/cinelerra/mwindowgui.C	2023-09-28 11:55:17.355859745 -0600
+@@ -1092,27 +1092,38 @@
+ 
+ 	switch( get_keypress() ) {
+ 	case 'A':
+-		if( !alt_down() ) {
+-			if( !ctrl_down() || !shift_down() ) break;
++		if( !alt_down() && ctrl_down() ) {
+ 			mwindow->edl->tracks->clear_selected_edits();
+ 			draw_overlays(1);
+ 			result = 1;
+-			break;
+-		} // fall thru
++		}
++		break;
+ 	case 'a':
++// REM 2023
++/*
+ 		if( !alt_down() ) break;
+ 		stop_transport("MWindowGUI::keypress_event 1");
+ 		mwindow->nearest_auto_keyframe(shift_down(),
+ 			!ctrl_down() ? PLAY_FORWARD : PLAY_REVERSE);
+ 		result = 1;
++*/
++// REM END
++		if( ctrl_down() && alt_down() ) {
++			mwindow->select_edits(1);
++			result = 1;
++		}
+ 		break;
+ 
++// REM 2023
++/*
+ 	case '\'':
+ 		if( ctrl_down() && alt_down() ) {
+ 			mwindow->select_edits(1);
+ 			result = 1;
+ 		}
+ 		break;
++*/
++// REM END
+ 
+ 	case 'e':
+ 		if( ctrl_down() || alt_down() ) break;
+@@ -1123,8 +1134,8 @@
+ 	case 'k': case 'K':
+ 		if( alt_down() ) break;
+ 		stop_transport("MWindowGUI::keypress_event 2");
+-		mwindow->nearest_plugin_keyframe(shift_down(),
+-			!ctrl_down() ? PLAY_FORWARD : PLAY_REVERSE);
++//		mwindow->nearest_plugin_keyframe(shift_down(),
++//			!ctrl_down() ? PLAY_FORWARD : PLAY_REVERSE);
+ 		result = 1;
+ 		break;
+ 
+@@ -1204,10 +1215,23 @@
+ 				stop_transport("MWindowGUI::keypress_event 1");
+ 				mwindow->prev_edit_handle(shift_down());
+ 			}
++			// *** Shift+Left Arrow to jump to Previous Keyframe. START new code 2023 ***
++			else if( shift_down() ) {
++				stop_transport("MWindowGUI::keypress_event 1");
++				mwindow->nearest_plugin_keyframe( (!shift_down() && !ctrl_down()), PLAY_REVERSE );
++			}
++			// *** END new code 2023 ***
+ 			else
+ 				mwindow->move_left();
+ 			result = 1;
+ 		}
++		// *** Ctrl+Shift+Alt+Left Arrow to jump to Previous AutosKeyframe. START new code 2023 ***
++		if( ctrl_down() && shift_down() && alt_down() ) {
++			stop_transport("MWindowGUI::keypress_event 1");
++			mwindow->nearest_auto_keyframe( (!shift_down() && !ctrl_down() && !alt_down() ), PLAY_REVERSE );
++			result = 1;
++			}
++		// *** END new code 2023 ***
+ 		break;
+ 
+ 	case ',':
+@@ -1223,10 +1247,23 @@
+ 				stop_transport("MWindowGUI::keypress_event 2");
+ 				mwindow->next_edit_handle(shift_down());
+ 			}
++			// *** Shift+Right Arrow to jump to Next Keyframe. START new code 2023 ***
++			else if( shift_down() ) {
++				stop_transport("MWindowGUI::keypress_event 1");
++				mwindow->nearest_plugin_keyframe( (!shift_down() && !ctrl_down()), PLAY_FORWARD );
++			}
++			// *** END new code 2023 ***
+ 			else
+ 				mwindow->move_right();
+ 			result = 1;
+ 		}
++		// *** Ctrl+Shift+Alt+Right Arrow to jump to Next AutosKeyframe. START new code 2023 ***
++		if( ctrl_down() && shift_down() && alt_down() ) {
++			stop_transport("MWindowGUI::keypress_event 1");
++			mwindow->nearest_auto_keyframe( (!shift_down() && !ctrl_down() && !alt_down() ), PLAY_FORWARD );
++			result = 1;
++			}
++		// *** END new code 2023 ***
+ 		break;
+ 
+ 	case '.':
+diff -ur cinelerra-5.1/cinelerra/new.C cinelerra-5.1_after/cinelerra/new.C
+--- cinelerra-5.1/cinelerra/new.C	2023-01-24 11:13:37.499568388 -0700
++++ cinelerra-5.1_after/cinelerra/new.C	2023-09-28 11:55:17.355859745 -0600
+@@ -140,8 +140,9 @@
+ }
+ 
+ NewProject::NewProject(MWindow *mwindow)
+- : BC_MenuItem(_("New Project..."), "n", 'n'), New(mwindow)
++ : BC_MenuItem(_("New Project..."), "Ctrl+N", 'n'), New(mwindow)
+ {
++	set_ctrl(1);
+ }
+ NewProject::~NewProject()
+ {
+@@ -154,7 +155,7 @@
+ }
+ 
+ AppendTracks::AppendTracks(MWindow *mwindow)
+- : BC_MenuItem(_("Append to Project..."), "Shift-N", 'N'), New(mwindow)
++ : BC_MenuItem(_("Append to Project..."), "Shift+N", 'N'), New(mwindow)
+ {
+ 	set_shift(1);
+ }
+diff -ur cinelerra-5.1/cinelerra/playtransport.C cinelerra-5.1_after/cinelerra/playtransport.C
+--- cinelerra-5.1/cinelerra/playtransport.C	2022-03-15 21:47:37.376382165 -0600
++++ cinelerra-5.1_after/cinelerra/playtransport.C	2023-09-28 11:55:17.355859745 -0600
+@@ -273,12 +273,35 @@
+ 		break;
+ 	case 'j': case 'J':
+ 		if( alt_key ) command = SINGLE_FRAME_FWD;
++//  IF pressed TWICE its toggle between FAST and NORMAL Rewind PLAY
++		if( !alt_key && !ctrl_key ) {
++			switch( curr_command ) {
++				case NORMAL_REWIND:
++					command = FAST_REWIND;
++					break;
++				default:
++					command = NORMAL_REWIND;
++					break;
++			}
++		}
+ 		break;
+ 	case 'k': case 'K':
+ 		if( alt_key ) command = SLOW_FWD;
++		if( !alt_key && !ctrl_key ) command = STOP;
+ 		break;
+ 	case 'l': case 'L':
+ 		if( alt_key ) command = NORMAL_FWD;
++//  IF pressed TWICE its toggle between FAST and NORMAL Forward PLAY
++		if( !alt_key && !ctrl_key ) {
++			switch( curr_command ) {
++				case NORMAL_FWD:
++					command = FAST_FWD;
++					break;
++				default:
++					command = NORMAL_FWD;
++					break;
++			}
++		}
+ 		break;
+ 	case ':': case ';':
+ 		if( alt_key ) command = FAST_FWD;
+@@ -286,6 +309,12 @@
+ 	case 'm': case 'M':
+ 		if( alt_key ) command = STOP;
+ 		break;
++	case ',':
++		if( !alt_key && !ctrl_key && !shft_key ) command = SINGLE_FRAME_REWIND;
++		break;
++	case '.':
++		if( !alt_key && !ctrl_key && !shft_key ) command = SINGLE_FRAME_FWD;
++		break;
+ 	}
+ 	if( command >= 0 ) {
+ 		handle_transport(command, 0, use_inout, toggle_audio, loop_play, speed);
+@@ -409,7 +438,7 @@
+ FastReverseButton::FastReverseButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("fastrev"))
+ {
+-	set_tooltip(_("Fast reverse ( + or Alt-p )"));
++	set_tooltip(_("Fast reverse ( Numpad +, Alt+P )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -424,7 +453,7 @@
+ ReverseButton::ReverseButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("reverse"))
+ {
+-	set_tooltip(_("Normal reverse ( 6 or Alt-o )"));
++	set_tooltip(_("Normal reverse ( Numpad 6, Alt+O, 'J' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -439,7 +468,7 @@
+ FrameReverseButton::FrameReverseButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("framerev"))
+ {
+-	set_tooltip(_("Frame reverse ( 4 or Alt-u )"));
++	set_tooltip(_("Frame reverse ( Numpad 4, Alt+U, ',' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -456,7 +485,7 @@
+ PlayButton::PlayButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("play"))
+ {
+-	set_tooltip(_("Normal forward ( 3 or Alt-l )"));
++	set_tooltip(_("Normal forward ( Numpad 3, Alt+L, 'L' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -473,7 +502,7 @@
+ FramePlayButton::FramePlayButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("framefwd"))
+ {
+-	set_tooltip(_("Frame forward ( 1 or Alt-j )"));
++	set_tooltip(_("Frame forward ( Numpad 1, Alt+J, '.' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -490,7 +519,7 @@
+ FastPlayButton::FastPlayButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("fastfwd"))
+ {
+-	set_tooltip(_("Fast forward ( Enter or Alt-; )"));
++	set_tooltip(_("Fast forward ( Numpad Enter, Alt+; )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+@@ -518,7 +547,7 @@
+ StopButton::StopButton(MWindow *mwindow, PlayTransport *transport, int x, int y)
+  : PTransportButton(mwindow, transport, x, y, mwindow->theme->get_image_set("stop"))
+ {
+-	set_tooltip(_("Stop ( 0 or Alt-m )"));
++	set_tooltip(_("Stop ( Numpad 0, Alt+M, 'K' )"));
+ // *** CONTEXT_HELP ***
+ 	context_help_set_keyword("Transport Controls");
+ }
+diff -ur cinelerra-5.1/cinelerra/preferencesthread.C cinelerra-5.1_after/cinelerra/preferencesthread.C
+--- cinelerra-5.1/cinelerra/preferencesthread.C	2022-03-15 21:47:37.379382184 -0600
++++ cinelerra-5.1_after/cinelerra/preferencesthread.C	2023-09-28 11:55:17.356859758 -0600
+@@ -71,7 +71,7 @@
+ 
+ 
+ PreferencesMenuitem::PreferencesMenuitem(MWindow *mwindow)
+- : BC_MenuItem(_("Preferences..."), _("Shift-P"), 'P')
++ : BC_MenuItem(_("Preferences..."), _("Shift+P"), 'P')
+ {
+ 	this->mwindow = mwindow;
+ 
+diff -ur cinelerra-5.1/cinelerra/proxy.C cinelerra-5.1_after/cinelerra/proxy.C
+--- cinelerra-5.1/cinelerra/proxy.C	2022-03-15 21:47:37.380382190 -0600
++++ cinelerra-5.1_after/cinelerra/proxy.C	2023-09-28 11:55:17.356859758 -0600
+@@ -52,7 +52,7 @@
+ #define MAX_SCALE 16
+ 
+ ProxyMenuItem::ProxyMenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("Proxy settings..."),  _("Alt-r"), 'r')
++ : BC_MenuItem(_("Proxy settings..."),  _("Alt+R"), 'r')
+ {
+ 	this->mwindow = mwindow;
+ 	set_alt();
+diff -ur cinelerra-5.1/cinelerra/quit.C cinelerra-5.1_after/cinelerra/quit.C
+--- cinelerra-5.1/cinelerra/quit.C	2022-03-15 21:47:37.380382190 -0600
++++ cinelerra-5.1_after/cinelerra/quit.C	2023-09-28 11:55:17.356859758 -0600
+@@ -41,8 +41,9 @@
+ 
+ 
+ Quit::Quit(MWindow *mwindow)
+- : BC_MenuItem(_("Quit"), "q", 'q'), Thread()
++ : BC_MenuItem(_("Quit"), "Ctrl+Q", 'q'), Thread()
+ {
++	set_ctrl(1);
+ 	this->mwindow = mwindow;
+ }
+ 
+diff -ur cinelerra-5.1/cinelerra/record.C cinelerra-5.1_after/cinelerra/record.C
+--- cinelerra-5.1/cinelerra/record.C	2022-03-15 21:47:37.381382196 -0600
++++ cinelerra-5.1_after/cinelerra/record.C	2023-09-28 11:55:17.356859758 -0600
+@@ -86,7 +86,7 @@
+ 
+ 
+ RecordMenuItem::RecordMenuItem(MWindow *mwindow)
+- : BC_MenuItem(_("Record..."), "r", 'r')
++ : BC_MenuItem(_("Record..."), "R", 'r')
+ {
+ 	this->mwindow = mwindow;
+ 	record = new Record(mwindow, this);
+diff -ur cinelerra-5.1/cinelerra/render.C cinelerra-5.1_after/cinelerra/render.C
+--- cinelerra-5.1/cinelerra/render.C	2023-06-28 10:24:09.242079933 -0600
++++ cinelerra-5.1_after/cinelerra/render.C	2023-09-28 11:55:17.356859758 -0600
+@@ -83,7 +83,7 @@
+ 
+ 
+ RenderItem::RenderItem(MWindow *mwindow)
+- : BC_MenuItem(_("Render..."), _("Shift-R"), 'R')
++ : BC_MenuItem(_("Render..."), _("Shift+R"), 'R')
+ {
+ 	this->mwindow = mwindow;
+ 	set_shift(1);
+diff -ur cinelerra-5.1/cinelerra/savefile.C cinelerra-5.1_after/cinelerra/savefile.C
+--- cinelerra-5.1/cinelerra/savefile.C	2022-03-15 21:47:37.385382220 -0600
++++ cinelerra-5.1_after/cinelerra/savefile.C	2023-09-28 11:55:17.356859758 -0600
+@@ -40,7 +40,7 @@
+ 
+ 
+ SaveBackup::SaveBackup(MWindow *mwindow)
+- : BC_MenuItem(_("Save backup"), "b", 'b')
++ : BC_MenuItem(_("Save backup"), "B", 'b')
+ {
+ 	this->mwindow = mwindow;
+ }
+@@ -52,8 +52,9 @@
+ }
+ 
+ 
+-Save::Save(MWindow *mwindow) : BC_MenuItem(_("Save"), "s", 's')
++Save::Save(MWindow *mwindow) : BC_MenuItem(_("Save"), "Ctrl+S", 's')
+ {
++	set_ctrl(1);
+ 	this->mwindow = mwindow;
+ 	quit_now = 0;
+ }
+@@ -87,8 +88,9 @@
+ }
+ 
+ SaveAs::SaveAs(MWindow *mwindow)
+- : BC_MenuItem(_("Save as..."), "Shift-S", 'S'), Thread()
++ : BC_MenuItem(_("Save as..."), "Ctrl+Shift+S", 'S'), Thread()
+ {
++	set_ctrl(1);
+ 	set_shift(1);
+ 	this->mwindow = mwindow;
+ 	quit_now = 0;
+@@ -216,7 +218,7 @@
+ }
+ 
+ SaveProject::SaveProject(MWindow *mwindow)
+- : BC_MenuItem(_("Export Project..."), "Alt-s", 's'), Thread()
++ : BC_MenuItem(_("Export Project..."), "Alt+S", 's'), Thread()
+ {
+ 	set_alt(1);
+ 	this->mwindow = mwindow;
+@@ -257,10 +259,10 @@
+ 
+   
+ SaveSession::SaveSession(MWindow *mwindow)
+- : BC_MenuItem(_("Save Session"),_("Ctrl-s"),'s')
++ : BC_MenuItem(_("Save Session"))
+ {
+ 	this->mwindow = mwindow;
+-	set_ctrl(1);
++//	set_ctrl(1);
+ }
+ 
+ int SaveSession::handle_event()
+diff -ur cinelerra-5.1/cinelerra/setformat.C cinelerra-5.1_after/cinelerra/setformat.C
+--- cinelerra-5.1/cinelerra/setformat.C	2023-01-24 11:13:37.500568399 -0700
++++ cinelerra-5.1_after/cinelerra/setformat.C	2023-09-28 11:55:17.357859770 -0600
+@@ -48,7 +48,7 @@
+ 
+ 
+ SetFormat::SetFormat(MWindow *mwindow)
+- : BC_MenuItem(_("Format..."), _("Shift-F"), 'F')
++ : BC_MenuItem(_("Format..."), _("Shift+F"), 'F')
+ {
+ 	set_shift(1);
+ 	this->mwindow = mwindow;
+diff -ur cinelerra-5.1/cinelerra/swindow.C cinelerra-5.1_after/cinelerra/swindow.C
+--- cinelerra-5.1/cinelerra/swindow.C	2023-02-09 09:50:37.265383255 -0700
++++ cinelerra-5.1_after/cinelerra/swindow.C	2023-09-28 11:55:17.357859770 -0600
+@@ -1106,7 +1106,7 @@
+ 
+ 
+ SubttlSWin::SubttlSWin(MWindow *mwindow)
+- : BC_MenuItem(_("SubTitle..."), _("Alt-y"), 'y')
++ : BC_MenuItem(_("SubTitle..."), _("Alt+Y"), 'y')
+ {
+ 	set_alt();
+ 	this->mwindow = mwindow;
+diff -ur cinelerra-5.1/guicast/bcfilebox.C cinelerra-5.1_after/guicast/bcfilebox.C
+--- cinelerra-5.1/guicast/bcfilebox.C	2022-03-15 21:47:37.422382444 -0600
++++ cinelerra-5.1_after/guicast/bcfilebox.C	2023-09-28 15:19:16.470367060 -0600
+@@ -767,6 +767,7 @@
+ int BC_FileBox::keypress_event()
+ {
+ 	switch(get_keypress()) {
++/*
+ 	case 'a':
+ 		if( !ctrl_down() ) break;
+ 		refresh(0, 1);
+@@ -775,6 +776,19 @@
+ 		if( !ctrl_down() ) break;
+ 		refresh(0, 0);
+ 		return 1;
++*/
++	// *** START new code 2023 ***
++	case 'a':
++	case 'A': 
++		if( ctrl_down() && !shift_down() && !alt_down() ) {
++			refresh(0, 1);	// Select All
++			return 1;
++		}
++		if( ctrl_down() && shift_down() && !alt_down() ) {
++			refresh(0, 0);	// Deselect All
++			return 1;
++		}
++	// *** END new code 2023 ***
+ 	case 'w':
+ 		if( !ctrl_down() ) break;
+ 		set_done(1);
