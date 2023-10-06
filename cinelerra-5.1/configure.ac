@@ -427,7 +427,7 @@ PKG_3RD([x265],[auto],
   [ . source ])
 
 PKG_3RD([libvpx],[auto],
-  [libvpx-1.13.0],
+  [libvpx-1.13.1],
   [ libvpx.a ],
   [ . ])
 
