@@ -479,3 +479,24 @@ virtualbass
 #remap_opencl ###Input/output error
 #xfade_opencl ###Input_output error
 #openclsrc ###invalid argument
+; new in 6.1
+backgroundkey
+ccrepack
+zoneplate
+adrc
+afdelaysrc
+; do not work in 6.1
+#afireqsrc ###not working with at least defaults
+#apsnr ###Input/output error
+#arls ###Input/output error
+#asisdr ###Input/output error
+#corr ###Input/output error
+#ssim360 ###Input/output error
+#hstack_vaapi ###Operation not permitted
+#vstack_vaapi ###Operation not permitted
+#xstack_vaapi ###Operation not permitted
+#a3dscope ###Input/output error
+#showcwt ###Input/output error
+#bilateral_cuda ###Function not implemented
+#bwdif_cuda ###Function not implemented
+#colorspace_cuda ###Function not implemented

@@ -662,10 +662,9 @@ PluginFClient::~PluginFClient()
 }
 
 bool PluginFClient::is_audio(const AVFilter *fp)
-
 {
 	if( !fp->outputs ) return 0;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if LIBAVFILTER_VERSION_MINOR > 2
 	if( avfilter_filter_pad_count(fp, 1) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->outputs) > 1 ) return 0;
@@ -673,7 +672,7 @@ bool PluginFClient::is_audio(const AVFilter *fp)
 	if( !avfilter_pad_get_name(fp->outputs, 0) ) return 0;
 	if( avfilter_pad_get_type(fp->outputs, 0) != AVMEDIA_TYPE_AUDIO ) return 0;
 	if( !fp->inputs ) return 1;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if LIBAVFILTER_VERSION_MINOR > 2
 	if( avfilter_filter_pad_count(fp, 0) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->inputs) > 1 ) return 0;
@@ -685,7 +684,7 @@ bool PluginFClient::is_audio(const AVFilter *fp)
 bool PluginFClient::is_video(const AVFilter *fp)
 {
 	if( !fp->outputs ) return 0;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if LIBAVFILTER_VERSION_MINOR > 2
 	if( avfilter_filter_pad_count(fp, 1) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->outputs) > 1 ) return 0;
@@ -693,7 +692,7 @@ bool PluginFClient::is_video(const AVFilter *fp)
 	if( !avfilter_pad_get_name(fp->outputs, 0) ) return 0;
 	if( avfilter_pad_get_type(fp->outputs, 0) != AVMEDIA_TYPE_VIDEO ) return 0;
 	if( !fp->inputs ) return 1;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if LIBAVFILTER_VERSION_MINOR > 2
 	if( avfilter_filter_pad_count(fp, 0) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->inputs) > 1 ) return 0;

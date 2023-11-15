@@ -33,7 +33,7 @@ https://download.osgeo.org/libtiff/tiff-4.6.0.tar.xz
 https://sourceforge.net/projects/libuuid/files/latest/download?source=directory - 1.0.3
 https://code.videolan.org/videolan/x264/-/tree/stable/x264-stable.tar.gz (Jan. 2023 version r3106)
 https://bitbucket.org/multicoreware/x265_git/downloads/x265_3.5.tar.gz
-https://ffmpeg.org/releases/ffmpeg-5.1.tar.bz2
+https://ffmpeg.org/releases/ffmpeg-6.1.tar.bz2
 https://github.com/webmproject/libvpx/archive/v1.13.1.tar.gz
 https://code.videolan.org/videolan/dav1d/-/archive/0.5.1/dav1d-0.5.1.tar.gz
 https://github.com/swh/ladspa/releases/tag/v0.4.17, plugin.org.uk
