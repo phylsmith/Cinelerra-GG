@@ -3,6 +3,12 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2023 November changes of note:
+  New build farm for Ubuntu, Debian, Suse, and Fedora at:
+   https://github.com/einhander/cin-gg-packages/releases
+  FFmpeg has been upgraded to 6.1.
+  Libvpx has been upgraded to 1.13.1.
+  Tiff has been upgraded to 4.6.0.
 2023 September changes of note:
   Libwebp has been upgraded to 1.3.2.
   Alternative shortcuts (more Standard) AppImage available.

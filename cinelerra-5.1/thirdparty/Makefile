@@ -132,6 +132,7 @@ fftw.cfg_params= --disable-fortran --enable-shared=no
 ffmpeg.cfg_vars?= PKG_CONFIG_PATH="$(call bld_path,libwebp)/usr/local/lib/pkgconfig"
 ffmpeg.cfg_params= \
 	--enable-pthreads --disable-avdevice --enable-gpl --disable-ffplay \
+	--disable-doc \
 	$(call if_want,VAAPI,--enable-vaapi,--disable-vaapi) \
 	$(call if_want,VDPAU,--enable-vdpau,--disable-vdpau) \
 	$(call if_want,NV, --enable-nvenc --enable-nvdec --enable-ffnvcodec) \
