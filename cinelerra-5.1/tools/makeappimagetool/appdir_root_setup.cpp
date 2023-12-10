@@ -1,4 +1,5 @@
 // local headers
+#include <fstream>
 #include "includes/util.h"
 #include "includes/log.h"
 #include "includes/appdir_root_setup.h"

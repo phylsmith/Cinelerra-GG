@@ -92,6 +92,7 @@ $(opencv)/build: $(opencv).src
   -DBUILD_TESTS=OFF \
   -DBUILD_opencv_apps=OFF \
   -DBUILD_opencv_python3=no \
+  -DBUILD_LIST="calib3d,core,features2d,imgproc,objdetect,photo,video,xfeatures2d,ximgproc,videostab" \
   -DCMAKE_INSTALL_PREFIX=/usr/local \
   -DOPENCV_EXTRA_MODULES_PATH="$(opencv)_contrib/modules/"
 

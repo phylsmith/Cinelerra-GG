@@ -901,7 +901,7 @@ EXROStream() : Imf::OStream("mypath") {} };
   if test "x$WANT_STATIC_BUILD" = "xno"; then
     SHARED_openexr="$LIBS"
     SHARED_LIBS+=" $LIBS"
-    CFG_CFLAGS+=" -I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
+    CFG_CFLAGS+=" -I/usr/local/include/Imath -I/usr/include/OpenEXR -I/usr/local/include/OpenEXR"
     CFG_CFLAGS+=" $(pkg-config --cflags OpenEXR)"
     CFG_CFLAGS+=" $(pkg-config --cflags Imath)"
   fi
@@ -1281,13 +1281,13 @@ fi
 if test [ "$(uname)"] = "NetBSD" ; then
 echo "CFLAGS += -DNO_BTRACE"
 echo "CFLAGS += -DNO_CTX"
-echo "system_libs += -L/usr/pkg/lib/ffmpeg4"
+echo "system_libs += -L/usr/pkg/lib/ffmpeg6"
 echo "system_libs += -L/usr/pkg/lib/"
 echo "system_libs += -lpng16"
 echo "system_libs += -lintl"
 echo "system_libs += -lossaudio"
 echo "CFLAGS += -I/usr/X11R7/include"
-echo "CFLAGS += -I/usr/pkg/include/ffmpeg4"
+echo "CFLAGS += -I/usr/pkg/include/ffmpeg6"
 echo "CFLAGS += $(pkg-config --cflags xft)"
 echo "CFLAGS += -I/usr/pkg/include"
 echo "CFLAGS += -I/usr/pkg/include/uuid"
