@@ -1,3 +1,8 @@
 image2 hdr
 # this codec creates a set of image files in a directory
 # use an image2 file name like /dir/t%05d.tiff
+# Next 3 parameters are what YouTube HDR uses
+colorspace bt2020nc
+color_trc smpte2084
+color_primaries bt2020
+

@@ -1,16 +1,16 @@
 #!/bin/bash
-#use: patch -p2 < bsd.patch
+#patch not needed anymore
 export CONFIG_SHELL=/bin/bash
 export MAKE=gmake
-export C_INCLUDE_PATH=/usr/local/include:/usr/X11R7/include:/usr/pkg/include:/usr/pkg/include/ffmpeg4
+export C_INCLUDE_PATH=/usr/local/include:/usr/X11R7/include:/usr/pkg/include:/usr/pkg/include/ffmpeg6
 export CPLUS_INCLUDE_PATH=/usr/local/include
 export LIBRARY_PATH=/usr/local/lib
-export LDFLAGS="-L/usr/X11R7/lib -L/usr/pkg/lib"
-export CFLAGS="-I/usr/pkg/include -I/usr/pkg/include/ffmpeg4 -pthread -I/usr/pkg/include -I/usr/pkg/include/OpenEXR -I/usr/pkg/include -I/usr/pkg/include/Imath"
+export LDFLAGS="-L/usr/X11R7/lib -L/usr/pkg/lib -L/usr/pkg/lib/ffmpeg6 "
+export CFLAGS1="-I/usr/pkg/include -I/usr/pkg/include/ffmpeg6 -pthread -I/usr/pkg/include -I/usr/pkg/include/OpenEXR -I/usr/pkg/include -I/usr/pkg/include/Imath"
 
 alias make=gmake
 ( ./autogen.sh
-  BSD=1 CC=gcc CXX=g++ CFLAGS="-g -fpermissive -O2 -DFFMPEG3" \
+  BSD=1 CC=gcc CXX=g++ CFLAGS=" ${CFLAGS1} -g -fpermissive -O2" \
   ./configure --with-single-user \
     --disable-static-build --without-lv2 --disable-lame --disable-twolame \
     --with-oss --without-alsa --without-firewire --without-dv --without-dvb \
