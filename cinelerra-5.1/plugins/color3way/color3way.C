@@ -278,10 +278,10 @@ void Color3WayUnit::process_package(LoadPackage *package)
 				PROCESS(unsigned char, 0xff, 4, 1)
 				break;
 			case BC_RGB_FLOAT:
-				PROCESS(float, 1.0, 3, 0)
+				PROCESS(float, 100.0, 3, 0)
 				break;
 			case BC_RGBA_FLOAT:
-				PROCESS(float, 1.0, 4, 0)
+				PROCESS(float, 100.0, 4, 0)
 				break;
 		}
 	}
