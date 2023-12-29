@@ -1,4 +1,8 @@
 webm av1_vaapi
-g=300
-#profile=
+# Nvidia 4000+ series (better nvenc/vdpau)
+# AMD Radeon 7000+ series
+# Intel Xe2, Arc+ series
+cin_hw_dev=vaapi
+g=30
+# profile=high #(main, professional)
 rc_mode=QVBR
