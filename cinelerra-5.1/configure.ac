@@ -463,7 +463,7 @@ PKG_3RD([suil],[auto],
   [ usr/local/include ])
 
 PKG_3RD([libaom],[auto],
-  [libaom-v3.4.0],
+  [libaom-v3.8.0],
   [ usr/local/lib*/libaom*.a ],
   [ usr/local/include ])
 
