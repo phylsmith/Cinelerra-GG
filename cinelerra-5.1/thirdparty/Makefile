@@ -112,6 +112,7 @@ $(BLD):
 
 # pkg-config names
 pc_libaom=aom
+pc_libsvtav1=SvtAv1Enc
 pc_dav1d=dav1d
 pc_libwebp=libwebp libwebpmux
 pc_opus=opus
@@ -140,6 +141,7 @@ ffmpeg.cfg_params= \
 	$(call if_ena,openjpeg,--enable-libopenjpeg) \
 	$(call if_ena,lame,--enable-libmp3lame) \
 	$(call if_ena,libaom,--enable-libaom) \
+	$(call if_ena,libsvtav1,--enable-libsvtav1) \
 	$(call if_ena,dav1d,--enable-libdav1d) \
 	$(call if_ena,libwebp,--enable-libwebp) \
 	$(call if_ena,opus,--enable-libopus) \
@@ -153,6 +155,7 @@ ffmpeg.cfg_params= \
 		$(call inc_path,twolame) \
 		$(call inc_path,lame) \
 		$(call inc_path,libaom) \
+		$(call inc_path,libsvtav1) \
 		$(call inc_path,dav1d) \
 		$(call inc_path,libwebp) \
 		$(call inc_path,openjpeg) \
@@ -169,6 +172,7 @@ ffmpeg.cfg_params= \
 		$(call ld_path,twolame,libtwolame/.libs) \
 		$(call ld_path,lame,libmp3lame/.libs) \
 		$(call ld_path,libaom,usr/local/lib) \
+		$(call ld_path,libsvtav1,usr/local/lib) \
 		$(call ld_path,dav1d,usr/local/lib) \
 		$(call ld_path,libwebp,usr/local/lib) \
 		$(call ld_path,openjpeg,bin) \
@@ -209,6 +213,10 @@ libaom.cfg_vars?= mkdir aom.build && cd aom.build && $(call cmake_config,..)
 libaom.cfg_params?=  -DENABLE_TESTS=no -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=no -DENABLE_SHARED=no -DCMAKE_INSTALL_LIBDIR=lib \
  -DENABLE_EXAMPLES=no -DCMAKE_INSTALL_PREFIX=$(call bld_path,libaom)/usr/local
 libaom.mak_params?= ; $(MAKE) -C libaom*/aom.build install
+libsvtav1.cfg_vars?= mkdir libsvtav1.build && cd libsvtav1.build && $(call cmake_config,..)
+libsvtav1.cfg_params?=  -DENABLE_TESTS=no -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=no -DENABLE_DOCS=no -DENABLE_SHARED=no -DCMAKE_INSTALL_LIBDIR=lib \
+ -DENABLE_EXAMPLES=no -DCMAKE_INSTALL_PREFIX=$(call bld_path,libsvtav1)/usr/local
+libsvtav1.mak_params?= ; $(MAKE) -C libsvtav1*/libsvtav1.build install
 dav1d.cfg_vars?=echo "echo dav1d custom make" >> configure; chmod +x ./configure;
 dav1d.mak_params?=; $(MAKE) -C dav1d* install DESTDIR="$(call bld_path,dav1d)"
 libwebp.cfg_vars?= ./autogen.sh;
@@ -342,7 +350,7 @@ $(call rules,$(call std-build,audiofile))
 $(call rules,$(call std-build,encore))
 $(call rules,$(call std-build,esound,audiofile))
 $(call rules,$(call std-build,ffmpeg, twolame lame openjpeg opus \
-	libtheora x264 x265 libvpx libaom dav1d libwebp \
+	libtheora x264 x265 libvpx libaom libsvtav1 dav1d libwebp \
 	$(call if_want,NV, ffnvcodec)))
 $(call rules,$(call std-build,fftw))
 $(call rules,$(call std-build,flac,libogg))
@@ -351,6 +359,7 @@ $(call rules,$(call std-build,ilmBase, openexr))
 $(call rules,$(call std-build,ladspa))
 $(call rules,$(call std-build,lame))
 $(call rules,$(call std-build,libaom))
+$(call rules,$(call std-build,libsvtav1))
 $(call rules,$(call std-build,dav1d))
 $(call rules,$(call std-build,libwebp))
 $(call rules,$(call std-build,libavc1394,libraw1394))

@@ -467,6 +467,11 @@ PKG_3RD([libaom],[auto],
   [ usr/local/lib*/libaom*.a ],
   [ usr/local/include ])
 
+PKG_3RD([libsvtav1],[no],
+  [libsvtav1-v1.8.0],
+  [ usr/local/lib*/libSvtAv1Enc.a ],
+  [ usr/local/include/svt-av1 ])
+
 PKG_3RD([dav1d],[auto],
   [dav1d-0.5.1],
   [ usr/local/lib*/libdav1d*.a ],
@@ -1027,6 +1032,7 @@ PKG_PROVIDE([libuuid])
 PKG_PROVIDE([libvorbis])
 PKG_PROVIDE([mjpegtools])
 PKG_PROVIDE([libaom])
+PKG_PROVIDE([libsvtav1])
 PKG_PROVIDE([dav1d])
 PKG_PROVIDE([libwebp])
 PKG_PROVIDE([openExr], [$WANT_OPENEXR])
