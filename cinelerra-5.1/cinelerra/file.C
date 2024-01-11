@@ -255,6 +255,10 @@ int File::get_options(FormatTools *format,
 		FileOGG::get_parameters(parent_window, asset, format_window,
 			audio_options, video_options, edl);
 		break;
+	case FILE_VORBIS:
+		FileVorbis::get_parameters(parent_window, asset, format_window,
+			audio_options, video_options, edl);
+		break;
 #endif
 	default:
 		break;

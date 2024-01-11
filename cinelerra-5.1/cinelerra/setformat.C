@@ -289,6 +289,13 @@ SetFormatWindow::~SetFormatWindow()
 	delete presets;
 }
 
+/* W Ratio, H Ratio
+Sets the ratio of the new canvas size (W, H) to the old (previous) canvas size (W, H). 
+The new canvas size is recalculated based upon a certain factor in the W Ratio, 
+H Ratio fields. A practical use-case: The current resolution is 640x480, and for some reason 
+you want it to be 1.33 times wider. You don't have to calculate what 640x1.33 is; 
+you type 1.33 into the "W" input instead, and Cinelerra calculates it for you. */
+
 void SetFormatWindow::create_objects()
 {
 	lock_window("SetFormatWindow::create_objects");
@@ -421,7 +428,7 @@ void SetFormatWindow::create_objects()
 	y += mwindow->theme->setformat_margin;
 	add_subwindow(new BC_Title(mwindow->theme->setformat_x3,
 		y,
-		_("Aspect ratio:")));
+		_("Display Aspect ratio:")));
 	y += mwindow->theme->setformat_margin;
 	x = mwindow->theme->setformat_x3;
 	add_subwindow(aspect_w = new ScaleAspectText(x, y, thread,
@@ -454,6 +461,10 @@ void SetFormatWindow::create_objects()
 		(ArrayList<BC_ListBoxItem*>*)&mwindow->interlace_project_modes,
 		mwindow->theme->setformat_x4 + textbox->get_w(), y));
 	y += mwindow->theme->setformat_margin;
+	
+	add_subwindow(new BC_Title(mwindow->theme->setformat_x3,
+               y+10,
+               _("Note: W/H ratio fields means multipliers \nrelative to previous canvas size \n")));
 
 	BC_OKTextButton *ok;
 	BC_CancelTextButton *cancel;
