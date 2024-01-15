@@ -2544,6 +2544,34 @@ int FFMPEG::info(char *text, int len)
     		enum AVColorRange range = st->codecpar->color_range;
 		const char *rg = av_color_range_name(range);
 		report("/ range:%s\n", rg ? rg : unkn);
+
+		AVRational sar = av_guess_sample_aspect_ratio(fmt_ctx, st, NULL);
+		AVRational display_aspect_ratio;
+		if(sar.num) {
+		
+    		av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+                  st->codecpar->width  * (int64_t)sar.num,
+                  st->codecpar->height * (int64_t)sar.den,
+                  1024 * 1024);
+/*		report("  Guessed SAR: %d:%d, ", sar.num, sar.den );
+		report("DAR: %d:%d \n", display_aspect_ratio.num, display_aspect_ratio.den); */
+		}
+		if (st->sample_aspect_ratio.num)
+		{
+    		av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+                  st->codecpar->width  * (int64_t)st->sample_aspect_ratio.num,
+                  st->codecpar->height * (int64_t)st->sample_aspect_ratio.den,
+                  1024 * 1024);
+		report("  container Detected SAR: %d:%d , DAR %d:%d \n", st->sample_aspect_ratio.num, st->sample_aspect_ratio.den, display_aspect_ratio.num, display_aspect_ratio.den);
+		}
+		if (st->codecpar->sample_aspect_ratio.num)
+		{
+    		av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+                  st->codecpar->width  * (int64_t)st->codecpar->sample_aspect_ratio.num,
+                  st->codecpar->height * (int64_t)st->codecpar->sample_aspect_ratio.den,
+                  1024 * 1024);
+		report("  codec Detected SAR: %d:%d , DAR %d:%d \n", st->codecpar->sample_aspect_ratio.num, st->codecpar->sample_aspect_ratio.den, display_aspect_ratio.num, display_aspect_ratio.den);
+		}
 		double secs = to_secs(st->duration, st->time_base);
 		int64_t length = secs * vid->frame_rate + 0.5;
 		double ofs = to_secs((vid->nudge - st->start_time), st->time_base);
@@ -3037,6 +3065,13 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 				frame_rate.num, frame_rate.den, INT_MAX);
 			ctx->framerate = (AVRational) { frame_rate.num, frame_rate.den };
 			ctx->time_base = (AVRational) { frame_rate.den, frame_rate.num };
+			if(!strcmp(format_name, "webm") || !strcmp(format_name, "matroska") || !strcmp(format_name, "mov") ||
+			!strcmp(format_name, "qt") || !strcmp(format_name, "mp4") || !strcmp(format_name, "avi") ||
+			!strcmp(format_name, "dv") || !strcmp(format_name, "yuv4mpegpipe"))
+			{
+			if (to_sample_aspect_ratio(asset).den > 0)
+			st->sample_aspect_ratio = to_sample_aspect_ratio(asset);
+			}
 			st->avg_frame_rate = frame_rate;
 			st->time_base = ctx->time_base;
 			vid->writing = -1;
