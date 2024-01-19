@@ -28,10 +28,6 @@
 #include "filebase.h"
 #include "file.inc"
 
-#ifdef DV_USE_FFMPEG
-#include <avcodec.h>
-#endif
-
 #include <libdv/dv.h>
 
 

@@ -80,10 +80,10 @@ static struct bd_format {
 	{ "1920x1080 25i",	1920,1080, 25.,    1, ILACE_MODE_TOP_FIRST },
 	{ "1920x1080 25p*",     1920,1080, 25.,    1, ILACE_MODE_FAKE_INTERLACE },
 	{ "1920x1080 23.976p",	1920,1080, 23.976, 1, ILACE_MODE_NOTINTERLACED },
-	{ "1440x1080 29.97i",	1440,1080, 29.97, -1, ILACE_MODE_TOP_FIRST },
-	{ "1440x1080 25i",	1440,1080, 25.,	  -1, ILACE_MODE_TOP_FIRST },
-	{ "1440x1080 24p",	1440,1080, 24.,	  -1, ILACE_MODE_NOTINTERLACED },
-	{ "1440x1080 23.976p",	1440,1080, 23.976,-1, ILACE_MODE_NOTINTERLACED },
+	{ "1440x1080 29.97i",	1440,1080, 29.97,  1, ILACE_MODE_TOP_FIRST },
+	{ "1440x1080 25i",	1440,1080, 25.,	   1, ILACE_MODE_TOP_FIRST },
+	{ "1440x1080 24p",	1440,1080, 24.,	   1, ILACE_MODE_NOTINTERLACED },
+	{ "1440x1080 23.976p",	1440,1080, 23.976, 1, ILACE_MODE_NOTINTERLACED },
 	{ "1280x720  59.94p",	1280,720,  59.94,  1, ILACE_MODE_NOTINTERLACED },
 	{ "1280x720  50p",	1280,720,  50.,    1, ILACE_MODE_NOTINTERLACED },
 	{ "1280x720  29.97p*",  1280,720,  29.97,  1, ILACE_MODE_NOTINTERLACED },
@@ -92,8 +92,13 @@ static struct bd_format {
 	{ "1280x720  23.976p",	1280,720,  23.976, 1, ILACE_MODE_NOTINTERLACED },
 	{ "720x576   25i",	 720,576,  25.,    0, ILACE_MODE_BOTTOM_FIRST },
 	{ "720x576   25p*",	 720,576,  25.,    0, ILACE_MODE_NOTINTERLACED },
+	{ "720x576(w)   25i",	 720,576,  25.,    1, ILACE_MODE_BOTTOM_FIRST },
+	{ "720x576(w)   25p*",	 720,576,  25.,    1, ILACE_MODE_NOTINTERLACED },
 	{ "720x480   29.97i",	 720,480,  29.97,  0, ILACE_MODE_BOTTOM_FIRST },
 	{ "720x480   29.97p*",	 720,480,  29.97,  0, ILACE_MODE_NOTINTERLACED },
+	{ "720x480(w)   29.97i",	 720,480,  29.97,  1, ILACE_MODE_BOTTOM_FIRST },
+	{ "720x480(w)   29.97p*",	 720,480,  29.97,  1, ILACE_MODE_NOTINTERLACED },
+
 };
 
 static struct bd_profile {
@@ -427,6 +432,13 @@ int CreateBD_Thread::create_bd_jobs(ArrayList<BatchRenderJob*> *jobs, const char
 	FFMPEG::set_option_path(option_path, "video/%s", asset->vcodec);
 	FFMPEG::load_options(option_path, asset->ff_video_options,
 		 sizeof(asset->ff_video_options));
+	if(session->aspect_w == 16) {
+	char aspect_line[100];
+	float par = (float)((float)asset->width / (float)asset->height);
+	sprintf(aspect_line, "aspect=%f\n", asset->aspect_ratio/par);
+	strcat(asset->ff_video_options, aspect_line);
+	//printf("Aspect line: %s par: %f width: %i height: %i\n ", aspect_line, par, asset->width, asset->height);
+	}
 	asset->ff_video_bitrate = vid_bitrate;
 	asset->ff_video_quality = -1;
 	return 0;
@@ -1146,7 +1158,7 @@ int CreateBD_FormatItem::handle_event()
 	popup->set_text(text);
 	int n = strlen(text)-1;
 	int not_standard = n >= 0 && text[n] == '*' ? 1 : 0;
-	popup->gui->non_standard->update(not_standard ? _("* non-standard format") : "", 0);
+	popup->gui->non_standard->update(not_standard ? _("                * non-standard format") : "", 0);
 	return popup->handle_event();
 }
 

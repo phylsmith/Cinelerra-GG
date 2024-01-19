@@ -229,9 +229,9 @@ TRACE("FileDV::open_file 20")
 		encoder->isPAL = isPAL;
 		output_size = (isPAL ? DV1394_PAL_FRAME_SIZE : DV1394_NTSC_FRAME_SIZE);
 
-		// Compare to 16 / 8 rather than == 16 / 9 in case of floating point
-		// rounding errors
-		encoder->is16x9 = asset->aspect_ratio > 16 / 8;
+		//printf("filedv aspect- %f \n", asset->aspect_ratio);
+		if(1.777778 - asset->aspect_ratio < 0.001f)
+		encoder->is16x9 = 1;
 	}
 	else
 	{
@@ -602,6 +602,7 @@ UNTRACE
 int FileDV::write_frames(VFrame ***frames, int len)
 {
 	int result = 0;
+	time_t now = time(NULL); 
 
 	if(stream == 0) return 1;
 
@@ -619,11 +620,15 @@ int FileDV::write_frames(VFrame ***frames, int len)
 //printf("FileDV::write_frames: 4\n");
 					dv_encode_full_frame(encoder, temp_frame->get_rows(),
 						e_dv_color_yuv, video_buffer);
+					dv_encode_metadata(video_buffer, encoder->isPAL, encoder->is16x9, &now, 0);
+					dv_encode_timecode(video_buffer, encoder->isPAL, 0);
 					break;
 				case BC_RGB888:
 //printf("FileDV::write_frames: 5\n");
 					dv_encode_full_frame(encoder, temp_frame->get_rows(),
 						e_dv_color_rgb, video_buffer);
+					dv_encode_metadata(video_buffer, encoder->isPAL, encoder->is16x9, &now, 0);
+					dv_encode_timecode(video_buffer, encoder->isPAL, 0);
 					break;
 				default:
 					unsigned char *data = new unsigned char[asset->height * asset->width * 2];
