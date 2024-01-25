@@ -5304,7 +5304,7 @@ int MWindow::select_asset(Asset *asset, int vstream, int astream, int delete_tra
 		int channels = 0;
 		for( uint64_t mask=channel_mask; mask!=0; mask>>=1 ) channels += mask & 1;
 		if( channels < 1 ) channels = 1;
-		if( channels > 6 ) channels = 6;
+		if( channels > MAXCHANNELS ) channels = MAXCHANNELS;
 		session->audio_tracks = session->audio_channels = channels;
 
 		int *achannel_positions = preferences->channel_positions[session->audio_channels-1];

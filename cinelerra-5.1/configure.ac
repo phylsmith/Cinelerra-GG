@@ -324,7 +324,7 @@ PKG_3RD([libogg],[auto],
   [ include ])
 
 PKG_3RD([libsndfile],[auto],
-  [libsndfile-1.0.28],
+  [libsndfile-1.2.2],
   [ src/.libs/libsndfile.a \
     src/.libs/libcommon.a \
     src/G72x/.libs/libg72x.a \

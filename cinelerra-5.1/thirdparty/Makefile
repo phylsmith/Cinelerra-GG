@@ -277,6 +277,7 @@ x265.cfg_vars?=$(call cmake_config,source)
 x265.cfg_params?= -DENABLE_SHARED=no -DENABLE_CLI=no
 libvpx.cfg_params?= --enable-pic --disable-avx512 --enable-vp9-highbitdepth --disable-examples --disable-unit_tests
 libdpx.cfg_vars?= libtoolize; aclocal; autoconf; automake -a;
+libsndfile.cfg_params+= --disable-shared --enable-static --disable-sqlite --disable-mpeg
 
 DS:=$$$$$$$$
 pkg_cfg=$(call bld_path,$(1),usr/local/lib/pkgconfig):
