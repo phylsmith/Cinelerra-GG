@@ -101,8 +101,8 @@ void FileFormat::create_objects_(char *string2)
 
 //printf("FileFormat::create_objects_ 1 %d\n", asset->byte_order);
 	add_subwindow(new BC_Title(x, y, _("Byte order:")));
-	add_subwindow(lohi = new FileFormatByteOrderLOHI(x2, y, this, asset->byte_order));
-	add_subwindow(hilo = new FileFormatByteOrderHILO(x2 + 70, y, this, !asset->byte_order));
+	add_subwindow(hilo = new FileFormatByteOrderHILO(x2, y, this, !asset->byte_order));
+	add_subwindow(lohi = new FileFormatByteOrderLOHI(x2 + 70, y, this, asset->byte_order));
 
 	y += ys30;
 	add_subwindow(signed_button = new FileFormatSigned(x, y, this, asset->signed_));

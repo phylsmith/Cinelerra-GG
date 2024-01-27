@@ -412,11 +412,11 @@ void AssetEditWindow::create_objects()
 			{
 				x = x2;
 
-				add_subwindow(lohi = new AssetEditByteOrderLOHI(this,
-					asset->byte_order, x, y));
-				x += xS(70);
 				add_subwindow(hilo = new AssetEditByteOrderHILO(this,
 					!asset->byte_order, x, y));
+				x += xS(70);
+				add_subwindow(lohi = new AssetEditByteOrderLOHI(this,
+					asset->byte_order, x, y));
 				y += vmargin;
 			}
 			else {
