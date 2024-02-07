@@ -234,7 +234,7 @@ float HistogramMain::calculate_level(float input, int mode, int use_value)
 
 	if( !EQUIV(config.gamma[mode], 0) ) {
 		output = pow(output, 1.0 / config.gamma[mode]);
-		CLAMP(output, 0, 100.0);
+		CLAMP(output, 0, 1.0);
 	}
 
 // Apply value curve
