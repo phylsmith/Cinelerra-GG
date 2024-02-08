@@ -6,7 +6,8 @@ http://gnu.mirrors.pair.com/savannah/savannah//openexr/openexr-2.2.1.tar.gz
 https://sourceforge.net/projects/opencvlibrary/files/  4.3.0
 https://github.com/opencv/opencv_contrib/releases   4.3.0
 #https://sourceforge.net/projects/opencore-amr/files/fdk-aac/fdk-aac-2.2.0.tar.gz/download
-http://www.mega-nerd.com/libsndfile/files/libsndfile-1.0.28.tar.gz
+#http://www.mega-nerd.com/libsndfile/files/libsndfile-1.0.28.tar.gz
+https://github.com/libsndfile/libsndfile/releases   1.2.2
 https://mirrors.edge.kernel.org/pub/linux/libs/ieee1394/libraw1394-2.1.2.tar.xz
 https://mirrors.edge.kernel.org/pub/linux/libs/ieee1394/libiec61883-1.2.0.tar.xz
 https://sourceforge.net/projects/libavc1394/files/latest/download?source=directory = 0.5.4

@@ -442,6 +442,7 @@ SndFileHILO::SndFileHILO(SndFileConfig *gui, int x, int y)
  : BC_Radial(x, y, gui->asset->byte_order == 0, _("Hi Lo"))
 {
 	this->gui = gui;
+	set_tooltip(_("Little Endian"));
 }
 int SndFileHILO::handle_event()
 {
@@ -457,6 +458,7 @@ SndFileLOHI::SndFileLOHI(SndFileConfig *gui, int x, int y)
  : BC_Radial(x, y, gui->asset->byte_order == 1, _("Lo Hi"))
 {
 	this->gui = gui;
+	set_tooltip(_("Big Endian"));
 }
 int SndFileLOHI::handle_event()
 {
