@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <float.h>
 
 #define DIRECT_COPY 0
 #define BILINEAR 1
@@ -237,7 +238,7 @@ static inline int64_t aclip(int64_t v, int mx) {
 	return v < 0 ? 0 : v > mx ? mx : v;
 }
 static inline float   aclip(float v, float mx) {
-	return v < 0 ? 0 : v > mx ? mx : v;
+	return v < -FLT_MAX+1 ? -FLT_MAX : v > FLT_MAX-1 ? FLT_MAX : v;
 }
 static inline float   aclip(float v, int mx) {
 	return v < 0 ? 0 : v > mx ? mx : v;
