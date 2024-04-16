@@ -9,7 +9,7 @@ For usage help, refer to the following:
   Libaom is updated to 3.8.0 but does not work on older O/S.
   The Resources window info/details now shows sar/dar values.
   Libsvtav1 is a buildable option for newer distros.
-  Color3way / Histogram now allow for greater than 1 values.
+  Histogram/Videoscpe now allow for greater than 1 values.
 2023 November changes of note:
   New build farm for Ubuntu, Debian, Suse, and Fedora at:
    https://github.com/einhander/cin-gg-packages/releases

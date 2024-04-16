@@ -1,6 +1,6 @@
 --- a/libavcodec/h263dec.c
 +++ b/libavcodec/h263dec.c
-@@ -634,7 +634,7 @@
+@@ -623,7 +623,7 @@
      if (CONFIG_MPEG4_DECODER && avctx->codec_id == AV_CODEC_ID_MPEG4)
          ff_mpeg4_frame_end(avctx, buf, buf_size);
  

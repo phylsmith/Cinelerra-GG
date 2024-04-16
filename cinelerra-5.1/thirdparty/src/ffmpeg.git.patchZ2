@@ -1,6 +1,6 @@
 --- a/libavformat/yuv4mpegenc.c
 +++ b/libavformat/yuv4mpegenc.c
-@@ -259,7 +259,7 @@
+@@ -268,7 +268,7 @@
              av_log(s, AV_LOG_ERROR, "'%s' is not an official yuv4mpegpipe pixel format. "
                     "Use '-strict -1' to encode to this pixel format.\n",
                     av_get_pix_fmt_name(s->streams[0]->codecpar->format));

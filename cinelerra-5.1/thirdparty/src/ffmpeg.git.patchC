@@ -1,6 +1,6 @@
 --- a/libavcodec/encode.c
 +++ b/libavcodec/encode.c
-@@ -290,7 +290,7 @@
+@@ -320,7 +320,7 @@
      }
  
      if (!frame->buf[0]) {
@@ -9,7 +9,7 @@
                avci->frame_thread_encoder))
              return AVERROR_EOF;
  
-@@ -309,8 +309,10 @@
+@@ -339,8 +339,10 @@
          ret = ff_encode_encode_cb(avctx, avpkt, frame, &got_packet);
      }
  
@@ -21,7 +21,7 @@
  
      return ret;
  }
-@@ -491,10 +493,16 @@
+@@ -515,10 +517,16 @@
      if (avci->draining)
          return AVERROR_EOF;
  

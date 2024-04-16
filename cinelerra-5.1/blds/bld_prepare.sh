@@ -127,7 +127,7 @@ case "$dir" in
     libdc1394-25 libdc1394-dev libflac-dev libjbig-dev libvdpau-dev libva-dev \
     inkscape libsndfile1-dev libtheora-dev cmake udftools libxml2-utils git \
     autoconf automake debhelper libgtk2.0-dev libpulse-dev 2to3 python-is-python3  python3 dh-python \
-    patchelf libboost-filesystem-dev libboost-regex-dev fuse
+    patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl fuse
   ;;
 
 *)

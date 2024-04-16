@@ -1,6 +1,6 @@
 --- a/libavcodec/vdpau_mpeg12.c
-+++ a/libavcodec/vdpau_mpeg12.c
-@@ -116,6 +116,7 @@
++++ b/libavcodec/vdpau_mpeg12.c
+@@ -117,6 +117,7 @@
      .frame_priv_data_size = sizeof(struct vdpau_picture_context),
      .init           = vdpau_mpeg1_init,
      .uninit         = ff_vdpau_common_uninit,

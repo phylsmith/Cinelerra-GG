@@ -1,6 +1,6 @@
---- a/libavformat/mpegtsenc.c	2023-05-25 11:35:50.216478386 -0600
-+++ b/libavformat/mpegtsenc.c	2023-05-25 11:36:49.259182848 -0600
-@@ -87,9 +87,11 @@
+--- a/libavformat/mpegtsenc.c
++++ b/libavformat/mpegtsenc.c
+@@ -89,9 +89,11 @@
      int64_t pat_period; /* PAT/PMT period in PCR time base */
      int64_t nit_period; /* NIT period in PCR time base */
      int nb_services;
@@ -14,7 +14,7 @@
      int mux_rate; ///< set to 1 when VBR
      int pes_payload_size;
      int64_t total_size;
-@@ -256,7 +258,7 @@
+@@ -258,7 +260,7 @@
      int data_st_warning;
  
      int64_t pcr_period; /* PCR period in PCR time base */
@@ -23,7 +23,7 @@
  
      /* For Opus */
      int opus_queued_samples;
-@@ -949,18 +951,18 @@
+@@ -959,18 +961,18 @@
      return 0;
  }
  
@@ -47,7 +47,7 @@
          tp_extra_header = AV_RB32(&tp_extra_header);
          avio_write(s->pb, (unsigned char *) &tp_extra_header,
                     sizeof(tp_extra_header));
-@@ -1046,9 +1048,6 @@
+@@ -1056,9 +1058,6 @@
          else
              ts_st->pcr_period = 1;
      }
@@ -57,7 +57,7 @@
  }
  
  static void select_pcr_streams(AVFormatContext *s)
-@@ -1111,6 +1110,7 @@
+@@ -1121,6 +1120,7 @@
  
      if (s->max_delay < 0) /* Not set by the caller */
          s->max_delay = 0;
@@ -65,7 +65,7 @@
  
      // round up to a whole number of TS packets
      ts->pes_payload_size = (ts->pes_payload_size + 14 + 183) / 184 * 184 - 14;
-@@ -1170,7 +1170,9 @@
+@@ -1180,7 +1180,9 @@
          /* MPEG pid values < 16 are reserved. Applications which set st->id in
           * this range are assigned a calculated pid. */
          if (st->id < 16) {
@@ -76,7 +76,7 @@
                  switch (st->codecpar->codec_type) {
                  case AVMEDIA_TYPE_VIDEO:
                      ts_st->pid = ts->m2ts_video_pid++;
-@@ -1197,9 +1199,9 @@
+@@ -1207,9 +1209,9 @@
                      av_log(s, AV_LOG_ERROR, "Cannot automatically assign PID for stream %d\n", st->index);
                      return AVERROR(EINVAL);
                  }
@@ -88,7 +88,7 @@
          } else {
              ts_st->pid = st->id;
          }
-@@ -1267,9 +1269,14 @@
+@@ -1277,9 +1279,14 @@
      ts->last_pat_ts = AV_NOPTS_VALUE;
      ts->last_sdt_ts = AV_NOPTS_VALUE;
      ts->last_nit_ts = AV_NOPTS_VALUE;
@@ -106,7 +106,7 @@
  
      /* assign provider name */
      provider = av_dict_get(s->metadata, "service_provider", NULL, 0);
-@@ -1285,8 +1292,8 @@
+@@ -1295,8 +1302,8 @@
          av_log(s, AV_LOG_VERBOSE, "muxrate %d, ", ts->mux_rate);
      av_log(s, AV_LOG_VERBOSE,
             "sdt every %"PRId64" ms, pat/pmt every %"PRId64" ms",
@@ -117,7 +117,7 @@
      if (ts->flags & MPEGTS_FLAG_NIT)
          av_log(s, AV_LOG_VERBOSE, ", nit every %"PRId64" ms", av_rescale(ts->nit_period, 1000, PCR_TIME_BASE));
      av_log(s, AV_LOG_VERBOSE, "\n");
-@@ -1295,36 +1302,40 @@
+@@ -1305,36 +1312,40 @@
  }
  
  /* send SDT, NIT, PAT and PMT tables regularly */
@@ -182,7 +182,7 @@
      }
  }
  
-@@ -1361,25 +1372,29 @@
+@@ -1371,25 +1382,29 @@
  static void mpegts_insert_pcr_only(AVFormatContext *s, AVStream *st)
  {
      MpegTSWrite *ts = s->priv_data;
@@ -218,7 +218,7 @@
  
      /* stuffing bytes */
      memset(q, 0xFF, TS_PACKET_SIZE - (q - buf));
-@@ -1479,9 +1494,9 @@
+@@ -1490,9 +1505,9 @@
      int afc_len, stuffing_len;
      int is_dvb_subtitle = (st->codecpar->codec_id == AV_CODEC_ID_DVB_SUBTITLE);
      int is_dvb_teletext = (st->codecpar->codec_id == AV_CODEC_ID_DVB_TELETEXT);
@@ -229,7 +229,7 @@
      int force_nit = 0;
  
      av_assert0(ts_st->payload != buf || st->codecpar->codec_type != AVMEDIA_TYPE_VIDEO);
-@@ -1498,21 +1513,19 @@
+@@ -1509,21 +1524,19 @@
  
      is_start = 1;
      while (payload_size > 0) {
@@ -260,7 +260,7 @@
              if (pcr >= ts->next_pcr) {
                  int64_t next_pcr = INT64_MAX;
                  for (int i = 0; i < s->nb_streams; i++) {
-@@ -1522,36 +1535,43 @@
+@@ -1533,36 +1546,43 @@
                      AVStream *st2 = s->streams[st2_index];
                      MpegTSWriteStream *ts_st2 = st2->priv_data;
                      if (ts_st2->pcr_period) {
@@ -321,7 +321,7 @@
          /* prepare packet header */
          q    = buf;
          *q++ = 0x47;
-@@ -1581,7 +1601,6 @@
+@@ -1592,7 +1612,6 @@
          if (write_pcr) {
              set_af_flag(buf, 0x10);
              q = get_ts_payload_start(buf);
@@ -329,7 +329,7 @@
              if (dts != AV_NOPTS_VALUE && dts < pcr / 300)
                  av_log(s, AV_LOG_WARNING, "dts < pcr, TS is invalid\n");
              extend_af(buf, write_pcr_bits(q, pcr));
-@@ -1845,8 +1864,8 @@
+@@ -1864,8 +1883,8 @@
      uint8_t *data = NULL;
      MpegTSWrite *ts = s->priv_data;
      MpegTSWriteStream *ts_st = st->priv_data;
@@ -340,7 +340,7 @@
      int64_t dts = pkt->dts, pts = pkt->pts;
      int opus_samples = 0;
      size_t side_data_size;
-@@ -1866,9 +1885,9 @@
+@@ -1885,9 +1904,9 @@
  
      if (ts->copyts < 1) {
          if (pts != AV_NOPTS_VALUE)
@@ -352,8 +352,8 @@
      }
  
      if (!ts_st->first_timestamp_checked && (pts == AV_NOPTS_VALUE || dts == AV_NOPTS_VALUE)) {
-@@ -2299,8 +2318,10 @@
-       0, AV_OPT_TYPE_CONST, { .i64 = MPEGTS_SERVICE_TYPE_HEVC_DIGITAL_HDTV }, 0x01, 0xff, ENC, "mpegts_service_type" },
+@@ -2354,8 +2373,10 @@
+       0, AV_OPT_TYPE_CONST, { .i64 = MPEGTS_SERVICE_TYPE_HEVC_DIGITAL_HDTV }, 0x01, 0xff, ENC, .unit = "mpegts_service_type" },
      { "mpegts_pmt_start_pid", "Set the first pid of the PMT.",
        OFFSET(pmt_start_pid), AV_OPT_TYPE_INT, { .i64 = 0x1000 }, FIRST_OTHER_PID, LAST_OTHER_PID, ENC },
 +    { "mpegts_pcr_stream_pid", "create seperate PCR stream on this pid.",
@@ -364,7 +364,7 @@
      { "mpegts_m2ts_mode", "Enable m2ts mode.", OFFSET(m2ts_mode), AV_OPT_TYPE_BOOL, { .i64 = -1 }, -1, 1, ENC },
      { "muxrate", NULL, OFFSET(mux_rate), AV_OPT_TYPE_INT, { .i64 = 1 }, 0, INT_MAX, ENC },
      { "pes_payload_size", "Minimum PES packet payload in bytes",
-@@ -2326,10 +2347,10 @@
+@@ -2381,10 +2402,10 @@
        OFFSET(omit_video_pes_length), AV_OPT_TYPE_BOOL, { .i64 = 1 }, 0, 1, ENC },
      { "pcr_period", "PCR retransmission time in milliseconds",
        OFFSET(pcr_period_ms), AV_OPT_TYPE_INT, { .i64 = -1 }, -1, INT_MAX, ENC },
@@ -384,25 +384,25 @@
  /* PID from 0x1FFC to 0x1FFE may be assigned as needed to PMT, elementary
   * streams and other data tables */
  #define NULL_PID        0x1FFF /* Null packet (used for fixed bandwidth padding) */
-+#define START_PID       0x0400
-
++#define START_PID	0x0400
+ 
  /* m2ts pids */
  #define M2TS_PMT_PID                      0x0100
 --- a/libavformat/bluray.c
 +++ b/libavformat/bluray.c
-@@ -28,7 +28,7 @@
+@@ -27,7 +27,7 @@
  #include "libavutil/opt.h"
-
+ 
  #define BLURAY_PROTO_PREFIX     "bluray:"
 -#define MIN_PLAYLIST_LENGTH     180     /* 3 min */
 +#define MIN_PLAYLIST_LENGTH     0
-
+ 
  typedef struct {
      const AVClass *class;
 
 --- a/doc/muxers.texi
 +++ b/doc/muxers.texi
-@@ -1930,7 +1930,8 @@
+@@ -2920,7 +2920,8 @@
  Maximum time in seconds between PAT/PMT tables. Default is @code{0.1}.
  
  @item sdt_period @var{duration}

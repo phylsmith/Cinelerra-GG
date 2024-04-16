@@ -1,6 +1,6 @@
 --- a/libavformat/avformat.h
 +++ b/libavformat/avformat.h
-@@ -497,6 +497,9 @@
+@@ -499,6 +499,9 @@
                                          The user or muxer can override this through
                                          AVFormatContext.avoid_negative_ts
                                          */
@@ -10,7 +10,7 @@
  
  #define AVFMT_SEEK_TO_PTS   0x4000000 /**< Seeking is based on PTS */
  
-@@ -560,7 +563,8 @@
+@@ -562,7 +565,8 @@
      /**
       * Can use flags: AVFMT_NOFILE, AVFMT_NEEDNUMBER, AVFMT_SHOW_IDS,
       * AVFMT_NOTIMESTAMPS, AVFMT_GENERIC_INDEX, AVFMT_TS_DISCONT, AVFMT_NOBINSEARCH,
@@ -19,38 +19,40 @@
 +     * AVFMT_SEEK_NOSTREAMS
       */
      int flags;
-
+ 
 --- a/libavformat/dv.c
 +++ b/libavformat/dv.c
-@@ -672,6 +672,7 @@
- const AVInputFormat ff_dv_demuxer = {
-     .name           = "dv",
-     .long_name      = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
-+    .flags          = AVFMT_SEEK_NOSTREAMS,
+@@ -713,6 +713,7 @@
+ const FFInputFormat ff_dv_demuxer = {
+     .p.name         = "dv",
+     .p.long_name    = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
++    .p.flags	     = AVFMT_SEEK_NOSTREAMS,
+     .p.extensions   = "dv,dif",
      .priv_data_size = sizeof(RawDVContext),
      .read_probe     = dv_probe,
-     .read_header    = dv_read_header,
+
 --- a/libavformat/matroskadec.c
 +++ b/libavformat/matroskadec.c
-@@ -4432,6 +4432,7 @@
- const AVInputFormat ff_webm_dash_manifest_demuxer = {
-     .name           = "webm_dash_manifest",
-     .long_name      = NULL_IF_CONFIG_SMALL("WebM DASH Manifest"),
-+    .flags          = AVFMT_SEEK_NOSTREAMS,
-     .priv_class     = &webm_dash_class,
+@@ -4794,6 +4794,7 @@
+ const FFInputFormat ff_webm_dash_manifest_demuxer = {
+     .p.name         = "webm_dash_manifest",
+     .p.long_name    = NULL_IF_CONFIG_SMALL("WebM DASH Manifest"),
++    .p.flags        = AVFMT_SEEK_NOSTREAMS,
+     .p.priv_class   = &webm_dash_class,
      .priv_data_size = sizeof(MatroskaDemuxContext),
-     .flags_internal = FF_FMT_INIT_CLEANUP,
-@@ -4444,6 +4445,7 @@
- const AVInputFormat ff_matroska_demuxer = {
-     .name           = "matroska,webm",
-     .long_name      = NULL_IF_CONFIG_SMALL("Matroska / WebM"),
-+    .flags          = AVFMT_SEEK_NOSTREAMS,
-     .extensions     = "mkv,mk3d,mka,mks,webm",
+     .flags_internal = FF_INFMT_FLAG_INIT_CLEANUP,
+@@ -4806,6 +4807,7 @@
+ const FFInputFormat ff_matroska_demuxer = {
+     .p.name         = "matroska,webm",
+     .p.long_name    = NULL_IF_CONFIG_SMALL("Matroska / WebM"),
++    .p.flags        = AVFMT_SEEK_NOSTREAMS,
+     .p.extensions   = "mkv,mk3d,mka,mks,webm",
+     .p.mime_type    = "audio/webm,audio/x-matroska,video/webm,video/x-matroska",
      .priv_data_size = sizeof(MatroskaDemuxContext),
-     .flags_internal = FF_FMT_INIT_CLEANUP,
+
 --- a/libavformat/seek.c
 +++ b/libavformat/seek.c
-@@ -602,6 +602,13 @@
+@@ -605,6 +605,13 @@
          return seek_frame_byte(s, stream_index, timestamp, flags);
      }
  
