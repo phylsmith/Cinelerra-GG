@@ -581,12 +581,12 @@ void AgingClient::process_package(LoadPackage *package)
 			plugin->input_ptr->get_color_model(),
 			plugin->input_ptr->get_w(),
 			local_package->row2 - local_package->row1);
-	if( plugin->config.pits )
+	if( plugin->config.pits && plugin->config.pits_interval > 0 )
 		pits(output_rows,
 			plugin->input_ptr->get_color_model(),
 			plugin->input_ptr->get_w(),
 			local_package->row2 - local_package->row1);
-	if( plugin->config.dust )
+	if( plugin->config.dust && plugin->config.dust_interval > 0 )
 		dusts(output_rows,
 			plugin->input_ptr->get_color_model(),
 			plugin->input_ptr->get_w(),

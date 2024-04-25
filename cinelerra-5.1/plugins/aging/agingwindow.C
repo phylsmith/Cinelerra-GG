@@ -82,6 +82,7 @@ AgingISlider::~AgingISlider()
 int AgingISlider::handle_event()
 {
 	int ret = BC_ISlider::handle_event();
+	*output = get_value();
 	win->plugin->send_configure_change();
 	return ret;
 }
