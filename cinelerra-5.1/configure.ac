@@ -358,7 +358,7 @@ X86=[`expr "x$ARCH" : 'x..._64*'`]
 if test "x$I86$X86" != "x00" ; then
 
 PKG_3RD([mjpegtools],[yes],
-  [mjpegtools-2.1.0],
+  [mjpegtools-2.2.1],
   [ utils/mmxsse/.libs/libmmxsse.a \
     utils/.libs/libmjpegutils.a \
     lavtools/.libs/liblavfile.a \
@@ -371,7 +371,7 @@ PKG_3RD([mjpegtools],[yes],
 else
 
 PKG_3RD([mjpegtools],[yes],
-  [mjpegtools-2.1.0],
+  [mjpegtools-2.2.1],
   [ utils/.libs/libmjpegutils.a \
     lavtools/.libs/liblavfile.a \
     lavtools/.libs/liblavjpeg.a \
