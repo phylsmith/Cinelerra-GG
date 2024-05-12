@@ -27,13 +27,36 @@
 
 #include "colorpicker.h"
 #include "guicast.h"
+#include "theme.h"
 #include "loadbalance.h"
 #include "pluginvclient.h"
 
+#define RESET_DEFAULT_SETTINGS 20
+#define RESET_ALL               0
+#define RESET_RGB               1
+#define RESET_MIN_BRIGHTNESS    2
+#define RESET_MAX_BRIGHTNESS    3
+#define RESET_TOLERANCE         4
+#define RESET_SATURATION        5
+#define RESET_MIN_SATURATION    6
+#define RESET_IN_SLOPE          7
+#define RESET_OUT_SLOPE         8
+#define RESET_ALPHA_OFFSET      9
+#define RESET_SPILL_THRESHOLD  10
+#define RESET_SPILL_AMOUNT     11
+
+#define MIN_VALUE   0.00
+#define MAX_VALUE 100.00
+#define MIN_SLOPE   0.00
+#define MAX_SLOPE  20.00
+#define MAX_ALPHA 100.00
 
 class ChromaKeyHSV;
-class ChromaKeyHSV;
 class ChromaKeyWindow;
+class ChromaKeyFText;
+class ChromaKeyFSlider;
+class ChromaKeyReset;
+class ChromaKeyClr;
 
 enum {
 	CHROMAKEY_POSTPROCESS_NONE,
@@ -45,7 +68,7 @@ class ChromaKeyConfig
 {
 public:
 	ChromaKeyConfig();
-	void reset();
+	void reset(int clear);
 	void copy_from(ChromaKeyConfig &src);
 	int equivalent(ChromaKeyConfig &src);
 	void interpolate(ChromaKeyConfig &prev,
@@ -99,88 +122,44 @@ public:
 	ChromaKeyWindow *gui;
 };
 
-
-
-class ChromaKeyMinBrightness : public BC_FSlider
-{
-	public:
-		ChromaKeyMinBrightness(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeyMaxBrightness : public BC_FSlider
-{
-	public:
-		ChromaKeyMaxBrightness(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeySaturation : public BC_FSlider
-{
-	public:
-		ChromaKeySaturation(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeyMinSaturation : public BC_FSlider
-{
-	public:
-		ChromaKeyMinSaturation(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-
-
-class ChromaKeyTolerance : public BC_FSlider
+class ChromaKeyFText : public BC_TumbleTextBox
 {
 public:
-	ChromaKeyTolerance(ChromaKeyHSV *plugin, int x, int y);
+	ChromaKeyFText(ChromaKeyHSV *plugin, ChromaKeyWindow *gui,
+		ChromaKeyFSlider *slider, float *output, int x, int y, float min, float max);
+	~ChromaKeyFText();
 	int handle_event();
 	ChromaKeyHSV *plugin;
+	ChromaKeyWindow *gui;
+	ChromaKeyFSlider *slider;
+	float *output;
+	float min, max;
 };
 
-class ChromaKeyInSlope : public BC_FSlider
-{
-	public:
-		ChromaKeyInSlope(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeyOutSlope : public BC_FSlider
-{
-	public:
-		ChromaKeyOutSlope(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeyAlphaOffset : public BC_FSlider
-{
-	public:
-		ChromaKeyAlphaOffset(ChromaKeyHSV *plugin, int x, int y);
-		int handle_event();
-		ChromaKeyHSV *plugin;
-};
-
-class ChromaKeySpillThreshold : public BC_FSlider
+class ChromaKeyFSlider : public BC_FSlider
 {
 public:
-	ChromaKeySpillThreshold(ChromaKeyHSV *plugin, int x, int y);
+	ChromaKeyFSlider(ChromaKeyHSV *plugin,
+		ChromaKeyFText *text, float *output, int x, int y,
+		float min, float max, int w);
+	~ChromaKeyFSlider();
 	int handle_event();
 	ChromaKeyHSV *plugin;
+	ChromaKeyFText *text;
+	float *output;
 };
-class ChromaKeySpillAmount : public BC_FSlider
+
+class ChromaKeyClr : public BC_Button
 {
 public:
-	ChromaKeySpillAmount(ChromaKeyHSV *plugin, int x, int y);
+	ChromaKeyClr(ChromaKeyHSV *plugin, ChromaKeyWindow *gui, int x, int y, int clear);
+	~ChromaKeyClr();
 	int handle_event();
 	ChromaKeyHSV *plugin;
+	ChromaKeyWindow *gui;
+	int clear;
 };
+
 
 class ChromaKeyUseColorPicker : public BC_GenericButton
 {
@@ -219,21 +198,52 @@ public:
 
 	void create_objects();
 	void update_sample();
-	void update_gui();
+	void update_gui(int clear);
 	void done_event(int result);
 
 	ChromaKeyColor *color;
 	ChromaKeyUseColorPicker *use_colorpicker;
-	ChromaKeyMinBrightness *min_brightness;
-	ChromaKeyMaxBrightness *max_brightness;
-	ChromaKeySaturation *saturation;
-	ChromaKeyMinSaturation *min_saturation;
-	ChromaKeyTolerance *tolerance;
-	ChromaKeyInSlope *in_slope;
-	ChromaKeyOutSlope *out_slope;
-	ChromaKeyAlphaOffset *alpha_offset;
-	ChromaKeySpillThreshold *spill_threshold;
-	ChromaKeySpillAmount *spill_amount;
+
+	ChromaKeyFText *min_brightness_text;
+	ChromaKeyFSlider *min_brightness_slider;
+	ChromaKeyClr *min_brightness_Clr;
+
+	ChromaKeyFText *max_brightness_text;
+	ChromaKeyFSlider *max_brightness_slider;
+	ChromaKeyClr *max_brightness_Clr;
+
+	ChromaKeyFText *saturation_text;
+	ChromaKeyFSlider *saturation_slider;
+	ChromaKeyClr *saturation_Clr;
+
+	ChromaKeyFText *min_saturation_text;
+	ChromaKeyFSlider *min_saturation_slider;
+	ChromaKeyClr *min_saturation_Clr;
+
+	ChromaKeyFText *tolerance_text;
+	ChromaKeyFSlider *tolerance_slider;
+	ChromaKeyClr *tolerance_Clr;
+
+	ChromaKeyFText *in_slope_text;
+	ChromaKeyFSlider *in_slope_slider;
+	ChromaKeyClr *in_slope_Clr;
+
+	ChromaKeyFText *out_slope_text;
+	ChromaKeyFSlider *out_slope_slider;
+	ChromaKeyClr *out_slope_Clr;
+
+	ChromaKeyFText *alpha_offset_text;
+	ChromaKeyFSlider *alpha_offset_slider;
+	ChromaKeyClr *alpha_offset_Clr;
+
+	ChromaKeyFText *spill_threshold_text;
+	ChromaKeyFSlider *spill_threshold_slider;
+	ChromaKeyClr *spill_threshold_Clr;
+
+	ChromaKeyFText *spill_amount_text;
+	ChromaKeyFSlider *spill_amount_slider;
+	ChromaKeyClr *spill_amount_Clr;
+
 	ChromaKeyShowMask *show_mask;
 	ChromaKeyReset *reset;
 	BC_SubWindow *sample;
@@ -307,10 +317,3 @@ public:
 
 
 #endif
-
-
-
-
-
-
-
