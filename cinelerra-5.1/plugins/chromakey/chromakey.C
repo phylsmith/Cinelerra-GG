@@ -42,18 +42,42 @@
 
 ChromaKeyConfig::ChromaKeyConfig()
 {
-       reset();
+       reset(RESET_DEFAULT_SETTINGS);
 }
 
-void ChromaKeyConfig::reset()
+void ChromaKeyConfig::reset(int clear)
 
 {
-	red = 0.0;
-	green = 0.0;
-	blue = 0.0;
-	threshold = 60.0;
-	use_value = 0;
-	slope = 100;
+	switch(clear) {
+		case RESET_ALL :
+			red = 0.0;
+			green = 0.0;
+			blue = 0.0;
+			threshold = 0.0;
+			use_value = 0;
+			slope = 0.0;
+			break;
+		case RESET_RGB :
+			red = 0.0;
+			green = 0.0;
+			blue = 0.0;
+			break;
+		case RESET_SLOPE :
+			slope = 0.0;
+			break;
+		case RESET_THRESHOLD :
+			threshold = 0.0;
+			break;
+		case RESET_DEFAULT_SETTINGS :
+		default:
+			red = 0.0;
+			green = 0.0;
+			blue = 0.0;
+			threshold = 10.0;
+			use_value = 0;
+			slope = 0.0;
+			break;
+	}
 }
 
 
@@ -110,10 +134,10 @@ int ChromaKeyConfig::get_color()
 
 ChromaKeyWindow::ChromaKeyWindow(ChromaKey *plugin)
  : PluginClientWindow(plugin,
-	xS(320),
-	yS(220),
-	xS(320),
-	yS(220),
+	xS(420),
+	yS(250),
+	xS(420),
+	yS(250),
 	0)
 {
 	this->plugin = plugin;
@@ -127,35 +151,61 @@ ChromaKeyWindow::~ChromaKeyWindow()
 
 void ChromaKeyWindow::create_objects()
 {
-	int xs10 = xS(10), xs100 = xS(100);
-	int ys10 = yS(10), ys30 = yS(30), ys50 = yS(50);
-	int x = xs10, y = ys10, x1 = xS(100);
+	int xs10 = xS(10), xs20 = xS(20), xs100 = xS(100), xs200 = xS(200);
+	int ys10 = yS(10), ys20 = yS(20), ys30 = yS(30), ys40 = yS(40), ys50 = yS(50);
+	int x = xs10, y = ys10, x2 = xS(80), x3 = xS(180);
+	int clr_x = get_w()-x - xS(22); // note: clrBtn_w = 22
+	int defaultBtn_w = xs100;
 
 	BC_Title *title;
-	add_subwindow(title = new BC_Title(x, y, _("Color:")));
-	x += title->get_w() + xs10;
+	BC_TitleBar *title_bar;
+	BC_Bar *bar;
+
+// Color section
+	add_subwindow(title_bar = new BC_TitleBar(x, y, get_w()-2*x, xs20, xs10, _("Color")));
+	y += ys20;
 	add_subwindow(color = new ChromaKeyColor(plugin, this, x, y));
-	x += color->get_w() + xs10;
-	add_subwindow(sample = new BC_SubWindow(x, y, xs100, ys50));
-	y += sample->get_h() + xs10;
-	x = xs10;
-
-	add_subwindow(new BC_Title(x, y, _("Slope:")));
-	add_subwindow(slope = new ChromaKeySlope(plugin, x1, y));
-
+	// Info for Sample rectangle:       x_slider w_slider w_sample
+	//                                        \       |      /    y,   w,     h
+	add_subwindow(sample = new BC_SubWindow(x3 + xs200 - xs100, y, xs100, ys50));
 	y += ys30;
-	add_subwindow(new BC_Title(x, y, _("Threshold:")));
-	add_subwindow(threshold = new ChromaKeyThreshold(plugin, x1, y));
+	add_subwindow(use_colorpicker = new ChromaKeyUseColorPicker(plugin, this, x, y));
 
-
+// Key parameters section
 	y += ys30;
-	add_subwindow(use_value = new ChromaKeyUseValue(plugin, x1, y));
-
+	add_subwindow(title_bar = new BC_TitleBar(x, y, get_w()-2*x, xs20, xs10, _("Key parameters")));
+	y += ys20;
+	add_subwindow(title = new BC_Title(x, y, _("Threshold:")));
+	threshold_text = new ChromaKeyFText(plugin, this,
+		0, &(plugin->config.threshold), (x + x2), y, MIN_VALUE, MAX_VALUE);
+	threshold_text->create_objects();
+	threshold_slider = new ChromaKeyFSlider(plugin,
+		threshold_text, &(plugin->config.threshold), x3, y, MIN_VALUE, MAX_VALUE, xs200);
+	add_subwindow(threshold_slider);
+	threshold_text->slider = threshold_slider;
+	add_subwindow(threshold_Clr = new ChromaKeyClr(plugin, this, clr_x, y, RESET_THRESHOLD));
 	y += ys30;
-	add_subwindow(use_colorpicker = new ChromaKeyUseColorPicker(plugin, this, x1, y));
 
-	y += use_colorpicker->get_h() + xs10;
-	add_subwindow(new ChromaKeyReset(plugin, this, x, y));
+	add_subwindow(title = new BC_Title(x, y, _("Slope:")));
+	slope_text = new ChromaKeyFText(plugin, this,
+		0, &(plugin->config.slope), (x + x2), y, MIN_VALUE, MAX_VALUE);
+	slope_text->create_objects();
+	slope_slider = new ChromaKeyFSlider(plugin,
+		slope_text, &(plugin->config.slope), x3, y, MIN_VALUE, MAX_VALUE, xs200);
+	add_subwindow(slope_slider);
+	slope_text->slider = slope_slider;
+	add_subwindow(slope_Clr = new ChromaKeyClr(plugin, this, clr_x, y, RESET_SLOPE));
+	y += ys30;
+
+	add_subwindow(use_value = new ChromaKeyUseValue(plugin, x, y));
+	y += ys40;
+
+// Reset section
+	add_subwindow(bar = new BC_Bar(x, y, get_w()-2*x));
+	y += ys10;
+	add_subwindow(reset = new ChromaKeyReset(plugin, this, x, y));
+	add_subwindow(default_settings = new ChromaKeyDefaultSettings(plugin, this,
+		(get_w() - xs10 - defaultBtn_w), y, defaultBtn_w));
 
 	color_thread = new ChromaKeyColorThread(plugin, this);
 
@@ -163,6 +213,7 @@ void ChromaKeyWindow::create_objects()
 	show_window();
 	flush();
 }
+
 
 void ChromaKeyWindow::update_sample()
 {
@@ -213,48 +264,79 @@ int ChromaKeyColor::handle_event()
 
 
 
-
-ChromaKeyThreshold::ChromaKeyThreshold(ChromaKey *plugin, int x, int y)
- : BC_FSlider(x,
-			y,
-			0,
-			xS(200),
-			yS(200),
-			(float)0,
-			(float)100,
-			plugin->config.threshold)
+ChromaKeyFText::ChromaKeyFText(ChromaKey *plugin, ChromaKeyWindow *gui,
+	ChromaKeyFSlider *slider, float *output, int x, int y, float min, float max)
+ : BC_TumbleTextBox(gui, *output,
+	min, max, x, y, xS(60), 2)
 {
 	this->plugin = plugin;
-	set_precision(0.01);
+	this->gui = gui;
+	this->output = output;
+	this->slider = slider;
+	this->min = min;
+	this->max = max;
+	set_increment(0.01);
 }
-int ChromaKeyThreshold::handle_event()
+
+ChromaKeyFText::~ChromaKeyFText()
 {
-	plugin->config.threshold = get_value();
+}
+
+int ChromaKeyFText::handle_event()
+{
+	*output = atof(get_text());
+	if(*output > max) *output = max;
+	else if(*output < min) *output = min;
+	slider->update(*output);
+	plugin->send_configure_change();
+	return 1;
+}
+
+ChromaKeyFSlider::ChromaKeyFSlider(ChromaKey *plugin,
+	ChromaKeyFText *text, float *output, int x, int y,
+	float min, float max, int w)
+ : BC_FSlider(x, y, 0, w, w, min, max, *output)
+{
+	this->plugin = plugin;
+	this->output = output;
+	this->text = text;
+	set_precision (0.01);
+	enable_show_value(0); // Hide caption
+}
+
+ChromaKeyFSlider::~ChromaKeyFSlider()
+{
+}
+
+int ChromaKeyFSlider::handle_event()
+{
+	*output = get_value();
+	text->update(*output);
+	plugin->send_configure_change();
+	return 1;
+}
+
+ChromaKeyClr::ChromaKeyClr(ChromaKey *plugin, ChromaKeyWindow *gui, int x, int y, int clear)
+ : BC_Button(x, y, plugin->get_theme()->get_image_set("reset_button"))
+{
+	this->plugin = plugin;
+	this->gui = gui;
+	this->clear = clear;
+}
+
+ChromaKeyClr::~ChromaKeyClr()
+{
+}
+
+int ChromaKeyClr::handle_event()
+{
+	plugin->config.reset(clear);
+	gui->update_gui(clear);
 	plugin->send_configure_change();
 	return 1;
 }
 
 
-ChromaKeySlope::ChromaKeySlope(ChromaKey *plugin, int x, int y)
- : BC_FSlider(x,
-			y,
-			0,
-			xS(200),
-			yS(200),
-			(float)0,
-			(float)100,
-			plugin->config.slope)
-{
-	this->plugin = plugin;
-	set_precision(0.01);
-}
-
-int ChromaKeySlope::handle_event()
-{
-	plugin->config.slope = get_value();
-	plugin->send_configure_change();
-	return 1;
-}
 
 ChromaKeyUseValue::ChromaKeyUseValue(ChromaKey *plugin, int x, int y)
  : BC_CheckBox(x, y, plugin->config.use_value, _("Use value"))
@@ -277,8 +359,26 @@ ChromaKeyReset::ChromaKeyReset(ChromaKey *plugin, ChromaKeyWindow *gui, int x, i
 
 int ChromaKeyReset::handle_event()
 {
-	plugin->config.reset();
-	gui->update_gui();
+	plugin->config.reset(RESET_ALL);
+	gui->update_gui(RESET_ALL);
+	plugin->send_configure_change();
+	return 1;
+}
+
+ChromaKeyDefaultSettings::ChromaKeyDefaultSettings(ChromaKey *plugin, ChromaKeyWindow *gui,
+	int x, int y, int w)
+ : BC_GenericButton(x, y, w, _("Default"))
+{
+	this->plugin = plugin;
+	this->gui = gui;
+}
+ChromaKeyDefaultSettings::~ChromaKeyDefaultSettings()
+{
+}
+int ChromaKeyDefaultSettings::handle_event()
+{
+	plugin->config.reset(RESET_DEFAULT_SETTINGS);
+	gui->update_gui(RESET_DEFAULT_SETTINGS);
 	plugin->send_configure_change();
 	return 1;
 }
@@ -654,18 +754,37 @@ void ChromaKey::update_gui()
 	{
 		load_configuration();
 		thread->window->lock_window();
-		((ChromaKeyWindow *)(thread->window))->update_gui();
+		((ChromaKeyWindow *)(thread->window))->update_gui(RESET_ALL);
 		thread->window->unlock_window();
 	}
 }
 
-void ChromaKeyWindow::update_gui()
+void ChromaKeyWindow::update_gui(int clear)
 {
 	ChromaKeyConfig &config = plugin->config;
-	threshold->update(config.threshold);
-	slope->update(config.slope);
-	use_value->update(config.use_value);
-	update_sample();
+	switch(clear) {
+		case RESET_RGB :
+			update_sample();
+			break;
+		case RESET_SLOPE :
+			slope_text->update(config.slope);
+			slope_slider->update(config.slope);
+			break;
+		case RESET_THRESHOLD :
+			threshold_text->update(config.threshold);
+			threshold_slider->update(config.threshold);
+			break;
+		case RESET_ALL :
+		case RESET_DEFAULT_SETTINGS :
+		default:
+			update_sample();
+			slope_text->update(config.slope);
+			slope_slider->update(config.slope);
+			threshold_text->update(config.threshold);
+			threshold_slider->update(config.threshold);
+			use_value->update(config.use_value);
+			break;
+	}
 }
 
 int ChromaKey::handle_opengl()
