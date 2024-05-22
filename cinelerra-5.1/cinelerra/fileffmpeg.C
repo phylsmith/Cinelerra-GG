@@ -1493,7 +1493,7 @@ int FFOptions_Opt::types(char *rp)
 	case AV_OPT_TYPE_SAMPLE_FMT: cp = N_("<sample_fmt>"); break;
 	case AV_OPT_TYPE_DURATION: cp = N_("<duration>"); break;
 	case AV_OPT_TYPE_COLOR: cp = N_("<color>"); break;
-	case AV_OPT_TYPE_CHANNEL_LAYOUT: cp = N_("<channel_layout>");  break;
+	case AV_OPT_TYPE_CHLAYOUT: cp = N_("<channel_layout>");  break;
 	case AV_OPT_TYPE_BOOL: cp = N_("<bool>");  break;
 	default: cp = N_("<undef>");  break;
 	}

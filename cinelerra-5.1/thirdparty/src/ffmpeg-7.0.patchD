@@ -1,0 +1,24 @@
+--- a/libavcodec/pcm-dvdenc.c
++++ b/libavcodec/pcm-dvdenc.c
+@@ -38,6 +38,12 @@
+     int quant, freq, frame_size;
+ 
+     switch (avctx->sample_rate) {
++    case 32000:
++       freq = 3;
++       break;
++    case 44100:
++       freq = 2;
++       break;
+     case 48000:
+         freq = 0;
+         break;
+@@ -181,7 +187,7 @@
+     .priv_data_size = sizeof(PCMDVDContext),
+     .init           = pcm_dvd_encode_init,
+     FF_CODEC_ENCODE_CB(pcm_dvd_encode_frame),
+-    .p.supported_samplerates = (const int[]) { 48000, 96000, 0},
++    .p.supported_samplerates = (const int[]) { 32000, 44100, 48000, 96000, 0},
+     .p.ch_layouts   = (const AVChannelLayout[]) { AV_CHANNEL_LAYOUT_MONO,
+                                                   AV_CHANNEL_LAYOUT_STEREO,
+                                                   AV_CHANNEL_LAYOUT_5POINT1,

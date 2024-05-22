@@ -3,6 +3,10 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2024 May changes of note:
+  FFmpeg has been updated from 6.1 to 7.0.
+  ChromaKey and ChromaKeyHSV have improved menus/options.
+  Mjpegtools upgraded from 2.1.0 to 2.2.1.
 2024 January changes of note:
   X265 library has been updated to snapshot of 17-12-2023.
   Libsndfile is now at version 1.2.2.

@@ -880,13 +880,17 @@ void FFAudioStream::init_swr(int ichs, int ifmt, int irate)
 	swr_ichs = ichs;  swr_ifmt = ifmt;  swr_irate = irate;
 	if( ichs == channels && ifmt == AV_SAMPLE_FMT_FLT && irate == sample_rate )
 		return;
-	uint64_t ilayout = av_get_default_channel_layout(ichs);
-	if( !ilayout ) ilayout = ((uint64_t)1<<ichs) - 1;
-	uint64_t olayout = av_get_default_channel_layout(channels);
-	if( !olayout ) olayout = ((uint64_t)1<<channels) - 1;
-	resample_context = swr_alloc_set_opts(NULL,
-		olayout, AV_SAMPLE_FMT_FLT, sample_rate,
-		ilayout, (AVSampleFormat)ifmt, irate,
+	//uint64_t ilayout = av_get_default_channel_layout(ichs);
+	AVChannelLayout ilayout, olayout;
+	av_channel_layout_default(&ilayout, ichs);
+	//if( !ilayout ) ilayout = ((uint64_t)1<<ichs) - 1;
+	//uint64_t olayout = av_get_default_channel_layout(channels);
+	av_channel_layout_default(&olayout, channels);
+	//if( !olayout ) olayout = ((uint64_t)1<<channels) - 1;
+	
+	swr_alloc_set_opts2(&resample_context,
+		&olayout, AV_SAMPLE_FMT_FLT, sample_rate,
+		&ilayout, (AVSampleFormat)ifmt, irate,
 		0, NULL);
 	if( resample_context )
 		swr_init(resample_context);
@@ -963,7 +967,11 @@ int FFAudioStream::encode_activate()
 
 int64_t FFAudioStream::load_buffer(double ** const sp, int len)
 {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61,3,100)
+	reserve(len+1, st->codecpar->ch_layout.nb_channels);
+#else
 	reserve(len+1, st->codecpar->channels);
+#endif
 	for( int ch=0; ch<nch; ++ch )
 		write(sp[ch], len, ch);
 	return put_inp(len);
@@ -983,7 +991,12 @@ int FFAudioStream::init_frame(AVFrame *frame)
 {
 	frame->nb_samples = frame_sz;
 	frame->format = avctx->sample_fmt;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61,3,100)
+	frame->ch_layout.u.mask = avctx->ch_layout.u.mask;
+	av_channel_layout_copy(&frame->ch_layout, &avctx->ch_layout);
+#else
 	frame->channel_layout = avctx->channel_layout;
+#endif
 	frame->sample_rate = avctx->sample_rate;
 	int ret = av_frame_get_buffer(frame, 0);
 	if (ret < 0)
@@ -1004,7 +1017,7 @@ int FFAudioStream::load(int64_t pos, int len)
 	while( ret>=0 && !flushed && curr_pos<end_pos && --i>=0 ) {
 		ret = read_frame(frame);
 		if( ret > 0 && frame->nb_samples > 0 ) {
-			init_swr(frame->channels, frame->format, frame->sample_rate);
+			init_swr(frame->ch_layout.nb_channels, frame->format, frame->sample_rate);
 			load_history(&frame->extended_data[0], frame->nb_samples);
 			curr_pos += frame->nb_samples;
 		}
@@ -2780,14 +2793,14 @@ int FFMPEG::open_decoder()
 			ret = vid->create_filter(opt_video_filter);
 			break; }
 		case AVMEDIA_TYPE_AUDIO: {
-			if( avpar->channels < 1 ) continue;
+			if( avpar->ch_layout.nb_channels < 1 ) continue;
 			if( avpar->sample_rate < 1 ) continue;
 			has_audio = 1;
 			int aidx = ffaudio.size();
 			FFAudioStream *aud = new FFAudioStream(this, st, aidx, i);
 			ffaudio.append(aud);
 			aud->channel0 = astrm_index.size();
-			aud->channels = avpar->channels;
+			aud->channels = avpar->ch_layout.nb_channels;
 			for( int ch=0; ch<aud->channels; ++ch )
 				astrm_index.append(ffidx(aidx, ch));
 			aud->sample_rate = avpar->sample_rate;
@@ -2943,10 +2956,13 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			FFAudioStream *aud = new FFAudioStream(this, st, aidx, fidx);
 			aud->avctx = ctx;  ffaudio.append(aud);  fst = aud;
 			aud->sample_rate = asset->sample_rate;
-			ctx->channels = aud->channels = asset->channels;
+			ctx->ch_layout.nb_channels = aud->channels = asset->channels;
 			for( int ch=0; ch<aud->channels; ++ch )
 				astrm_index.append(ffidx(aidx, ch));
-			ctx->channel_layout =  av_get_default_channel_layout(ctx->channels);
+			AVChannelLayout ch_layout;
+			av_channel_layout_default(&ch_layout, ctx->ch_layout.nb_channels);
+			ctx->ch_layout.u.mask =  ch_layout.u.mask;
+			av_channel_layout_copy(&ctx->ch_layout, &ch_layout);
 			ctx->sample_rate = check_sample_rate(codec, asset->sample_rate);
 			if( !ctx->sample_rate ) {
 				eprintf(_("check_sample_rate failed %s\n"), filename);
@@ -2958,10 +2974,12 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			if( sample_fmt == AV_SAMPLE_FMT_NONE )
 				sample_fmt = codec->sample_fmts ? codec->sample_fmts[0] : AV_SAMPLE_FMT_S16;
 			ctx->sample_fmt = sample_fmt;
-			uint64_t layout = av_get_default_channel_layout(ctx->channels);
-			aud->resample_context = swr_alloc_set_opts(NULL,
-				layout, ctx->sample_fmt, aud->sample_rate,
-				layout, AV_SAMPLE_FMT_FLT, ctx->sample_rate,
+			//uint64_t layout = av_get_default_channel_layout(ctx->ch_layout.nb_channels);
+			AVChannelLayout layout;
+			av_channel_layout_default(&layout, ctx->ch_layout.nb_channels);
+			swr_alloc_set_opts2(&aud->resample_context,
+				&layout, ctx->sample_fmt, aud->sample_rate,
+				&layout, AV_SAMPLE_FMT_FLT, ctx->sample_rate,
 				0, NULL);
 			swr_init(aud->resample_context);
 			aud->writing = -1;
@@ -3929,7 +3947,7 @@ int FFAudioStream::create_filter(const char *filter_spec)
 	snprintf(args, sizeof(args),
 		"time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=0x%jx",
 		st->time_base.num, st->time_base.den, avpar->sample_rate,
-		av_get_sample_fmt_name(sample_fmt), avpar->channel_layout);
+		av_get_sample_fmt_name(sample_fmt), avpar->ch_layout.u.mask);
 	if( ret >= 0 ) {
 		filt_ctx = 0;
 		ret = insert_filter("abuffer", args, "in");
@@ -3947,8 +3965,8 @@ int FFAudioStream::create_filter(const char *filter_spec)
 			AV_OPT_SEARCH_CHILDREN);
 	if( ret >= 0 )
 		ret = av_opt_set_bin(buffersink_ctx, "channel_layouts",
-			(uint8_t*)&avpar->channel_layout,
-			sizeof(avpar->channel_layout), AV_OPT_SEARCH_CHILDREN);
+			(uint8_t*)&avpar->ch_layout.u.mask,
+			sizeof(avpar->ch_layout.u.mask), AV_OPT_SEARCH_CHILDREN);
 	if( ret >= 0 )
 		ret = av_opt_set_bin(buffersink_ctx, "sample_rates",
 			(uint8_t*)&sample_rate, sizeof(sample_rate),
@@ -4200,7 +4218,7 @@ printf("audio%d pad %jd %jd (%jd)\n", aud->idx, pos, aud->curr_pos, pos-aud->cur
 			}
 			while( (ret=aud->decode_frame(frame)) > 0 ) {
 				//if( frame->channels != nch ) break;
-				aud->init_swr(frame->channels, frame->format, frame->sample_rate);
+				aud->init_swr(frame->ch_layout.nb_channels, frame->format, frame->sample_rate);
 				float *samples;
 				int len = aud->get_samples(samples,
 					 &frame->extended_data[0], frame->nb_samples);

@@ -500,3 +500,7 @@ afdelaysrc
 #bilateral_cuda ###Function not implemented
 #bwdif_cuda ###Function not implemented
 #colorspace_cuda ###Function not implemented
+; do not work in 7.0
+#aap ###Input/output error
+#fsync ###No such file or directory
+#tiltandshift ###Resource temporarily available

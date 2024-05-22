@@ -197,7 +197,6 @@ public:
 
 	ChromaKeyColor *color;
 
-	ChromaKeyThreshold *threshold;
 	ChromaKeyFText *threshold_text;
 	ChromaKeyFSlider *threshold_slider;
 	ChromaKeyClr *threshold_Clr;
@@ -205,7 +204,6 @@ public:
 	ChromaKeyUseValue *use_value;
 	ChromaKeyUseColorPicker *use_colorpicker;
 
-	ChromaKeySlope *slope;
 	ChromaKeyFText *slope_text;
 	ChromaKeyFSlider *slope_slider;
 	ChromaKeyClr *slope_Clr;

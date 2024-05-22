@@ -2675,7 +2675,7 @@ int media_info::scan()
       break; }
     case AVMEDIA_TYPE_AUDIO: {
       s->coding_type = bd_coding_type(codec_id);
-      s->format = bd_audio_format(st->codecpar->channels);
+      s->format = bd_audio_format(st->codecpar->ch_layout.nb_channels);
       s->rate = bd_audio_rate(st->codecpar->sample_rate);
       strcpy((char*)s->lang, "eng");
       break; }

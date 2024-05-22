@@ -142,24 +142,39 @@ int FileAC3::open_file(int rd, int wr)
 			int channels = asset->channels;
 			int sample_rate = asset->sample_rate;
 			int64_t layout = get_channel_layout(channels);
+			AVChannelLayout ch_layout;
+			av_channel_layout_default(&ch_layout, channels);
+			if(!ch_layout.nb_channels) {
+			printf ("av_ch_layut_default failed! \n"); }
 			int bitrate = asset->ac3_bitrate * 1000;
 			av_init_packet(&avpkt);
 			codec_context = avcodec_alloc_context3(codec);
 			codec_context->bit_rate = bitrate;
 			codec_context->sample_rate = sample_rate;
-			codec_context->channels = channels;
-			codec_context->channel_layout = layout;
+			codec_context->ch_layout.nb_channels = channels;
+			codec_context->ch_layout.u.mask = layout;
+			av_channel_layout_copy(&codec_context->ch_layout, &ch_layout);
 			codec_context->sample_fmt = codec->sample_fmts[0];
-			resample_context = swr_alloc_set_opts(NULL,
-					layout, codec_context->sample_fmt, sample_rate,
-					layout, AV_SAMPLE_FMT_S16, sample_rate,
+			SwrContext *tmp_resample_context = NULL;
+			int ret = swr_alloc_set_opts2(&tmp_resample_context,
+					&ch_layout, codec_context->sample_fmt, sample_rate,
+					&ch_layout, AV_SAMPLE_FMT_S16, sample_rate,
 					0, NULL);
-			swr_init(resample_context);
+			if(ret <0) printf("swr_alloc eror: %i \n", ret );
+			if(tmp_resample_context){
+			resample_context = tmp_resample_context;
+			if(swr_init(resample_context))
+			{
+				eprintf(_("FileAC3::open_file failed to init swr.\n"));
+				result = 1;
+			}
+			}
 			if(avcodec_open2(codec_context, codec, 0))
 			{
 				eprintf(_("FileAC3::open_file failed to open codec.\n"));
 				result = 1;
 			}
+			av_channel_layout_uninit(&ch_layout);
 		}
 	}
 
@@ -314,8 +329,9 @@ int FileAC3::write_samples(double **buffer, int64_t len)
 		AVFrame *frame = av_frame_alloc();
 		frame->nb_samples = frame_size;
 		frame->format = avctx->sample_fmt;
-		frame->channel_layout = avctx->channel_layout;
+		av_channel_layout_copy(&frame->ch_layout, &avctx->ch_layout);
 		frame->sample_rate = avctx->sample_rate;
+
 		ret = av_frame_get_buffer(frame, 0);
 		if( ret >= 0 ) {
 			const uint8_t *samples = (uint8_t *)temp_raw +
@@ -323,7 +339,7 @@ int FileAC3::write_samples(double **buffer, int64_t len)
 			ret = swr_convert(resample_context,
 				(uint8_t **)frame->extended_data, frame_size,
 				&samples, frame_size);
-		}
+		} else { printf("fileAC3: av_frame_get_buffer failed!\n"); }
 		if( ret >= 0 ) {
 			frame->pts = avctx->sample_rate && avctx->time_base.num ?
 				file->get_audio_position() : AV_NOPTS_VALUE ;

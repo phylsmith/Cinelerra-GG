@@ -453,7 +453,7 @@ int PluginFClient_Opt::types(char *rp)
 	case AV_OPT_TYPE_SAMPLE_FMT: cp = "<sample_fmt>"; break;
 	case AV_OPT_TYPE_DURATION: cp = "<duration>"; break;
 	case AV_OPT_TYPE_COLOR: cp = "<color>"; break;
-	case AV_OPT_TYPE_CHANNEL_LAYOUT: cp = "<channel_layout>";  break;
+	case AV_OPT_TYPE_CHLAYOUT: cp = "<channel_layout>";  break;
 	default: cp = "<undef>";  break;
 	}
 	return sprintf(rp, "%s", cp);
@@ -664,7 +664,7 @@ PluginFClient::~PluginFClient()
 bool PluginFClient::is_audio(const AVFilter *fp)
 {
 	if( !fp->outputs ) return 0;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if LIBAVFILTER_VERSION_MAJOR > 8
 	if( avfilter_filter_pad_count(fp, 1) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->outputs) > 1 ) return 0;
@@ -672,7 +672,7 @@ bool PluginFClient::is_audio(const AVFilter *fp)
 	if( !avfilter_pad_get_name(fp->outputs, 0) ) return 0;
 	if( avfilter_pad_get_type(fp->outputs, 0) != AVMEDIA_TYPE_AUDIO ) return 0;
 	if( !fp->inputs ) return 1;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if  LIBAVFILTER_VERSION_MAJOR > 8
 	if( avfilter_filter_pad_count(fp, 0) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->inputs) > 1 ) return 0;
@@ -684,7 +684,7 @@ bool PluginFClient::is_audio(const AVFilter *fp)
 bool PluginFClient::is_video(const AVFilter *fp)
 {
 	if( !fp->outputs ) return 0;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if  LIBAVFILTER_VERSION_MAJOR > 8 
 	if( avfilter_filter_pad_count(fp, 1) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->outputs) > 1 ) return 0;
@@ -692,7 +692,7 @@ bool PluginFClient::is_video(const AVFilter *fp)
 	if( !avfilter_pad_get_name(fp->outputs, 0) ) return 0;
 	if( avfilter_pad_get_type(fp->outputs, 0) != AVMEDIA_TYPE_VIDEO ) return 0;
 	if( !fp->inputs ) return 1;
-#if LIBAVFILTER_VERSION_MINOR > 2 && LIBAVFILTER_VERSION_MAJOR > 7
+#if  LIBAVFILTER_VERSION_MAJOR > 8
 	if( avfilter_filter_pad_count(fp, 0) > 1 ) return 0;
 #else
 	if( avfilter_pad_count(fp->inputs) > 1 ) return 0;
@@ -845,16 +845,24 @@ int PluginFAClient::activate()
 	}
 	AVSampleFormat sample_fmt = AV_SAMPLE_FMT_FLTP;
 	int channels = PluginClient::total_in_buffers;
-	uint64_t layout = (((uint64_t)1)<<channels) - 1;
+	//uint64_t layout = (((uint64_t)1)<<channels) - 1;
+	AVChannelLayout layout;
+	
+	av_channel_layout_default(&layout, channels);
+	
+	char chLayoutDescription[128];
+	av_channel_layout_describe(&layout, chLayoutDescription, sizeof(chLayoutDescription));
+    
 	AVFilterGraph *graph = !ffilt ? 0 : ffilt->graph;
 	int ret = !graph ? -1 : 0;
 	if( ret >= 0 && ffilt->filter->inputs ) {
 		char args[BCTEXTLEN];
 		snprintf(args, sizeof(args),
-			"time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=0x%jx",
-			1, sample_rate, sample_rate, av_get_sample_fmt_name(sample_fmt), layout);
+			"time_base=%d/%d:sample_rate=%d:sample_fmt=%s:channel_layout=%s:channels=%i",
+			1, sample_rate, sample_rate, av_get_sample_fmt_name(sample_fmt), chLayoutDescription, channels);
 		ret = avfilter_graph_create_filter(&fsrc, avfilter_get_by_name("abuffer"),
 			"in", args, NULL, graph);
+		if(ret <0) printf("abuffer failed!\n");
 	}
 	if( ret >= 0 )
 		ret = avfilter_graph_create_filter(&fsink, avfilter_get_by_name("abuffersink"),
@@ -863,8 +871,8 @@ int PluginFAClient::activate()
 		ret = av_opt_set_bin(fsink, "sample_fmts",
 			(uint8_t*)&sample_fmt, sizeof(sample_fmt), AV_OPT_SEARCH_CHILDREN);
 	if( ret >= 0 )
-		ret = av_opt_set_bin(fsink, "channel_layouts",
-			(uint8_t*)&layout, sizeof(layout), AV_OPT_SEARCH_CHILDREN);
+		ret = av_opt_set(fsink, "ch_layouts",
+			chLayoutDescription, AV_OPT_SEARCH_CHILDREN);
 	if( ret >= 0 )
 		ret = av_opt_set_bin(fsink, "sample_rates",
 			(uint8_t*)&sample_rate, sizeof(sample_rate), AV_OPT_SEARCH_CHILDREN);
@@ -990,9 +998,19 @@ int PluginFAClient::process_buffer(int64_t size, Samples **buffer, int64_t start
 	if( ret >= 0 ) {
 		in_channels = get_inchannels();
 		out_channels = get_outchannels();
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,24,100)
+		AVChannelLayout in_ch_layout;
+		AVFilterContext *fctx = ffilt->fctx;
+		AVFilterLink **links = !fctx->nb_outputs ? 0 : fctx->outputs;
+		av_channel_layout_copy(&in_ch_layout, &links[0]->ch_layout);
+#endif
 		frame->nb_samples = size;
 		frame->format = AV_SAMPLE_FMT_FLTP;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(61,3,100)
+		av_channel_layout_copy(&frame->ch_layout, &in_ch_layout);
+#else
 		frame->channel_layout = (1<<in_channels)-1;
+#endif
 		frame->sample_rate = sample_rate;
 		frame->pts = filter_position;
 	}
