@@ -42,12 +42,17 @@ Chroma key:	Erases pixels which match chosen color;
 		channel and transparency if there is alpha.
 Chroma key (HSV): Replaces a color with another color or
 		transparency using HSV variables.
+Chroma key (Avid): ChromkayHSV version based on the Avid 
+		SpectraMatte algorithm. First attach the Color
+		Swatch plugin to help visualize the effect.
 Color 3 Way:	Modify color of Shadows, Midtones, and Highlights
 		as you specify.
 Color Balance:	Modify RGB colors or white balance to compensate
 		for errors in video such as low lighting.
 ColorSpace:	Tweak colors from one color space/range to another
-		space=BT601/BT709/BT2020  range=MPEG/JPEG
+		space=BT601/BT709/BT2020  range=MPEG/JPEG.
+Color Swatch:	Draws the color space for saturation or brightness.
+		Provides an input to assist in ChromaKey adjustments.
 CriKey:		Regionally based chroma key with interpolation;
 		useful when you only want a specific zone defined.
 		.

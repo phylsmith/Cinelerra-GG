@@ -17,7 +17,7 @@
 # Several important definitions
 
 # ContextManual.pl script API version. Must not be changed !
-$cin_cm_api = 1;
+$cin_cm_api = 2;
 
 # Web browser executable, can be redefined on user's demand
 $cin_browser = $ENV{'CIN_BROWSER'};
@@ -34,8 +34,9 @@ $cin_browser = 'firefox' if $cin_browser eq '';
 # The node with the manual contents
 $contents_node = 'Contents.html';
 
-# The node with the manual index
-$index_node = 'Index.html';
+# The node with the actual index if needed will be found after parsing contents
+$index_node = '';
+$index = '';
 
 # Several special plugin names necessary to rewrite
 %rewrite = (
@@ -80,7 +81,6 @@ $cin_dat = '.' if $cin_dat eq '';
 # Cinelerra HTML manual must reside here
 $cin_man = "$cin_dat/doc/CinelerraGG_Manual";
 $contents = $cin_man.'/'.$contents_node;
-$index = $cin_man.'/'.$index_node;
 #print "ContextManual: using contents $contents\n";
 
 # Cinelerra user's config directory
@@ -134,6 +134,21 @@ if ($help_key eq 'TOC')
 # Show index on this special request
 if ($help_key eq 'IDX')
 {
+  # Index node will be needed now, find it
+  if ($index_node eq '')
+  {
+    $node = '';
+    open CONTENTS, $contents or die "Cannot open $contents: $!";
+    while (<CONTENTS>)
+    {
+      chomp;
+      last if ($node) = /^\s*HREF=\"(.+?\.html)\">\s*Index\s*<\/A>(?:<\/B>)?$/;
+    }
+    close CONTENTS;
+    $index_node = $node if $node ne '';
+    $index_node = 'Index.html' if $index_node eq '';
+    $index = $cin_man.'/'.$index_node;
+  }
   system "$cin_browser \"file://$index\" &";
   exit 0;
 }
@@ -158,6 +173,21 @@ if ($help_key eq 'TOC')
 # Show index on this special request
 if ($help_key eq 'IDX')
 {
+  # Index node will be needed now, find it
+  if ($index_node eq '')
+  {
+    $node = '';
+    open CONTENTS, $contents or die "Cannot open $contents: $!";
+    while (<CONTENTS>)
+    {
+      chomp;
+      last if ($node) = /^\s*HREF=\"(.+?\.html)\">\s*Index\s*<\/A>(?:<\/B>)?$/;
+    }
+    close CONTENTS;
+    $index_node = $node if $node ne '';
+    $index_node = 'Index.html' if $index_node eq '';
+    $index = $cin_man.'/'.$index_node;
+  }
   system "$cin_browser \"file://$index\" &";
   exit 0;
 }
@@ -188,6 +218,21 @@ if ($node eq '')
     chomp;
     last if ($node) = /^\s*HREF=\"(.+?\.html)\">.*?$help_key.*?<\/A>$/i;
   }
+}
+
+# Index node will be needed now, find it
+if ($node eq '' && $index_node eq '')
+{
+  seek CONTENTS, 0, 0;
+  while (<CONTENTS>)
+  {
+    chomp;
+    last if ($node) = /^\s*HREF=\"(.+?\.html)\">\s*Index\s*<\/A>(?:<\/B>)?$/;
+  }
+  $index_node = $node if $node ne '';
+  $index_node = 'Index.html' if $index_node eq '';
+  $index = $cin_man.'/'.$index_node;
+  $node = '';
 }
 
 # If not found, search index for the exact key

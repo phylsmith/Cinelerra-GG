@@ -40,6 +40,7 @@ DIRS = $(OPENCV_OBJS) \
 	chorus \
 	chromakey \
 	chromakeyhsv \
+	chromakeyavid \
 	color3way \
 	colorbalance \
 	colorspace \
@@ -139,6 +140,7 @@ DIRS = $(OPENCV_OBJS) \
 	svg \
 	swapchannels \
 	swapframes \
+	swatch \
 	synthesizer \
 	threshold \
 	timeavg \

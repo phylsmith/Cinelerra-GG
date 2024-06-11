@@ -34,6 +34,7 @@ video := \
 	C41 \
 	chromakey \
 	chromakeyhsv \
+	chromakeyavid \
 	color3way \
 	colorbalance \
 	colorspace \
@@ -112,6 +113,7 @@ video := \
 	svg \
 	swapchannels \
 	swapframes \
+	swatch \
 	threshold \
 	timeavg \
 	timeblur \

@@ -123,6 +123,8 @@ Video Effects
 		Blue Banana
 		Chroma key
 		Chroma key (HSV)
+		Chroma key (Avid)
+		Color Swatch
 		CriKey
 		Difference key
 		F_chromakey
