@@ -89,71 +89,94 @@ int PackagingEngineDefault::create_packages_single_farm(EDL *edl,
 RenderPackage* PackagingEngineDefault::get_package_single_farm(double frames_per_second,
 		int client_number, int use_local_rate)
 {
-	RenderPackage *result = 0;
-	float avg_frames_per_second = preferences->get_avg_rate(use_local_rate);
-	double length = package_len;
-	int scaled_length = 0;
 
-	if( (default_asset->audio_data &&
-		(audio_position < audio_end && !EQUIV(audio_position, audio_end))) ||
-	    (default_asset->video_data &&
-		(video_position < video_end && !EQUIV(video_position, video_end))) ) {
+//printf("PackageDispatcher::get_package %ld %ld %ld %ld\n", audio_position, video_position, audio_end, video_end);
+
+		RenderPackage *result = 0;
+		float avg_frames_per_second = preferences->get_avg_rate(use_local_rate);
+
+		if(audio_position < audio_end ||
+			video_position < video_end)
+		{
 // Last package
-		result = packages[current_package];
-		result->audio_start = audio_position;
-		result->video_start = video_position;
-		result->video_do = default_asset->video_data;
-		result->audio_do = default_asset->audio_data;
+			double scaled_len;
+			result = packages[current_package];
+			result->audio_start = audio_position;
+			result->video_start = video_position;
+			result->video_do = default_asset->video_data;
+			result->audio_do = default_asset->audio_data;
 
-		if( current_package >= total_allocated-1 ) {
-			result->audio_end = audio_end;
-			result->video_end = video_end;
- 			audio_position = result->audio_end;
-			video_position = result->video_end;
-		}
-		else {
-			if( frames_per_second > 0 && 
-			    !EQUIV(frames_per_second, 0) && !EQUIV(avg_frames_per_second, 0) ) {
+			if(current_package >= total_allocated - 1)
+			{
+				result->audio_end = audio_end;
+				result->video_end = video_end;
+				audio_position = result->audio_end;
+				video_position = result->video_end;
+			}
+			else
+// No useful speed data.  May get infinity for real fast jobs.
+			if(frames_per_second > 0x7fffff || frames_per_second < 0 ||
+				EQUIV(frames_per_second, 0) ||
+				EQUIV(avg_frames_per_second, 0))
+			{
+				scaled_len = MAX(package_len, min_package_len);
+
+				result->audio_end = audio_position +
+					Units::round(scaled_len * default_asset->sample_rate);
+				result->video_end = video_position +
+					Units::round(scaled_len * default_asset->frame_rate);
+
+// If we get here without any useful speed data render the whole thing.
+				if(current_package >= total_packages - 1)
+				{
+					result->audio_end = audio_end;
+					result->video_end = video_end;
+				}
+				else
+				{
+					result->audio_end = MIN(audio_end, result->audio_end);
+					result->video_end = MIN(video_end, result->video_end);
+				}
+
+				audio_position = result->audio_end;
+				video_position = result->video_end;
+			}
+			else
+// Useful speed data and future packages exist.  Scale the
 // package size to fit the requestor.
-				length *= frames_per_second / avg_frames_per_second;
-				scaled_length = 1;
-			}
-			if( length < min_package_len )
-				length = min_package_len;
-			double end_position = current_position + length;
+			{
+				scaled_len = package_len *
+					frames_per_second /
+					avg_frames_per_second;
+				scaled_len = MAX(scaled_len, min_package_len);
 
-			if( result->video_do ) {
-				int64_t video_end = end_position * default_asset->frame_rate;
-				result->video_end = MIN(this->video_end, video_end);
-				end_position = video_end / default_asset->frame_rate;
-			}
-			if( result->audio_do ) {
-				int64_t audio_end = end_position * default_asset->sample_rate;
-				result->audio_end = MIN(this->audio_end, audio_end);
-			}
-			audio_position = result->audio_end;
-			video_position = result->video_end;
-			current_position = end_position;
+				result->audio_end = result->audio_start +
+					Units::to_int64(scaled_len * default_asset->sample_rate);
+				result->video_end = result->video_start +
+					Units::to_int64(scaled_len * default_asset->frame_rate);
+
+				result->audio_end = MIN(audio_end, result->audio_end);
+				result->video_end = MIN(video_end, result->video_end);
+
+				audio_position = result->audio_end;
+				video_position = result->video_end;
 
 // Package size is no longer touched between total_packages and total_allocated
-			if( scaled_length && current_package < total_packages-1 ) {
-				double remaining =
-					result->audio_do ? (double)(audio_end - audio_position) /
-						default_asset->sample_rate :
-					result->video_do ? (double)(video_end - video_position) /
-						default_asset->frame_rate : 0;
-				if( remaining > 0 ) {
-					int jobs = total_packages - current_package;
-					package_len = remaining / jobs;
+				if(current_package < total_packages - 1)
+				{
+					package_len = (double)(audio_end - audio_position) /
+						(double)default_asset->sample_rate /
+						(double)(total_packages - current_package);
 				}
-			}
-		}
 
-		current_package++;
+			}
+
+                        current_package++;
 //printf("Dispatcher::get_package 50 %lld %lld %lld %lld\n",
 // result->audio_start, result->video_start, result->audio_end, result->video_end);
-	}
-	return result;
+                }
+                return result;
+
 }
 
 void PackagingEngineDefault::get_package_paths(ArrayList<char*> *path_list)
