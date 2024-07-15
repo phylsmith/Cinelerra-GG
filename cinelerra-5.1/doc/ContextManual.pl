@@ -17,7 +17,7 @@
 # Several important definitions
 
 # ContextManual.pl script API version. Must not be changed !
-$cin_cm_api = 2;
+$cin_cm_api = 3;
 
 # Web browser executable, can be redefined on user's demand
 $cin_browser = $ENV{'CIN_BROWSER'};
@@ -67,6 +67,7 @@ $index = '';
   "AgingTV"             => "Aging TV",
   "Brightness/Contrast" => "Brightness\\/Contrast",
   "Chroma key (HSV)"    => "Chroma Key \\(HSV\\)",
+  "Chroma key (Avid)"   => "Chroma Key \\(Avid\\)",
   "Crop & Position"     => "Crop &amp; Position",
   "FindObj"             => "Find Object",
   "RGB - 601"           => "RGB-601",
