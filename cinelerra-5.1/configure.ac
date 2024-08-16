@@ -256,7 +256,7 @@ PKG_3RD([fftw],[auto],
   [ api ])
 
 PKG_3RD([flac],[auto],
-  [flac-1.4.2],
+  [flac-1.4.3],
   [ src/libFLAC/.libs/libFLAC.a \
     src/libFLAC++/.libs/libFLAC++.a \
     src/share/replaygain_analysis/.libs/libreplaygain_analysis.a \
@@ -267,7 +267,7 @@ PKG_3RD([flac],[auto],
   [ include ])
 
 PKG_3RD([giflib],[yes],
-  [giflib-5.2.1],
+  [giflib-5.2.2],
   [ libgif.a \
     libutil.a ],
   [ . ])

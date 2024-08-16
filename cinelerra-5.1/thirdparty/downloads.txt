@@ -1,8 +1,8 @@
 #https://www.cybercom.net/~dcoffin/dcraw/dcraw.c (moved to next line for 9.28 2018/06/01)
-# dcraw.c.xz is checked into GIT at version 9.27; should be 9.28 cuz that is what dcraw.C is based on (/mnt0)
+# dcraw.c.xz is at 2018, internal version of 1.478
 https://www.dechifro.org/dcraw/dcraw.c
-http://download-mirror.savannah.gnu.org/releases//openexr/ilmbase-2.2.1.tar.gz
-http://gnu.mirrors.pair.com/savannah/savannah//openexr/openexr-2.2.1.tar.gz
+http://download-mirror.savannah.gnu.org/releases//openexr/ilmbase-2.4.1.tar.gz
+http://gnu.mirrors.pair.com/savannah/savannah//openexr/openexr-2.4.1.tar.gz
 https://sourceforge.net/projects/opencvlibrary/files/  4.3.0
 https://github.com/opencv/opencv_contrib/releases   4.3.0
 #https://sourceforge.net/projects/opencore-amr/files/fdk-aac/fdk-aac-2.2.0.tar.gz/download
@@ -12,8 +12,8 @@ https://mirrors.edge.kernel.org/pub/linux/libs/ieee1394/libraw1394-2.1.2.tar.xz
 https://mirrors.edge.kernel.org/pub/linux/libs/ieee1394/libiec61883-1.2.0.tar.xz
 https://sourceforge.net/projects/libavc1394/files/latest/download?source=directory = 0.5.4
 https://sourceforge.net/projects/libdv/files/latest/download?source=directory = 0.104
-https://sourceforge.net/projects/giflib/files/latest/download = 5.2.1
-https://github.com/xiph/flac/releases/tag/1.4.2
+https://sourceforge.net/projects/giflib/files/latest/download = 5.2.2
+https://github.com/xiph/flac/releases/tag/1.4.3
 https://github.com/uclouvain/openjpeg/ = Releases=sourcefiles openjpeg-2.5.0.tar.gz
 https://sourceforge.net/projects/libjpeg-turbo/ = Code (GitHub)=sourcefiles/2.1.2/libjpeg-turbo-2.1.5.1.tar.gz
 https://sourceforge.net/projects/mjpeg/files/mjpegtools/2.2.1/
