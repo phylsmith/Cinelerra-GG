@@ -14,7 +14,7 @@ https://sourceforge.net/projects/libavc1394/files/latest/download?source=directo
 https://sourceforge.net/projects/libdv/files/latest/download?source=directory = 0.104
 https://sourceforge.net/projects/giflib/files/latest/download = 5.2.2
 https://github.com/xiph/flac/releases/tag/1.4.3
-https://github.com/uclouvain/openjpeg/ = Releases=sourcefiles openjpeg-2.5.0.tar.gz
+https://github.com/uclouvain/openjpeg/ = Releases=sourcefiles openjpeg-2.5.2.tar.gz
 https://sourceforge.net/projects/libjpeg-turbo/ = Code (GitHub)=sourcefiles/2.1.2/libjpeg-turbo-2.1.5.1.tar.gz
 https://sourceforge.net/projects/mjpeg/files/mjpegtools/2.2.1/
 http://www.fftw.org/fftw-3.3.10.tar.gz
@@ -33,7 +33,7 @@ http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
 # Added 0.7.4 in at least 2016; no new updates; not in HV or CV
 https://repology.org/project/a52dec/information
 https://sourceforge.net/projects/lame/files/latest/download?source=directory = 3.100
-https://download.osgeo.org/libtiff/tiff-4.6.0.tar.xz
+https://download.osgeo.org/libtiff/tiff-4.6.0t.tar.xz
 https://sourceforge.net/projects/libuuid/files/latest/download?source=directory - 1.0.3
 https://code.videolan.org/videolan/x264/-/tree/stable/x264-stable.tar.gz (Jan. 2023 version r3106)
 https://bitbucket.org/multicoreware/x265_git/downloads/x265_3.5.tar.gz (snapshot 17122023)

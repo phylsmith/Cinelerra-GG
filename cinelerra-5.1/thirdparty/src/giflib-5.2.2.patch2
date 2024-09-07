@@ -85,7 +85,7 @@
 -		 */
 -		qsort(SortArray, NewColorSubdiv[Index].NumEntries,
 -		      sizeof(QuantizedColorType *), SortCmpRtn);
-+		qsort(SortArray, -1, NewColorSubdiv[Index].NumEntries, SortRGBAxis);
++		QSort(SortArray, -1, NewColorSubdiv[Index].NumEntries, SortRGBAxis);
  
  		/* Relink the sorted list into one: */
  		for (j = 0; j < NewColorSubdiv[Index].NumEntries - 1; j++) {
