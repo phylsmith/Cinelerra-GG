@@ -2558,6 +2558,14 @@ int FFMPEG::info(char *text, int len)
 		const char *rg = av_color_range_name(range);
 		report("/ range:%s\n", rg ? rg : unkn);
 
+		enum AVColorPrimaries primaries = st->codecpar->color_primaries;
+		const char *pr = av_color_primaries_name(primaries);
+		report("    color primaries:%s", pr ? pr : unkn);
+    		enum AVColorTransferCharacteristic trc = st->codecpar->color_trc;
+		const char *transfer = av_color_transfer_name(trc);
+		report("/ transfer characteristics:%s\n", transfer ? transfer : unkn);
+
+
 		AVRational sar = av_guess_sample_aspect_ratio(fmt_ctx, st, NULL);
 		AVRational display_aspect_ratio;
 		if(sar.num) {

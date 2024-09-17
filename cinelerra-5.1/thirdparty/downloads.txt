@@ -35,7 +35,7 @@ https://repology.org/project/a52dec/information
 https://sourceforge.net/projects/lame/files/latest/download?source=directory = 3.100
 https://download.osgeo.org/libtiff/tiff-4.6.0t.tar.xz
 https://sourceforge.net/projects/libuuid/files/latest/download?source=directory - 1.0.3
-https://code.videolan.org/videolan/x264/-/tree/stable/x264-stable.tar.gz (Jan. 2023 version r3106)
+https://www.videolan.org/developers/x264.html (May 2024 version r3191)
 https://bitbucket.org/multicoreware/x265_git/downloads/x265_3.5.tar.gz (snapshot 17122023)
 https://ffmpeg.org/releases/ffmpeg-7.0.tar.xz
 https://github.com/webmproject/libvpx/archive/v1.13.1.tar.gz

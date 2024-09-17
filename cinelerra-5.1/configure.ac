@@ -418,7 +418,7 @@ PKG_3RD([twolame],[auto],
   [  libtwolame ])
 
 PKG_3RD([x264],[auto],
-  [x264-stable],
+  [x264-stableR3191],
   [ libx264.a ],
   [ . ])
 
