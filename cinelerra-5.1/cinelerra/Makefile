@@ -464,6 +464,9 @@ LIBS += -lgif -ltheoraenc -ltheoradec -lvorbisfile -lvorbisenc -ltiff
 ifeq ($(shell uname -o), Android)
 LIBS += -landroid-shmem -liconv ../libbthread-master/jpt.a
 endif
+ifeq ($(WANT_ESOUND),yes)
+LIBS += -lesd
+endif
 LIBS += $(shared_libs)
 LIBS += $(system_libs)
 else

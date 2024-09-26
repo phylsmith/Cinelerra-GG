@@ -3,6 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2024 September changes of note:
+  Updated libraries include: dcraw, flac, giflib,
+   openjpeg, tiff, svt_av1, and x264 to current latest.
 2024 July changes of note:
   All of the AppImages are now being built with x265
    8/10/12 bit encode options (multibit).

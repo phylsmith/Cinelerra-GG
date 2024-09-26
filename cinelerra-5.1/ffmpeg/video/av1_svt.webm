@@ -1,6 +1,6 @@
 webm libsvtav1
-# this codec codes less than one frame per sec
-# and so even a few seconds of video can take
-# a very long time to encode
-# crf = 26
-# preset = 6
+# If you do not want 10 bit, switch pixel_format
+#   to yuv420p which is standard 8 bit.
+crf = 35
+preset = 6
+pixel_format = yuv420p10le

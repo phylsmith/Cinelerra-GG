@@ -160,8 +160,11 @@ namespace linuxdeploy {
                                 ldLog() << LD_DEBUG << "File exists, skipping:" << to << std::endl;
                                 return true;
                             }
-
+			    #if BOOST_VERSION < 107400
                             bf::copy_file(from, to, bf::copy_option::overwrite_if_exists);
+                            #else
+                            bf::copy_file(from, to, bf::copy_options::overwrite_existing);
+                            #endif
                             bf::permissions(to, addedPerms | bf::add_perms);
                         } catch (const bf::filesystem_error& e) {
                             ldLog() << LD_ERROR << "Failed to copy file" << from << "to" << to << LD_NO_SPACE << ":" << e.what() << std::endl;
