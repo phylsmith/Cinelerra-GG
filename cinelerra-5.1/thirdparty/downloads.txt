@@ -15,7 +15,7 @@ https://sourceforge.net/projects/libdv/files/latest/download?source=directory = 
 https://sourceforge.net/projects/giflib/files/latest/download = 5.2.2
 https://github.com/xiph/flac/releases/tag/1.4.3
 https://github.com/uclouvain/openjpeg/ = Releases=sourcefiles openjpeg-2.5.2.tar.gz
-https://sourceforge.net/projects/libjpeg-turbo/ = Code (GitHub)=sourcefiles/2.1.2/libjpeg-turbo-2.1.5.1.tar.gz
+https://sourceforge.net/projects/libjpeg-turbo/ = Code (GitHub)=sourcefiles/2.1.2/libjpeg-turbo-3.0.4.tar.gz
 https://sourceforge.net/projects/mjpeg/files/mjpegtools/2.2.1/
 http://www.fftw.org/fftw-3.3.10.tar.gz
 # Not sure why festival is in here but it is now at 2.5 since 25-Dec-2017

@@ -303,7 +303,7 @@ PKG_3RD([libdv],[auto],
   [ . ])
 
 PKG_3RD([libjpeg],[auto],
-  [libjpeg-turbo-2.1.5.1],
+  [libjpeg-turbo-3.0.4],
   [ build/libjpeg.a \
     build/libturbojpeg.a ],
   [ opt/libjpeg-turbo/include ])

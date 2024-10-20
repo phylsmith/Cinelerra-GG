@@ -265,7 +265,7 @@ openexr.mak_vars?=true; \#
 opus.cfg_params?= --disable-extra-programs
 speech_tools.mak_params?=-j1
 tiff.ldflags?="$(call ld_path,libjpeg,build)"
-tiff.cflags?="$(call lnc_path,libjpeg)"
+tiff.cflags?="$(call inc_path,libjpeg)"
 tiff.cfg_vars+=LIBS+=" -lpthread"; autoreconf -ifv -I m4 && automake -caf;
 tiff.cfg_params+= --disable-libdeflate --disable-lerc --enable-shared=no --disable-zstd $(call if_pkg,libwebp,\
  --with-webp-include-dir=$(call pkg_incl,libwebp)\

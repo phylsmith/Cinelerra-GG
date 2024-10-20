@@ -3,6 +3,10 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2024 October changes of note:
+  Updated libraries include:
+   x265 to version 4.0, libvpx to 1.14.1, libwebp to 1.4.0,
+   libjpeg-turbo to 3.0.4.
 2024 September changes of note:
   Updated libraries include: dcraw, flac, giflib,
    openjpeg, tiff, svt_av1, and x264 to current latest.
