@@ -1,4 +1,4 @@
-Jun 3, 2016
+Oct, 23, 2024
 
 == for configuration help:
   ./autogen.sh
@@ -12,7 +12,7 @@ Jun 3, 2016
 
 == for shared BUILD for $HOME/cin install:
   ./autogen.sh
-  ./configure --without-system_build
+  ./configure --without-thirdparty --with-single-user --without-libdpx
   make >& log
   make install >> log
   grep "\*\*\*.*error" -ai log

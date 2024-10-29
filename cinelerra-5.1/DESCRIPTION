@@ -1,0 +1,12 @@
+cinelerra-goodguy (GNU/Linux Video/Audio Studio)
+
+Cinelerra is the most  advanced non-linear video editor
+and compositor for Linux.  It does primarily three main
+things:  capturing, compositing, and  editing audio and
+video with sample level accuracy and can operate with 
+up to rgba float color accuracy.
+
+Homepage: http://cinelerra-gg.org/
+
+This is goodguy's own variant of Cinelerra (5.x) which
+started on cinelerra.org.
