@@ -468,7 +468,7 @@ PKG_3RD([libaom],[auto],
   [ usr/local/include ])
 
 PKG_3RD([libsvtav1],[no],
-  [libsvtav1-v2.2.1],
+  [libsvtav1-v2.3.0],
   [ usr/local/lib*/libSvtAv1Enc.a ],
   [ usr/local/include/svt-av1 ])
 
