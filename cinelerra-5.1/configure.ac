@@ -86,6 +86,7 @@ CHECK_WITH([wintv],[usb 2040:826d wintv device],[WINTV],[yes])
 CHECK_WITH([x10tv],[usb 0bc7:0004 X10 remote device],[X10TV],[yes])
 CHECK_WITH([vaapi],[video acceleration api],[VAAPI],[yes])
 CHECK_WITH([vdpau],[video decode+presentation api for unix],[VDPAU],[yes])
+CHECK_WITH([onevpl],[Intel QSV api for unix],[ONEVPL],[no])
 CHECK_WITH([nv],[nvenc/nvdec ffnvcodec api],[NV],[yes])
 CHECK_WITH([cuda],[nv cuda plugins],[CUDA],[auto])
 CHECK_WITH([clang],[use clang instead of gcc/g++],[CLANG],[no])
@@ -512,7 +513,6 @@ AC_ARG_ENABLE([$1],
 ])
 
 CHECK_ENABLE([static-build], [STATIC_BUILD], [build static], [auto])
-CHECK_ENABLE([x264_hidepth], [X264_HIDEPTH], [build x264 10bit], [no])
 CHECK_ENABLE([x265_hidepth], [X265_HIDEPTH], [build x265 10bit], [no])
 
 test "x$WANT_STATIC_BUILD" = "xauto" && WANT_STATIC_BUILD=$WANT_CINBIN_BUILD
@@ -559,7 +559,7 @@ fi
 
 REQUIRE_PROG(OBJCOPY, [objcopy])
 if test "x$FATAL_ERROR" != "x"; then
- AC_MSG_ERROR("fatal eror.")
+ AC_MSG_ERROR("fatal error.")
 fi
 CHECK_PROG(PACTL, [pactl])
 WANT_PACTL=$PROG_PACTL
@@ -694,6 +694,11 @@ if test "x$HAVE_VAAPI" = "xyes" -a "x$WANT_VAAPI" != "xno"; then
 fi
 if test "x$HAVE_VAAPI" != "xyes" -a "x$WANT_VAAPI" = "xyes"; then
   AC_MSG_ERROR([requires vaapi support.])
+fi
+
+CHECK_LIB([ONEVPL], [vpl], [MFXCreateSession])
+if test "x$HAVE_ONEVPL" != "xyes" -a "x$WANT_ONEVPL" = "xyes"; then
+  AC_MSG_ERROR([requires onevpl support.])
 fi
 
 #CHECK_LIB([NVENC], [nvidia-encode], [NvEncodeAPICreateInstance])
@@ -1077,7 +1082,7 @@ fi
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
 	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
-	 VAAPI VDPAU CUDA NV WINTV X10TV; do
+	 VAAPI VDPAU ONEVPL CUDA NV WINTV X10TV; do
   eval vv="\$WANT_$v"
   if test "x$vv" != "xno"; then
     CFG_CFLAGS+=" -DHAVE_$v"
@@ -1123,6 +1128,14 @@ if test "x$WANT_VDPAU" != "xno" -a "x$HAVE_VDPAU" = "xyes"; then
   WANT_VDPAU="yes"
 fi
 CFG_WANTS+=" VDPAU"
+
+if test "x$WANT_ONEVPL" != "xno" -a "x$HAVE_ONEVPL" = "xyes"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -lvpl `pkg-config --libs vpl`'
+  FFMPEG_EXTRA_CFG+=' --extra-cflags="'$(pkg-config --cflags vpl)'"'
+  WANT_ONEVPL="yes"
+fi
+CFG_WANTS+=" ONEVPL"
+
 
 if test "x$WANT_NV" != "xno"; then
   WANT_NV="yes"
@@ -1181,7 +1194,6 @@ echo ""
 AC_SUBST(WANT_CIN_3RDPARTY)
 AC_SUBST(EXTRA_LIBS)
 AC_SUBST(FFMPEG_EXTRA_CFG)
-AC_SUBST(WANT_X264_HIDEPTH)
 AC_SUBST(WANT_X265_HIDEPTH)
 
 AC_SUBST(CFG_CFLAGS)

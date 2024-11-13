@@ -1,0 +1,6 @@
+mp4 hevc_qsv_10b422
+# usable with Pixels: y210le
+profile=0
+# global_quality=25
+
+

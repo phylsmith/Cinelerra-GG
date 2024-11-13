@@ -1,0 +1,4 @@
+mp4 hevc_qsv_8b420
+# usable with Pixels: nv12
+profile=main
+# global_quality=25
