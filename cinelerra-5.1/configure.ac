@@ -1203,8 +1203,11 @@ AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
 
 exec > global_config
-
+if test [ "$(uname)"] = "NetBSD" ; then
+echo "SHELL := /usr/pkg/bin/bash"
+else
 echo "SHELL := /bin/bash"
+fi
 echo "export SHELL"
 echo "WANT_JOBS := $WANT_JOBS"
 if test "x$WANT_CLANG" = "xyes" ; then
@@ -1304,6 +1307,8 @@ echo "system_libs += -L/usr/pkg/lib/"
 echo "system_libs += -lpng16"
 echo "system_libs += -lintl"
 echo "system_libs += -lossaudio"
+echo "system_libs += -rpath=/usr/pkg/lib/ffmpeg6"
+echo "system_libs += -rpath=/usr/pkg/lib/"
 echo "CFLAGS += -I/usr/X11R7/include"
 echo "CFLAGS += -I/usr/pkg/include/ffmpeg6"
 echo "CFLAGS += $(pkg-config --cflags xft)"

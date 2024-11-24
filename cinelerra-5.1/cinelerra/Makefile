@@ -438,7 +438,7 @@ LIBS += -lavfilter -lavformat -lavcodec -lavutil
 LIBS += -lswresample -lswscale
 PLATFORM = $(shell uname -s)
 ifneq (, $(filter $(PLATFORM), NetBSD))
-LIBS += -lintl
+LIBS += -lintl -liconv
 endif
 ifneq (, $(filter $(PLATFORM), FreeBSD))
 LIBS += -lintl -liconv

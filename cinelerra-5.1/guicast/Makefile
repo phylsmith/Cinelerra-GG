@@ -130,7 +130,11 @@ python = $(shell which python)
 endif
 
 ifeq ($(python),)
-python += $(shell which python3.9)
+python = $(shell which python3.9)
+endif
+
+ifeq ($(python),)
+python = $(shell which python3.12)
 endif
 
 
