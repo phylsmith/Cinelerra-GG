@@ -1,0 +1,10 @@
+--- ./Makefile.am.orig	2024-10-17 01:30:58.998525349 +0300
++++ ./Makefile.am	2024-10-17 01:31:14.046525338 +0300
+@@ -21,7 +21,6 @@
+ 	yuvdenoise \
+ 	yuvfilters \
+ 	yuvdeinterlace \
+-	y4mdenoise \
+ 	y4mscaler \
+ 	y4munsharp \
+         y4mutils

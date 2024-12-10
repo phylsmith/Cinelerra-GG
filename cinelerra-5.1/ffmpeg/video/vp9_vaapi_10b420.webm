@@ -1,0 +1,5 @@
+webm vp9_vaapi
+cin_hw_dev=vaapi
+cin_pix_fmt=p010le
+profile=2
+# global_quality=22

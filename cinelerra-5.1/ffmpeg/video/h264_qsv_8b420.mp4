@@ -1,4 +1,4 @@
-mp4 hevc_qsv
+mp4 h264_qsv
 cin_pix_fmt=nv12
-profile=main
+profile=high
 # global_quality=25

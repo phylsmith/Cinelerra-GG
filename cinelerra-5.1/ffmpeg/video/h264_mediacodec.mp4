@@ -1,0 +1,3 @@
+mp4 h264_mediacodec
+cin_pix_fmt=yuv420p
+pix_fmt=yuv420p

@@ -1,0 +1,9 @@
+mpeg mpeg2video
+trellis=1
+mbd=rd
+cmp=satd
+subcmp=satd
+b=25000000
+g=15
+bf=2
+b_strategy=1

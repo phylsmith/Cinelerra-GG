@@ -278,7 +278,7 @@ public:
 #else
 	int decode_hw_format(AVCodec *decoder, AVHWDeviceType type);
 #endif
-	AVHWDeviceType encode_hw_activate(const char *hw_dev);
+	AVHWDeviceType encode_hw_activate(const char *hw_dev, const char *hw_sformat);
 	int encode_hw_write(FFrame *picture);
 	int encode_frame(AVFrame *frame);
 	int create_filter(const char *filter_spec);

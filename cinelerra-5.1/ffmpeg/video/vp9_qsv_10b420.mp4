@@ -1,5 +1,4 @@
-mp4 hevc_qsv
+mp4 vp9_qsv
 cin_pix_fmt=p010le
-profile=main10
+profile=0
 # global_quality=25
-

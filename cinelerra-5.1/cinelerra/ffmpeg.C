@@ -1194,7 +1194,7 @@ int FFVideoStream::decode_hw_format(AVCodec *decoder, AVHWDeviceType type)
 	return ret;
 }
 
-AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev)
+AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev, const char *hw_sformat)
 {
 	const char *drm_node_enc = getenv("CIN_DRM_ENC");
 	AVBufferRef *hw_device_ctx = 0;
@@ -1230,6 +1230,7 @@ AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev)
 		AVHWFramesContext *frames_ctx = (AVHWFramesContext *)(hw_frames_ref->data);
 		frames_ctx->format = AV_PIX_FMT_VAAPI;
 		frames_ctx->sw_format = AV_PIX_FMT_NV12;
+		if (strcmp(hw_sformat, "vaapi")) frames_ctx->sw_format = av_get_pix_fmt(hw_sformat);
 		frames_ctx->width = width;
 		frames_ctx->height = height;
 		frames_ctx->initial_pool_size = 0; // 200;
@@ -2900,6 +2901,16 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 	FFStream *fst = 0;
 	AVStream *st = 0;
 	AVCodecContext *ctx = 0;
+	
+	/* some encoders dislike ildct flag in ffmpeg 7.0/7.1 */
+	int is_no_ildct;
+	if (!strcmp (codec_name, "av1_qsv") ||
+	!strcmp(codec_name, "h264_qsv") ||
+	!strcmp(codec_name, "vp9_qsv"))
+		is_no_ildct=1;
+	else
+		is_no_ildct=0;
+
 
 	const AVCodecDescriptor *codec_desc = 0;
 #if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(59,16,100)
@@ -3057,7 +3068,7 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			}
 			AVPixelFormat pix_fmt = av_get_pix_fmt(asset->ff_pixel_format);
 			if( opt_hw_dev != 0 ) {
-				AVHWDeviceType hw_type = vid->encode_hw_activate(opt_hw_dev);
+				AVHWDeviceType hw_type = vid->encode_hw_activate(opt_hw_dev, asset->ff_pixel_format);
 				switch( hw_type ) {
 				case AV_HWDEVICE_TYPE_VAAPI:
 					pix_fmt = AV_PIX_FMT_VAAPI;
@@ -3110,7 +3121,7 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			av_dict_set(&sopts, "field_order", "tt", 0); 
 			else
 			av_dict_set(&sopts, "field_order", "tb", 0); 
-			if (ctx->codec_id != AV_CODEC_ID_MJPEG) 
+			if (ctx->codec_id != AV_CODEC_ID_MJPEG && !is_no_ildct) 
 			av_dict_set(&sopts, "flags", "+ilme+ildct", 0);
 			break;
 			case ILACE_MODE_BOTTOM_FIRST: 
@@ -3118,7 +3129,7 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			av_dict_set(&sopts, "field_order", "bb", 0); 
 			else
 			av_dict_set(&sopts, "field_order", "bt", 0); 
-			if (ctx->codec_id != AV_CODEC_ID_MJPEG)
+			if (ctx->codec_id != AV_CODEC_ID_MJPEG && !is_no_ildct)
 			av_dict_set(&sopts, "flags", "+ilme+ildct", 0);
 			break;
 			case ILACE_MODE_NOTINTERLACED: av_dict_set(&sopts, "field_order", "progressive", 0); break;
