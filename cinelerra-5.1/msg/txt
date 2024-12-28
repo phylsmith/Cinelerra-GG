@@ -3,6 +3,11 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2024 November/December changes of note:
+  Building with oneVPL now available using --with-onevpl.
+  SVT-AV1 has been updated from 2.2.1 to 2.3.0.
+  There are new vaapi/qsv/mediacodec rendering formats.
+  Nvidia encode headers updated from 10.0.26.0 to 12.2.72.0.
 2024 October changes of note:
   Updated libraries include:
    x265 to version 4.0, libvpx to 1.14.1, libwebp to 1.4.0,
@@ -11,7 +16,7 @@ For usage help, refer to the following:
   Updated libraries include: dcraw, flac, giflib,
    openjpeg, tiff, svt_av1, and x264 to current latest.
 2024 July changes of note:
-  All of the AppImages are now being built with x265
+  All of the AppImages are now being built with x265.
    8/10/12 bit encode options (multibit).
 2024 June changes of note:
   ChromaKeyAVID new plugin to use instead of ChromKeyHSV

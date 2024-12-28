@@ -504,3 +504,8 @@ afdelaysrc
 #aap ###Input/output error
 #fsync ###No such file or directory
 #tiltandshift ###Resource temporarily available
+: do not work
+# overlay_qsv ###Input/output error
+# hstack_qsv ###Operation not permitted
+# vstack_qsv ###Operation not permitted
+# xstack_qsv ###Operation not permitted
