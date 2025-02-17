@@ -1,0 +1,26 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Graphic Art Softlight */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = R(s) * (1-A(d)) + R(d) * (1-A(s));
+if (A(d) > 0) R_OUT += (R(d) * A(s) + 2 * R(s) * (A(d)-R(d))) / A(d);
+
+G_OUT = G(s) * (1-A(d)) + G(d) * (1-A(s));
+if (A(d) > 0) G_OUT += (G(d) * A(s) + 2 * G(s) * (A(d)-G(d))) / A(d);
+
+B_OUT = B(s) * (1-A(d)) + B(d) * (1-A(s));
+if (A(d) > 0) B_OUT += (B(d) * A(s) + 2 * B(s) * (A(d)-B(d))) / A(d);
+
+A_OUT = A(s) + A(d) - A(s) * A(d);
+  
+BLEND_ALGEBRA_END

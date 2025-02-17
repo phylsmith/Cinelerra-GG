@@ -1,0 +1,16 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Porter-Duff Dst */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+
+BLEND_ALGEBRA_PROC
+
+R_OUT = R(0);
+G_OUT = G(0);
+B_OUT = B(0);
+A_OUT = A(0);
+  
+BLEND_ALGEBRA_END

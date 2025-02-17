@@ -26,6 +26,8 @@ video := \
 	alpha \
 	bandslide \
 	bandwipe \
+	blendalgebra \
+	blendprogram \
 	bluebanana \
 	blur \
 	boxblur \

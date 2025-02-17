@@ -1,0 +1,145 @@
+/***********************************************-*-C-*-**********/
+
+/* Blend program header for Cinelerra Blend Program plugin */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <math.h>
+#include <values.h>
+#include <limits.h>
+
+/* These six must match enum BC_CModel from guicast/bccmodels.h */
+#define BC_RGB888      9
+#define BC_RGBA8888   10
+#define BC_YUV888     13
+#define BC_YUVA8888   14
+#define BC_RGB_FLOAT  29
+#define BC_RGBA_FLOAT 30
+
+/* These five must match enum from plugins/blendprogram/blendprogram.h */
+#define AUTO    0
+#define RGB     1
+#define YUV     2
+#define HSV     3
+#define PROJECT 4
+
+/* Universal math macros taken mostly from guicast/clip.h */
+#ifndef ABS
+#define ABS(x) ((x) >= 0 ? (x) : -(x))
+#endif
+#ifndef SQR
+#define SQR(x) ((x) * (x))
+#endif
+#ifndef MAX
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
+#endif
+#ifndef MIN
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
+#endif
+#define TO_RAD(x) ((x) * 2 * M_PI / 360)
+#define TO_DEG(x) ((x) * 360 / 2 / M_PI)
+
+/* CLIP returns value, CLAMP does assignment */
+#define CLIP(x,y,z) ((x) < (y) ? (y) : ((x) > (z) ? (z) : (x)))
+#define CLAMP(x,y,z) ((x) = ((x) < (y) ? (y) : ((x) > (z) ? (z) : (x))))
+
+/* Macros usable in the BLEND_PROGRAM_INIT phase */
+
+/* Specification of working color space inside user's program */
+#define COLORSPACE_RGB {*color_work = RGB;}
+#define COLORSPACE_YUV {*color_work = YUV;}
+#define COLORSPACE_HSV {*color_work = HSV;}
+
+/* Minimum no of tracks required by user's program */
+#define REQUIRE_TRACKS(n) {*MIN_tracks = (n);}
+
+/* Claim parallelization support and inquire if parallelism requested */
+#define PARALLEL_SAFE {*parallel_support = 1;}
+#define PARALLEL_REQUEST parallel_request
+
+/* Dimensionality macros, can be used in both INIT and PROC phases */
+
+/* Total number of tracks got to work on */
+#define TOTAL_TRACKS N_tracks
+
+/* 1 == has alpha channel */
+#define HAS_ALPHA HAS_alpha
+
+/* Frame dimensions in pixels */
+#define WIDTH  FRAME_w
+#define HEIGHT FRAME_h
+
+/* Macros usable in the BLEND_PROGRAM_PROC phase */
+
+/* Handy macros for pixel and key color components */
+#define R(i) TRK_r[i]
+#define G(i) TRK_g[i]
+#define B(i) TRK_b[i]
+#define Y(i) TRK_r[i]
+#define U(i) TRK_g[i]
+#define V(i) TRK_b[i]
+#define H(i) TRK_r[i]
+#define S(i) TRK_g[i]
+#define A(i) TRK_a[i]
+
+#define KEY_R KEY_r
+#define KEY_G KEY_g
+#define KEY_B KEY_b
+#define KEY_Y KEY_r
+#define KEY_U KEY_g
+#define KEY_V KEY_b
+#define KEY_H KEY_r
+#define KEY_S KEY_g
+#define KEY_A KEY_a
+
+/* Macros for pixel coordinates */
+#define PIX_X TRK_x
+#define PIX_Y TRK_y
+
+/* Macros for various arts to clip pixels */
+#define CLIP_RGB(i) {CLAMP (TRK_r[i], 0, 1); \
+		     CLAMP (TRK_g[i], 0, 1); \
+		     CLAMP (TRK_b[i], 0, 1);}
+
+#define CLIP_YUV(i) {CLAMP (TRK_r[i],  0,   1);   \
+		     CLAMP (TRK_g[i], -0.5, 0.5); \
+		     CLAMP (TRK_b[i], -0.5, 0.5);}
+
+#define CLIP_HSV(i) {if (TRK_r[i] < 0 || TRK_r[i] >= 360) \
+		     TRK_r[i] -= floor(TRK_r[i]/360)*360; \
+		     CLAMP (TRK_g[i], 0, 1); CLAMP (TRK_b[i], 0, 1);}
+
+#define CLIP_A(i) {CLAMP (TRK_a[i], 0, 1);}
+
+#define CLIP_RGBA(i) { CLIP_RGB(i) CLIP_A(i) }
+#define CLIP_YUVA(i) { CLIP_YUV(i) CLIP_A(i) }
+#define CLIP_HSVA(i) { CLIP_HSV(i) CLIP_A(i) }
+
+#define CLIP_RGB_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_RGBA(I_track)}
+
+#define CLIP_YUV_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_YUVA(I_track)}
+
+#define CLIP_HSV_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_HSVA(I_track)}
+
+/* Mandatory separators between different user's program blocks */
+/* Interfaces must match that from plugins/blendprogram/blendprogram.h */
+
+#define BLEND_PROGRAM_INIT						     \
+void bpInit (int *color_work, int color_proj, int *MIN_tracks, int N_tracks, \
+int *parallel_support, int parallel_request, int FRAME_w, int FRAME_h,       \
+int HAS_alpha) {
+
+#define BLEND_PROGRAM_PROC }				\
+void bpProc (int N_tracks,				\
+float *TRK_r, float *TRK_g, float *TRK_b, float *TRK_a, \
+float  KEY_r, float  KEY_g, float  KEY_b, float  KEY_a, \
+int    TRK_x, int    TRK_y, int  FRAME_w, int  FRAME_h, int HAS_alpha) {
+
+#define BLEND_PROGRAM_STOP {return;}
+
+#define BLEND_PROGRAM_END }

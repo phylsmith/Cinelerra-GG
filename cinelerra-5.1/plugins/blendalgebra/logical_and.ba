@@ -1,0 +1,23 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Logical And, for any number of tracks */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+
+BLEND_ALGEBRA_PROC
+
+int i;
+
+R_OUT = G_OUT = B_OUT = A_OUT = 1;
+
+for (i=0; i<TOTAL_TRACKS; i++)
+{
+  R_OUT *= R(i);
+  G_OUT *= G(i);
+  B_OUT *= B(i);
+  A_OUT *= A(i);
+}
+  
+BLEND_ALGEBRA_END

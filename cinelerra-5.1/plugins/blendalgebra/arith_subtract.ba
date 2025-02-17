@@ -1,0 +1,22 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Arithmetic Subtract */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = R(s) - R(d);
+G_OUT = G(s) - G(d);
+B_OUT = B(s) - B(d);
+
+if (HAS_ALPHA) A_OUT = A(s) - A(d);
+else A_OUT = 1;
+
+BLEND_ALGEBRA_END

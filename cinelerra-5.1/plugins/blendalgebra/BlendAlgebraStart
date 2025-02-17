@@ -1,0 +1,174 @@
+/***********************************************-*-C-*-**********/
+
+/* Blend algebra header for Cinelerra Blend Algebra plugin */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <math.h>
+#include <values.h>
+#include <limits.h>
+
+/* These six must match enum BC_CModel from guicast/bccmodels.h */
+#define BC_RGB888      9
+#define BC_RGBA8888   10
+#define BC_YUV888     13
+#define BC_YUVA8888   14
+#define BC_RGB_FLOAT  29
+#define BC_RGBA_FLOAT 30
+
+/* These five must match enum from plugins/blendalgebra/blendalgebra.h */
+#define AUTO    0
+#define RGB     1
+#define YUV     2
+#define HSV     3
+#define PROJECT 4
+
+/* Universal math macros taken mostly from guicast/clip.h */
+#ifndef ABS
+#define ABS(x) ((x) >= 0 ? (x) : -(x))
+#endif
+#ifndef SQR
+#define SQR(x) ((x) * (x))
+#endif
+#ifndef MAX
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
+#endif
+#ifndef MIN
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
+#endif
+#define TO_RAD(x) ((x) * 2 * M_PI / 360)
+#define TO_DEG(x) ((x) * 360 / 2 / M_PI)
+
+/* CLIP returns value, CLAMP does assignment */
+#define CLIP(x,y,z) ((x) < (y) ? (y) : ((x) > (z) ? (z) : (x)))
+#define CLAMP(x,y,z) ((x) = ((x) < (y) ? (y) : ((x) > (z) ? (z) : (x))))
+
+/* Macros usable in the BLEND_ALGEBRA_INIT phase */
+
+/* Specification of working color space inside user's function */
+#define COLORSPACE_RGB {*color_work = RGB;}
+#define COLORSPACE_YUV {*color_work = YUV;}
+#define COLORSPACE_HSV {*color_work = HSV;}
+
+/* Minimum no of tracks required by user's function */
+#define REQUIRE_TRACKS(n) {*MIN_tracks = (n);}
+
+/* Claim parallelization support and inquire if parallelism requested */
+#define PARALLEL_SAFE {*parallel_support = 1;}
+#define PARALLEL_REQUEST parallel_request
+
+/* Dimensionality macros, can be used in both INIT and PROC phases */
+
+/* Total number of tracks got to work on */
+#define TOTAL_TRACKS N_tracks
+
+/* 1 == has alpha channel */
+#define HAS_ALPHA HAS_alpha
+
+/* Frame dimensions in pixels */
+#define WIDTH  FRAME_w
+#define HEIGHT FRAME_h
+
+/* Macros usable in the BLEND_ALGEBRA_PROC phase */
+
+/* Handy macros for pixel and key color components */
+#define R(i) ARG_r[i]
+#define G(i) ARG_g[i]
+#define B(i) ARG_b[i]
+#define Y(i) ARG_r[i]
+#define U(i) ARG_g[i]
+#define V(i) ARG_b[i]
+#define H(i) ARG_r[i]
+#define S(i) ARG_g[i]
+#define A(i) ARG_a[i]
+
+#define R_OUT (*OUT_r)
+#define G_OUT (*OUT_g)
+#define B_OUT (*OUT_b)
+#define Y_OUT (*OUT_r)
+#define U_OUT (*OUT_g)
+#define V_OUT (*OUT_b)
+#define H_OUT (*OUT_r)
+#define S_OUT (*OUT_g)
+#define A_OUT (*OUT_a)
+
+#define KEY_R KEY_r
+#define KEY_G KEY_g
+#define KEY_B KEY_b
+#define KEY_Y KEY_r
+#define KEY_U KEY_g
+#define KEY_V KEY_b
+#define KEY_H KEY_r
+#define KEY_S KEY_g
+#define KEY_A KEY_a
+
+/* Macros for pixel coordinates */
+#define PIX_X ARG_x
+#define PIX_Y ARG_y
+
+/* Macros for various arts to clip pixels */
+#define CLIP_RGB(i) {CLAMP (ARG_r[i], 0, 1); \
+		     CLAMP (ARG_g[i], 0, 1); \
+		     CLAMP (ARG_b[i], 0, 1);}
+
+#define CLIP_YUV(i) {CLAMP (ARG_r[i],  0,   1);   \
+		     CLAMP (ARG_g[i], -0.5, 0.5); \
+		     CLAMP (ARG_b[i], -0.5, 0.5);}
+
+#define CLIP_HSV(i) {if (ARG_r[i] < 0 || ARG_r[i] >= 360) \
+		     ARG_r[i] -= floor(ARG_r[i]/360)*360; \
+		     CLAMP (ARG_g[i], 0, 1); CLAMP (ARG_b[i], 0, 1);}
+
+#define CLIP_A(i) {CLAMP (ARG_a[i], 0, 1);}
+
+#define CLIP_RGBA(i) { CLIP_RGB(i) CLIP_A(i) }
+#define CLIP_YUVA(i) { CLIP_YUV(i) CLIP_A(i) }
+#define CLIP_HSVA(i) { CLIP_HSV(i) CLIP_A(i) }
+
+#define CLIP_RGB_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_RGBA(I_track)}
+
+#define CLIP_YUV_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_YUVA(I_track)}
+
+#define CLIP_HSV_ALL {int I_track; \
+	for (I_track=0; I_track<N_tracks; I_track++) CLIP_HSVA(I_track)}
+
+#define CLIP_RGB_OUT {CLAMP (*OUT_r, 0, 1); \
+		      CLAMP (*OUT_g, 0, 1); \
+		      CLAMP (*OUT_b, 0, 1);}
+
+#define CLIP_YUV_OUT {CLAMP (*OUT_r,  0,   1);   \
+		      CLAMP (*OUT_g, -0.5, 0.5); \
+		      CLAMP (*OUT_b, -0.5, 0.5);}
+
+#define CLIP_HSV_OUT {if (*OUT_r < 0 || *OUT_r >= 360) \
+		      *OUT_r -= floor(*OUT_r/360)*360; \
+		      CLAMP (*OUT_g, 0, 1); CLAMP (*OUT_b, 0, 1);}
+
+#define CLIP_A_OUT {CLAMP (*OUT_a, 0, 1);}
+
+#define CLIP_RGBA_OUT { CLIP_RGB_OUT CLIP_A_OUT }
+#define CLIP_YUVA_OUT { CLIP_YUV_OUT CLIP_A_OUT }
+#define CLIP_HSVA_OUT { CLIP_HSV_OUT CLIP_A_OUT }
+
+/* Mandatory separators between different user's function blocks */
+/* Interfaces must match that from plugins/blendalgebra/blendalgebra.h */
+
+#define BLEND_ALGEBRA_INIT						     \
+void baInit (int *color_work, int color_proj, int *MIN_tracks, int N_tracks, \
+int *parallel_support, int parallel_request, int FRAME_w, int FRAME_h,       \
+int HAS_alpha) {
+
+#define BLEND_ALGEBRA_PROC }				\
+void baProc (int N_tracks,				\
+float *ARG_r, float *ARG_g, float *ARG_b, float *ARG_a,	\
+float  KEY_r, float  KEY_g, float  KEY_b, float  KEY_a,	\
+float *OUT_r, float *OUT_g, float *OUT_b, float *OUT_a, \
+int    ARG_x, int    ARG_y, int  FRAME_w, int  FRAME_h, int HAS_alpha) {
+
+#define BLEND_ALGEBRA_STOP {return;}
+
+#define BLEND_ALGEBRA_END }

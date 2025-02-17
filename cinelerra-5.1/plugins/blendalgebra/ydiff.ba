@@ -1,0 +1,42 @@
+/***********************************************-*-C-*-***********/
+/* Cannot make printout in parallel due to static accumulators ! */
+/* Define NO_PRINTOUT to run parallelized but without printout   */
+/* Comment out NO_PRINTOUT to get printout and run sequentially  */
+
+/* #define NO_PRINTOUT */
+
+#ifndef NO_PRINTOUT
+static int npix=0;
+static float sum=0, sabs=0;
+#endif
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_YUV
+REQUIRE_TRACKS(2)
+
+#ifdef NO_PRINTOUT
+PARALLEL_SAFE
+#else
+printf ("sz=%8d   err=%10g   abs=%10g", npix, sum, sabs);
+if (npix > 0) printf ("   rel=%10g", sabs*256/npix);
+printf ("\n");
+sum = sabs = 0;
+npix = 0;
+#endif
+
+BLEND_ALGEBRA_PROC
+
+#ifndef NO_PRINTOUT
+float diff;
+diff = Y(0)-Y(1);
+sum += diff;
+sabs += ABS (diff);
+npix ++;
+#endif
+
+Y_OUT = (Y(0)-Y(1))/2*exp((KEY_A-0.5)*14*M_LN2)+0.5;
+U_OUT = V_OUT = 0;
+A_OUT = 1;
+
+BLEND_ALGEBRA_END

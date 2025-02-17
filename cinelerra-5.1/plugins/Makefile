@@ -31,6 +31,8 @@ DIRS = $(OPENCV_OBJS) \
 	audioscope \
 	bandslide \
 	bandwipe \
+	blendalgebra \
+	blendprogram \
 	bluebanana \
 	blur \
 	boxblur \
@@ -220,7 +222,10 @@ clean:
 	rm -rf $(foreach d,$(DIRS),$(d)/$(OBJDIR))
 	rm -rf $(PLUGIN_DIR) $(LADSPA_DIR)
 
+# these plugins have something special to install
 install:
+	$(MAKE) -C blendalgebra $@
+	$(MAKE) -C blendprogram $@
 
 # dependencies for parallel build
 aging:		libeffecttv

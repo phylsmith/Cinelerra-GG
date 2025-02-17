@@ -1,0 +1,22 @@
+/***********************************************-*-C-*-**********/
+/* Fill transparencies with selected opaque background color */
+
+BLEND_PROGRAM_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+
+BLEND_PROGRAM_PROC
+
+float fg, bg;
+
+fg = A(0);
+bg = 1-fg;
+
+R(0) = R(0) * fg + KEY_R * bg;
+G(0) = G(0) * fg + KEY_G * bg;
+B(0) = B(0) * fg + KEY_B * bg;
+
+A(0) = 1;
+
+BLEND_PROGRAM_END

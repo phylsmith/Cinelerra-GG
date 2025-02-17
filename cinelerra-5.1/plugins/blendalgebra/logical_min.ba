@@ -1,0 +1,20 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Logical Min */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = MIN (R(s), R(d));
+G_OUT = MIN (G(s), G(d));
+B_OUT = MIN (B(s), B(d));
+A_OUT = MIN (A(s), A(d));
+
+BLEND_ALGEBRA_END

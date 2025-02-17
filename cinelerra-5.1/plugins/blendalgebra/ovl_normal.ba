@@ -1,0 +1,20 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Normal */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = R(s) * A(s) + R(d) * (1-A(s));
+G_OUT = G(s) * A(s) + G(d) * (1-A(s));
+B_OUT = B(s) * A(s) + B(d) * (1-A(s));
+A_OUT = A(s) + A(d) * (1-A(s));
+  
+BLEND_ALGEBRA_END

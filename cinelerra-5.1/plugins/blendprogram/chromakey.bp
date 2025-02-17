@@ -1,0 +1,28 @@
+/***********************************************-*-C-*-**********/
+/*    Chromakey imitation program
+ * 1) Select suitable chromakey color via eg Compositor's color picker
+ * 2) Using opacity slider adjust hue deviation parameter for a best look
+ * For masking effect to be seen, either ensure placing an additional track
+ * filled with opaque background under the chromakeyed track,
+ * or use the background.bp blend program after chromakey.bp
+ *
+ * The formula below works as follows:
+ * Hue deviation from key > slider * 100: change nothing
+ * Hue deviation < slider * 100: multiply alpha by squared deviation/slider/100
+ * Where hue exactly equals key, alpha will be zeroed
+ *
+ * For another hue coefficient instead of 100, define COEFF correspondingly
+ */
+
+#define COEFF 100
+
+BLEND_PROGRAM_INIT
+
+COLORSPACE_HSV
+PARALLEL_SAFE
+
+BLEND_PROGRAM_PROC
+
+if (ABS(H(0)-KEY_H) < KEY_A*COEFF) A(0) *= SQR((H(0)-KEY_H)/KEY_A/COEFF);
+
+BLEND_PROGRAM_END

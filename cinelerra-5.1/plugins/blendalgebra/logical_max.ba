@@ -1,0 +1,20 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Logical Max */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = MAX (R(s), R(d));
+G_OUT = MAX (G(s), G(d));
+B_OUT = MAX (B(s), B(d));
+A_OUT = MAX (A(s), A(d));
+
+BLEND_ALGEBRA_END

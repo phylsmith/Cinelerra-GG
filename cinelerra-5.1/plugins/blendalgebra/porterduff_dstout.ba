@@ -1,0 +1,22 @@
+/***********************************************-*-C-*-**********/
+/* Overlay mode: Porter-Duff Dst Out */
+
+BLEND_ALGEBRA_INIT
+
+COLORSPACE_RGB
+PARALLEL_SAFE
+REQUIRE_TRACKS(2)
+
+BLEND_ALGEBRA_PROC
+
+#define s 1
+#define d 0
+
+R_OUT = R(d) * (1-A(s));
+G_OUT = G(d) * (1-A(s));
+B_OUT = B(d) * (1-A(s));
+
+if (HAS_ALPHA) A_OUT = A(d) * (1-A(s));
+else A_OUT = 1;
+
+BLEND_ALGEBRA_END
