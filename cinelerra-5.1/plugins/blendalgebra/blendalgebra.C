@@ -378,7 +378,6 @@ void BlendAlgebraFileButton::run()
     printf ("BlendAlgebraFileButton::run creating file_box (%s)\n", fname);
 #endif
     file_box = new BlendAlgebraFileBox (plugin, gui, fname);
-    file_box->update_history();	// otherwise actual dir can be forgotten
     file_box->create_objects();
     file_box->lock_window ("BlendAlgebraFileButton::run");
     file_box->add_objects();			// add our special buttons

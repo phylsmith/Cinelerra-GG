@@ -1,4 +1,6 @@
 mp4 av1_qsv
+# Requires specific GPU hardware encoding capability 
+#  as well as required software implementation.
 cin_pix_fmt=nv12
 profile=main
 # global_quality=25

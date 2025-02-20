@@ -1,4 +1,6 @@
 webm vp9_qsv
+# Requires specific GPU hardware encoding capability 
+#  as well as required software implementation.
 cin_pix_fmt=p010le
 profile=0
 # global_quality=25

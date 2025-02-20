@@ -1,4 +1,5 @@
 matroska h264_vaapi
-# Only works when there is vaapi capable hardware and software
+# Requires specific GPU hardware encoding capability 
+#  as well as required software implementation.
 cin_hw_dev=vaapi
 profile=high

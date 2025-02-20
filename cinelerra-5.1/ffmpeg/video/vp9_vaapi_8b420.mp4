@@ -1,4 +1,6 @@
 mp4 vp9_vaapi
+# Requires specific GPU hardware encoding capability 
+#  as well as required software implementation.
 cin_hw_dev=vaapi
 cin_pix_fmt=nv12
 profile=0
