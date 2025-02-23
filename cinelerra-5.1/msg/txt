@@ -3,6 +3,10 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2025 January/February changes of note:
+  BlendAlgebra and BlendProgram major blending enhancements
+   have been implemented and documented in the Manual.
+  Flac library has been updated from 1.4.3 to 1.5.0.
 2024 November/December changes of note:
   Building with oneVPL now available using --with-onevpl.
   SVT-AV1 has been updated from 2.2.1 to 2.3.0.

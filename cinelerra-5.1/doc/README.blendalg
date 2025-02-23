@@ -1,0 +1,877 @@
+                             Introduction
+                             ============
+
+Both plugins, Blend Algebra and Blend Program, are similar.  I'll describe
+them together, pointing to differences where they come.
+
+The essential object which defines, what actually takes place inside the
+plugin, is the piece of code, typically written by the user.  Throughout the
+description I will use the word 'function' to denote this object for any of
+the two plugins.
+
+Actually, Blend Algebra and Blend Program functions are ELF shared objects
+(see `man dlopen', `man dlsym') dynamically compiled and linked to the
+corresponding plugin in run time.  These functions are for their plugins
+same as the plugin shared objects themselves for the main Cinelerra binary. 
+But unlike the complex plugins, these functions are so simple that can be
+easily written by users and manipulated not only in binary, but also in
+source forms.
+
+An experienced user can have a number of such functions reused in many
+projects.  Therefore having a user library of functions as well as a system
+library can be handy.  This feature is provided by the plugins.
+
+The functions work on individual pixels, one pixel at a time from all the
+tracks the plugin is attached to.  Pixels are passed to functions in forms
+of color components in a definite color space.  How exactly it is done, see
+the description later.
+
+The main difference between the two plugins is the following.
+
+Blend Algebra is like a function: it combines its input arguments (tracks)
+and yields the result which is placed into the single track configured for
+output.
+
+Blend Program does not produce a function result.  Instead, it directly
+modifies its arguments (like a void function with side effect in C).
+
+Which one should be used?
+
+If more than one track is to be modified, Blend Program is the only choice.
+
+If only one single track is to be processed, perhaps Blend Program would
+present more natural approach, and might compute slightly faster.
+
+Any Blend Algebra function can be rewritten to become a Blend Program
+function.  But if a function processes several tracks and modified only one,
+it will run faster in Blend Algebra form, and will get a few additional
+controls in the Blend Algebra plugin dialog.
+
+The plugin is attached to a track as usual.  Generally, it needs several
+tracks as arguments.  If so, it has to be attached to that additional tracks
+as a shared effect, as usual for multitrack plugins.
+
+                  Blend Algebra / Blend Program GUI
+                  =================================
+
+All the parameters described below are keyframable, including user functions
+themselves.
+
+The top area of the dialog deals with programmatic aspects.
+-----------------------------------------------------------
+
+Program: (Function:)
+--------------------
+
+Here is the filename of the user's function source text.  Although most
+convenient method to select the function is via the Attach...  dialog, it is
+possible to enter its filename here directly.  If the function pathname does
+not start with '/', it is interpreted relative to the main project
+directory.  Empty function name means that no function will be executed
+here, the tracks will remain unchanged.  If the entered filename does not
+exist, also nothing will be done (but in this case the user can create
+source file via the Edit...  button).
+
+Although entering any filename is possible here, it is highly recommended to
+use distinct suffixes: .ba for Blend Algebra, .bp for Blend Program.
+
+Attach...
+---------
+
+This button opens the file selection dialog typical of Cinelerra.  By
+default it shows only files with the proper suffixes (*.ba or *.bp),
+although this can be changed by specifying filter.  As usual, the user can
+select an existing file, or enter filename directly.  The user can exit the
+dialog with Cancel (changing nothing) or with OK.  In the latter case, the
+selected function will be set as current, and its name will appear in the
+Program: text field above.
+
+If the entered filename does not end with .ba (.bp), the corresponding
+suffix will be appended automatically.  If the user for some reason has to
+use filename with another or no suffix (which is not recommended), he has to
+change the name directly in the Program: input field after exiting file
+selection.
+
+The file selection dialog has six additional buttons specific to Blend
+Algebra / Blend Program.
+
+The three buttons on top left change the current directory:
+
+=>Project - go to the project directory (where the main project .xml file
+resides).
+
+=>Userlib - go to user library.
+
+=>Syslib - go to system library.
+
+The three buttons on bottom left do simple file operations:
+
+Copy to project - copies the currently selected function source file in the
+project directory.
+
+Copy to userlib - copies the currently selected function source file to user
+library.  There is no button to copy a function into the system library
+because the system library is meant for functions distributed with
+Cinelerra, which can get overwritten on reinstallation or upgrade.
+
+What copying to/from project, userlib, or syslib is used for, see the
+section 'User library, system library, and Cinelerra project directories'
+below.
+
+Edit...
+-------
+
+Open the currently selected function source file in the configured external
+editor.  Which editor will be used, is defined by the environment variable
+$CIN_EDITOR.  It must be a windowed editor, like GNU Emacs, or KDE's Kate,
+or Nedit, or ancient Xedit, not a bare console editor like vi.  If you wish
+to use a console editor, it must be defined to run in a terminal emulator,
+like xterm, or KDE's Konsole, for example:
+
+export CIN_EDITOR='konsole -e vi'
+cin
+
+Currently, emacs is defined as the default text editor (if CIN_EDITOR is not
+set).  Which one should better be used by default?  A good question...  Is
+there a text editor which is guaranteed to exist in any Linux distribution? 
+It might be vi, but then we need a guaranteed terminal emulator.  Xterm? 
+Isn't there a distribution where there is no xterm?  Konsole?  But if a
+distribution is not KDE based, but GNOME based, there may be no Konsole... 
+OK, at least GNU Emacs is well known since the last millennium, therefore
+let it be emacs for now.
+
+To open editor from the plugin dialog, some function must be selected in the
+file selection dialog, or active at that timeline position (its name in text
+field not empty).  Either select some existing function first or enter a
+name to create a new one from scratch, otherwise an error message is printed
+and editor not started.
+
+The same button 'Edit...' exist also in the main plugin dialog, for the same
+purposes.
+
+Other buttons are the same as in any regular file selection dialog, to
+change directory, delete or rename a file, etc.  These common buttons are
+not described here.
+
+Refresh
+-------
+
+External editor, after pressing the Edit...  button, is started in
+background.  After having edited and saved a function, the user may leave
+editor on screen.  Moreover, the user can edit a function externally, not
+from inside Cinelerra at all.  In order not to check modification times of
+all the functions on each video frame, Cinelerra has to know when a function
+can get changed.  Pressing Refresh signals Cinelerra, there is time to check
+functions, and eventually to recompile some of them.
+
+How and under which conditions the functions are recompiled, see the
+description below.
+
+Detach
+------
+
+This button clears the function name in the Program: input field, which
+means that no function will be used here, the tracks to which the plugin is
+attached will remain unchanged.
+
+Color space:
+------------
+
+Here is defined, in which color space the frame pixels are to be passed to
+the function.  The RGB, YUV, and HSV color spaces are supported.  The most
+often used, and the default, is the choice 'auto', it means working in that
+color space which is required by the function itself.  The fifth choice, 'of
+project', means to work in the native color space of the project (as defined
+in Settings->Format).  If the required color space does not match the native
+one, pixel color components will be transformed to the required space, as
+floating point numbers.  After returning from the function, pixels of the
+result will be transformed back to the native color space of the project.
+
+Parallelize processing
+----------------------
+
+This checkbox (on by default) lets to execute user function code in
+parallelized (multithreading) manner, provided that the function itself
+supports this.  How exactly the function code is executed, see the
+description later.
+
+The middle area of the dialog is color specific.
+------------------------------------------------
+
+Inside the user written code, some illegal floating point operations may
+occur, like division by zero (producing Infinity), or square root from minus
+unity (producing NaN, not-a-number).  Even if only legal, finite floating
+point numbers are computed, the results may go out of bounds.  This dialog
+section controls, what to do in such cases.
+
+Clip color values
+-----------------
+
+If this checkbox is on (the default), the function results first of all will
+be clipped to bounds.  Clipping takes place before back transformation to
+the project color space.  The bounds are defined as follows:
+
+RGB: [0.0 .. 1.0] for R, G, B
+YUV: [0.0 .. 1.0] for Y, [-0.5 .. +0.5] for U, V
+HSV: [0.0 .. 360.0] for H, [0.0 .. 1.0] for S, V
+Transparency: [0.0 .. 1.0] for Alpha
+
+'H' color channel of HSV is brought into bounds trigonometrically by
+repeated rotation around 360 degrees, all the others by simple arithmetic
+clipping.
+
+If the project color space is RGB(A)-8 Bit or YUV(A)-8 Bit, clipping occurs
+unconditionally because of intrinsically restricted dynamic range of 8-bit
+storage per channel.  For RGB(A)-FLOAT clipping can be switched off.  What
+occurs with unclipped pixels later, depends on further destinations in the
+Cinelerra video processing pipeline.  Moreover, display drivers react on
+unclipped colors differently.  For example, an RGB pixel with unclipped red
+component R=-1.0 and two other components G=B=0.0 is displayed as black
+(i.e.  with R clipped to zero) by the OpenGL driver, but as red (i.e.  taken
+with opposite sign) by the X11 driver.  Explicit clipping in the plugin
+itself allows to eliminate such driver dependency.
+
+Chroma key or substitution color:
+---------------------------------
+
+Even after (optional) clipping, there can still remain some non-finite
+results, like NaN.  Such results are highly undesired and should be
+eliminated as soon as possible.  If any of color components, or alpha
+channel, is NaN, this complete pixel (all 4 components) is replaced with the
+configured color and the configured opacity.
+
+Select key color...
+-------------------
+
+This button opens Cinelerra color selection dialog to select the color which
+will be used as substitution for NaNs or infinities in the results.
+
+Get from color picker
+---------------------
+
+With this button the user can copy the color fetched earlier in the color
+picker tool of the Cinelerra Compositor window.
+
+Substitution opacity:
+---------------------
+
+This slider sets the opacity (alpha-channel) value to be used together with
+substitution color.
+
+Substitution color and opacity are passed as additional arguments to user
+functions and can be 'mis-used' there for more or less artistic purposes,
+such as chroma keying.
+
+The bottom area of the dialog has controls for the argument track ordering,
+similar to that of the well known Overlay plugin.
+
+Track order:
+------------
+
+If the plugin is attached to N tracks, its user functions get pixels of that
+tracks numbered from 0 to N-1 (0-based, as standartized in the C language). 
+Here is defined, which one of the tracks is to go first (i.e.  get number
+0), either top or bottom, much like in the well known Overlay plugin.
+
+The last two controls apply to Blend Algebra only.
+
+Output track:
+-------------
+
+Here is defined, into which track (top or bottom) the result will be placed,
+much like in the Overlay plugin.  Such an option is meaningless for Blend
+Program: its programs produce no result, but modify the arguments directly.
+
+Hide input tracks, use output exclusively
+-----------------------------------------
+
+If this checkbox is on (the default), frames of the tracks the plugin is
+attached to, are cleared and then replaced by the function result.  If the
+checkbox is off, only the output track frame is replaced by the result, all
+the other tracks are left unchanged.  In comparison, the Overlay plugin has
+no such option, its input tracks are always cleared as if this checkbox were
+in the 'on' state.
+
+All the parameters described above are keyframable, including user functions
+themselves.  Namely, a plugin can have several functions attached in the
+same time and switch between them while rendering.  The color and alpha
+channels of the substitution (key) color are interpolated between keyframes,
+the other parameters are switched.
+
+   User library, system library, and Cinelerra project directories
+   ===============================================================
+
+The user library directory is that defined by the environment variable
+$CIN_USERLIB, or, if CIN_USERLIB is not defined, $HOME/.bcast5lib as a
+fallback default.  The functions for Blend Algebra reside there in
+subdirectory dlfcn/ba, for Blend Program - in dlfcn/bp (here 'dlfcn' stands
+for 'dynamic loaded function').  Having user functions in such a library, in
+a single place, makes it convenient to reuse the same functions in different
+projects.  The 'Copy to userlib' button in the Attach...  file selection
+dialog is handy to save such functions in the user library for future use.
+
+The reason to place user library in the distinct directory $HOME/.bcast5lib
+by default (and not in the common $HOME/.bcast5) is the following.  There
+exists a common workaround, if a newer version of Cinelerra does not start,
+to delete $HOME/.bcast5 completely and start with a fresh one.  Doing so,
+all user functions, should they be saved in such a place, would be
+permanently deleted.
+
+The system library is defined by the environment variable $CIN_DAT, the
+Cinelerra installation path, and there under the same subdirectories
+dlfcn/ba or dlfcn/bp.  System library is meant for functions distributed
+with Cinelerra.
+
+When a complete project is to be exported, or fed to a render farm, it can
+be often necessary to place all the resources under the same directory where
+the project .xml file resides.  If some functions are used, which reside
+elsewhere (for example, in a user library), they could not be found after
+exporting the project to another computer.  The 'Copy to project' button in
+the Attach...  file selection dialog is used to copy such functions to the
+project directory in a convenient manner.
+
+                Blend Algebra / Blend Program workflow
+                ======================================
+
+As in any realtime plugin, the process_buffer() method in Blend Algebra /
+Blend Program gets a set of frames from the tracks the plugin is attached
+to.  Then the following events take place.
+
+As in any other plugin, it is checked if the configuration (the parameters)
+got changed.  There is one parameter which requires special treatment, the
+user function name.
+
+In order to prevent from resource consuming recompilation of the functions
+on each new frame, the plugin maintains in memory cache of the successfully
+compiled and attached functions.  If at some keyframe the function name gets
+changed, the plugin searches if this function is already known and cached. 
+Among other important function related objects, such as entry points, there
+is a timestamp, when this function was last checked to be up to date.
+
+If the current function name is empty, it means a function is not used. 
+Nothing else has to be done, all tracks are fetched and passed further in
+the processing pipeline unchanged.
+
+If the function is not empty and seen for the first time, or its timestamp
+is older than the global timestamp, it is checked as follows.
+
+File lock is placed on the function source file, to prevent from concurrent
+modification of object files in case of several simultaneous compilations.
+
+The compilation script BlendAlgebraCompile.pl (BlendProgramCompile.pl) is
+started.  The script checks if the resulting shared object file exists and
+is newer than the source, and recompiles it, if not (just like the well
+known `make' program).
+
+The plugin checks if the shared object timestamp became newer than the
+timestamp of this function in cache (if any).  If the cached version of the
+function in memory is up to date, it stays there.  If not, the outdated
+function is detached from the plugin, the updated one is reattached, its
+entry points are fetched and memorized in cache.  The function's timestamp
+in cache is set to the current time (as the function just has been checked).
+
+While recompilation and dynamic linking various things may go wrong.
+
+If the given function file does not exist, the program does nothing, as for
+empty function.  No error message is shown in this case, to prevent from
+possible deadlocking situations.  This case is not very probable because
+usually the user will select functions via the Attach...  dialog and clearly
+see if the chosen function exists.
+
+If recompilation was unsuccessful (because of a syntax error), the error
+message is shown.  More detailed diagnostics from the compiler can be seen
+in the terminal window in which Cinelerra was started.  Although it would be
+possible to fetch the compiler output and show it together with error
+message, modern compilers, like gcc, bring more descriptive coloured
+diagnostics, better than we can show in a Cinelerra dialog.
+
+If compilation succeeded, but dynamic linking did not, error message is
+shown.  In case of any error, the failed function is marked with the current
+timestamp in cache, so that such error messages appear only once before
+global timestamp gets updated.
+
+Updating global timestamp forces all cached functions to be checked for
+recompilation at their first access.  The global timestamp itself is updated
+by the following events: changing function name, pressing Edit...  or
+Refresh button, exiting the Attach...  dialog with the OK button.
+
+If currently active function is ensured to be up to date and correctly
+attached, the plugin fetches video frames from all the affected tracks, with
+the important parameters like frame width and height.  Then the 'INIT' phase
+of the function is executed (once for each frame).  Here, several important
+parameters are requested, which are defined by the function.  They are:
+
+Working color space needed inside the function.  If it is not the same as
+the color space of the project, then color space conversions have to be
+done.
+
+The required number of tracks the function works on.  If less than the
+required number of tracks is available, error message is shown and the
+function is not executed.
+
+Whether the function supports parallelizing or not.  If the function does
+not claim parallelizing support, it will be executed sequentially
+independently on the corresponding checkbox in the plugin GUI.
+
+After this preparation phase, the processing itself takes place.  In case of
+sequential flow, the following is done, for each frame pixel individually.
+
+For each input track, the corresponding pixel is splitted to color
+components according to the actual color space of the project.  All color
+components are converted to float (type of the C language) in the ranges
+[0.0 ..  1.0] for R, G, B, A, Y or [-0.5 ..  +0.5] for U, V.  If the project
+color space has no alpha channel, the alpha component is set to 1.0.
+
+If the function requires other color space than the project uses, the
+necessary conversions are performed.  The key color components (selected in
+the plugin GUI) are also converted to the function color space in the same
+manner.
+
+For Blend Algebra, the values for output are preinitialized from that track
+where the output is to go to.  All the other tracks are cleared if the
+corresponding checkbox in the plugin GUI says to do so.  For Blend Program,
+this step is skipped.
+
+The user function is called with the parameters: actual number of tracks, 4
+arrays for the 4 color components (dimensions are equal to number of
+tracks), 4 key color components, current pixel coordinates x, y (upper left
+frame corner is (0,0), lower right is (width-1,height-1), width, height, and
+the existence of alpha channel.  For Blend Algebra, placeholders for the
+result, additionally.
+
+The user function returns.  First of all, the color components of the
+relevant pixels are clipped to bounds if the corresponding checkbox in the
+plugin GUI is on.  Relevant for Blend Program are pixels of all the tracks
+(all tracks can be modified), for Blend Algebra the result only.
+
+After optional clipping, the color components are checked for being legal
+finite floating point numbers.  If any is NaN, the affected pixel is
+replaced with substitution color.
+
+Then backconversion to the project color space is performed.
+
+If the project has no alpha channel, but the function returned something not
+equal to 1.0, alpha channel is simulated as if an opaque black background
+were used.
+
+If the project color space is not FLOAT, unconditional clipping followed by
+8-bit transformation takes place.
+
+For Blend Algebra, the result is placed to the right output track.  For
+Blend Program, this step is skipped, as all tracks are modified in place.
+
+Then the loop is repeated for the next pixel in a row, next row in a frame,
+next frame in the whole sequence...
+
+If the function is to run parallelized, the necessary number of threads is
+created (as defined in Settings->Preferences->Performance, Project SMP
+cpus).  Although it might seem that running parallel on 1 cpu be the same as
+running sequential, strictly speaking it is not the case.  To run parallel
+on 1 cpu, an extra processing thread is still started, while sequential
+execution takes place inside the main plugin thread.  This could induce some
+subtle differences if the function uses static variables inside or something
+else which is thread unsafe.
+
+          Syntax of Blend Algebra / Blend Program functions
+          =================================================
+
+Blend Algebra / Blend Program functions are written in C (not C++, for
+simplicity), and with usage of a set of special cpp macros hiding from the
+user all the Cinelerra internals.  This approach allows to write functions
+of moderate complexity with almost no background in C programming.  All
+macros defined for user functions are written in capital letters.
+
+A typical Blend Algebra function consists of the following logical blocks.
+
+------------------------------------------------------------------------
+<optional static variable definitions>
+
+BLEND_ALGEBRA_INIT
+
+<macros and/or C statements for the INIT (preparation) phase, will be
+executed once before processing of each frame>
+
+BLEND_ALGEBRA_PROC
+
+<macros and C statements for the PROC (processing) phase, will be executed
+repeatedly for each pixel in the frame>
+
+BLEND_ALGEBRA_END
+------------------------------------------------------------------------
+
+The macro BLEND_ALGEBRA_STOP terminates execution of the INIT or PROC phase
+immediately and returns to the calling plugin.
+
+The structure of a Blend Program function is the same, only the word
+'ALGEBRA' in all the macros must be changed to 'PROGRAM', here and below.
+
+The following macros can be used in the INIT phase.
+
+COLORSPACE_RGB
+COLORSPACE_YUV
+COLORSPACE_HSV
+
+Declare the working color space inside the user function.  If there is no
+such declaration, the native color space of the project (RGB or YUV) will be
+used.
+
+REQUIRE_TRACKS(<no of tracks>)
+
+Declares the minimum required number of tracks the function uses.  If the
+effect is attached to more tracks, it is OK.  If there are less tracks, it
+is an error, and the function is not executed.
+
+The absence of such declaration means that the function can process any
+number of tracks (one or more).
+
+PARALLEL_SAFE
+
+This declaration means that it is safe to execute the function in parallel. 
+Without this statement function will be executed sequentially, independent
+on the state of the parallelization checkbox in the plugin GUI.
+
+The following special variables (macros) can be used for queries.
+
+PARALLEL_REQUEST
+
+1 == parallelization requested in the GUI
+0 == parallelization switched off
+
+TOTAL_TRACKS
+
+The actual number of tracks passed to the function.
+
+HAS_ALPHA
+
+1 == the project color space has alpha channel (transparency)
+
+WIDTH, HEIGHT
+
+The dimensions of processed frames, in numbers of pixels.
+
+The following variables (macros) can be used in the PROC phase.
+
+TOTAL_TRACKS, HAS_ALPHA, WIDTH, HEIGHT - can be used as well.
+
+R(i), G(i), B(i)
+Y(i), U(i), V(i)
+H(i), S(i), V(i)
+A(i)
+
+Color (and alpha) components of pixel from i-th track.  Tracks numbering is
+0-based, as standartized for C arrays.  Although it could be possible to
+write macros for 1-based indexing, it does not look as a good idea as it
+would lead to confusion with standard array definitions and regular C
+for-loops.  So, the first track has number 0, the last one - number
+TOTAL_TRACKS-1.  All the color components are floating point values of the C
+type 'float'.
+
+Here the letters R, G, B, H, S, V, etc.  are for readability.  If the user
+has declared COLORSPACE_RGB, and then writes something like H(i), it does
+not mean that he should get the H-component of color autoconverted to the
+HSV color space.  Actually R, Y, H are mutually identical to the 1-st color
+component, so are G, U, S to the 2-nd, and B, V to the 3-rd one.
+
+Do we need such a true conversion inside a user function?  Can a function
+need more than one color space simultaneously?  I do not yet imagine such a
+case.  Should it come, we can consider adding the explicit color space
+conversion possibility.
+
+KEY_R, KEY_G, KEY_B
+KEY_Y, KEY_U, KEY_V
+KEY_H, KEY_S, KEY_V
+KEY_A
+
+Corresponding color components of the key (substitution) color, in the
+working color space of the function, and the opacity slider.
+
+R_OUT, G_OUT, B_OUT
+Y_OUT, U_OUT, V_OUT
+H_OUT, S_OUT, V_OUT
+A_OUT
+
+Color components for the result, for Blend Algebra only.  Blend Programs
+return no result, and do not have such definitions.
+
+PIX_X, PIX_Y
+
+Integer X and Y coordinates of the current pixel in its frame, in the ranges
+of [0 ..  WIDTH] and [0 ..  HEIGHT], respectively.
+
+CLIP_RGB(i)
+CLIP_YUV(i)
+CLIP_HSV(i)
+CLIP_RGBA(i)
+CLIP_YUVA(i)
+CLIP_HSVA(i)
+CLIP_A(i)
+
+These macros clip color components of the i-th track to the bounds
+appropriate in the respective color space.
+
+CLIP_RGB_ALL
+CLIP_YUV_ALL
+CLIP_HSV_ALL
+
+Clip all color components (including alpha) for all tracks.
+
+CLIP_RGB_OUT
+CLIP_YUV_OUT
+CLIP_HSV_OUT
+CLIP_RGBA_OUT
+CLIP_YUVA_OUT
+CLIP_HSVA_OUT
+CLIP_A_OUT
+
+Like clipping track color components, but for the result of a Blend Algebra
+function.  Not relevant for Blend Programs.
+
+Clipping is done according to the inherent bounds of the respective color
+space, as follows:
+
+RGB: [0.0 .. 1.0] for R, G, B
+YUV: [0.0 .. 1.0] for Y, [-0.5 .. +0.5] for U, V
+HSV: [0.0 .. 360.0] for H, [0.0 .. 1.0] for S, V
+Transparency: [0.0 .. 1.0] for Alpha
+
+'H' color channel of HSV is brought into bounds by repeated rotation around
+360 degrees, all the others by simple clipping.
+
+ABS(x), SQR(x), MAX(x,y), MIN(x,y) - absolute value, square, max and min
+values for floating point arguments.  Can be used in any phase of a
+function.
+
+TO_RAD(x), TO_DEG(x) - conversion from degrees to radians and vice versa.
+
+CLIP(x,y,z)
+CLAMP(x,y,z)
+
+Both macros clip the 'x' argument to bounds between y and z.  CLIP returns
+value leaving x unchanged.  CLAMP assigns that value to x.
+
+All the macros are defined in the text header file
+$CIN_DAT/dlfcn/BlendAlgebraStart for Blend Algebra and the analogous header
+BlendProgramStart for Blend Program, in the same dlfcn subdirectory under
+Cinelerra installation directory.  These headers are prepended to user
+functions before compilation.  The user with a basic C knowledge can easily
+understand what happens in these headers.
+
+Of course, it is allowed to use any valid C statements inside user
+functions.  As they are linked with -lm, the standard C math library, and of
+course with glibc, almost any mathematical or C library function can be
+called.  C-style comments can also be used, and are welcome.
+
+                        The compilation script
+                        ======================
+
+Compilation of Blend Algebra and Blend Program functions is carried out by
+Perl script BlendAlgebraCompile.pl and BlendProgramCompile.pl,
+correspondingly.  Both scripts are distributed in the dlfcn subdirectory of
+$CIN_DAT, the Cinelerra installation directory.  Much like the famous
+ContextManual.pl script of Context Help, the system script at the first call
+is copied into $CIN_CONFIG ($HOME/.bcast5) where can be edited by the user
+and adapted according to his needs.
+
+While a regular compilation, the script works in that directory where the
+function source file resides.  Firstly, the BlendAlgebraStart
+(BlendProgramStart) header is prepended to the source to produce an
+intermediate file with the '.c' suffix.  This C source is compiled by the
+system C compiler (gcc by default) and linked with -lm to produce the shared
+object ready for dynamic loading (attaching to the plugin).
+
+Usually the script is executed by the respective Cinelerra plugin when a
+user function is to be compiled.  But the script can also be run by the user
+from console explicitly.  Execution can be controlled by options starting
+with the '-' character, the first argument not starting with '-' being the
+function name to compile.  The following options are recognized.
+
+-compile   don't check modification time, compile unconditionally
+-cfile     don't remove intermediate .c file
+-opt       add optimizing options to compiler command line
+-debug     add debugging options to compiler command line
+-warn      add warning options to compiler command line
+-edit      open function source in text editor
+-verbose   verbose execution
+-noapi     don't copy itself to $HOME/.bcast5
+-h, -help, -? print short help and current configuration
+
+In the beginning of the script some variables can be redefined according to
+the user's needs: the C compiler executable, compiler options for
+optimization or debugging, text editor executable.
+
+        Environment variables influencing plugin configuration
+        ======================================================
+
+The following environment variables are taken into account in various places
+in Blend Algebra / Blend Program.
+
+$CIN_CC: C compiler executable (default: gcc)
+
+$CC: C compiler executable if $CIN_CC is not defined (default: gcc)
+
+$CIN_EDITOR: text editor (default: emacs)
+
+$CIN_DAT (set by Cinelerra binary): Cinelerra installation directory.  The
+Blend Algebra / Blend Program system library with scripts, headers, and
+functions distributed with Cinelerra resides in the subdirectory
+$CIN_DAT/dlfcn.
+
+$CIN_CONFIG (set by Cinelerra binary): user's config directory, usually
+$HOME/.bcast5
+
+$CIN_USERLIB: user's library (default: $HOME/.bcast5lib).  User's functions
+reside in the subdirectory $CIN_USERLIB/dlfcn.
+
+                    What comes in the distribution
+                    ==============================
+
+In the distribution 30 Blend Algebra functions are provided for all the 30
+CinelerraGG overlay modi, according to the formula defined in CinelerraGG
+manual.  In principle, they are not needed in themselves: the built in
+overlayer engine is OpenGL accelerated and runs faster.  Nevertheless, these
+functions can be handy as starting examples for users who may like to modify
+formula in some way.  Secondly, their behavior differs from that of the
+standard overlayer in several aspects:
+
+Overlayer produces different results in RGB and YUV color spaces, Blend
+Algebra yields identical results independently on color space of the
+project.
+
+In RGB(A) FLOAT color space overlayer results can get out of bounds, and
+then be rendered differently depending on the display driver used.  In Blend
+Algebra clipping, when switched on, can prevent from this undesirable
+effect.
+
+Overlayer always clears its input frames.  In Blend Algebra the user has a
+choice, either to clear them, or to leave intact.
+
+Besides the 30 example overlay functions, we provide the ydiff simulator
+function actually representing the complete ydiff application running inside
+Cinelerra plugin.
+
+Two functions are provided in forms of Blend Programs: the chromakey and
+background functions.  They can also serve as nice starting points for
+further user's experimentations.
+
+The usage of the provided functions is either self evident, or shortly
+described in the comments in their source files.
+
+`make install' copies the functions into the Cinelerra's bin directory in
+source (*.ba, *.bp) and binary (*.so) forms by `cp -a', to preserve file
+modification times.  Otherwise, if modification time of the function source
+accidentally becomes newer than that of its binary, the plugin will
+repeatedly try to recompile this function.  And if it is installed
+system-wide, so that the user has no permission to modify it, such
+recompilations will fail.
+
+                       Assorted considerations
+                       =======================
+
+Caveats
+-------
+
+User's functions can have bugs.  By axiom, any program has at least one more
+undetected bug, and there is proof that any program has infinite number of
+undetected bugs.
+
+Most probable bugs in a user function can be illegal arithmetic such as
+division by zero or logarithm of a negative number (FPE, floating
+exception), and out of bounds indexation of arrays (usually leading to SEGV,
+segmentation violation).
+
+Most modern processors don't generate FPE.  Instead, they generate NaN as
+the result of an illegal arithmetics.  After calling user functions the
+plugins test the results not to be NaN and replace them with the configured
+substitution color if necessary.
+
+SEGV is more problematic.  If the user has written in his function, let's
+say, REQUIRE_TRACKS(2), and then accesses R(1000000), most probably
+Cinelerra binary will crash.  Although theoretically it could be possible to
+trap SEGV via sigaction()/setjmp()/longjmp(), in Cinelerra it is
+problematic.  In a multithreaded application, which Cinelerra is, only one
+signal handler for all its threads in the same time is allowed, and
+Cinelerra has already its SEGV handler which we are not allowed to
+overwrite.  Thus, the user is responsible for his indexation bugs, where
+most attention has to be paid, as usually, to the off-by-one errors, like
+referencing elements as R(TOTAL_TRACKS) (the last legal element being
+R(TOTAL_TRACKS-1)), or R(i) where i has been decremented to -1.
+
+The user is allowed to call any C function from the -lm and glibc libraries. 
+But some functions are not thread safe (which means, PARALLEL_SAFE macro
+should not be used), and some others have undesired side effects.  For
+example, should the user write inside his function something like
+exit(R(0));, the whole Cinelerra would immediately halt.  The user is left
+to imagine what would happen after the following expression, for example:
+
+R_OUT = R (system ("killall -9 Xorg"));
+
+Acceleration
+------------
+
+Blend Algebra / Blend Program functions are not accelerated.  Hardware
+acceleration would mean, the function algorithm is to be programmed as an
+OpenGL shader.  I think, if the user is sufficiently experienced to write in
+the OpenGL shader language, it would be not so difficult for him to write a
+complete Cinelerra plugin.
+
+Nevertheless, functions can be parallelized (using the load balancing engine
+of Cinelerra), and can be compiled with optimization (switched on by
+default).  The default optimizing option (defined in BlendAlgebraCompile.pl
+and BlendProgramCompile.pl) is -O2.  One can redefine it to -O3 or -Ofast,
+for example.  However, it has to be noted that using -Ofast or -ffast-math
+options can lead to ignorance of some IEEE rules for floating point math,
+namely, some intrinsic tests on infinities or NaN can yield unpredicted
+results.
+
+Debugging
+---------
+
+Although user's function can be compiled with debugging option such as -g or
+-ggdb, debugging functions can be tricky.  The programmer can set breakpoint
+into the function only after its code has been loaded in memory by the
+plugin, and set another breakpoint into plugin only after that plugin itself
+has been attached to a track.  Moreover, a function can get detached from
+memory under some conditions, and then its breakpoints will be lost.
+
+Debugging printout inside the PROC phase, although possible, would seem too
+verbose: the PROC phase would be called for full-HD footage 2073600 times
+per frame!  Here perhaps one could make use of PIX_X, PIX_Y coordinates at
+some characteristic place in a frame where the problem shows up, like in an
+example:
+
+if (PIX_X == 320 && PIX_Y == 200) printf ("%f %f %f\n", R(0), G(0), B(0));
+
+Editing functions
+-----------------
+
+Thus far, to edit user functions an external editor has to be used. 
+Although it would be possible to implement editing directly in Cinelerra via
+some multiline scrollable text field, this could hardly present features
+comparable to a dedicated text editor.  I'd say, we should not bother with
+it.
+
+Portability
+-----------
+
+The current implementation should be rather portable.  One prerequisite is a
+working C compiler.  That compiler which was used to build Cinelerra itself,
+will work by definition.  But other compilers perhaps are compatible as
+well.  I tested at least functions which were compiled with clang, but
+attached to Cinelerra compiled with gcc, they worked.
+
+If the user has built Cinelerra from sources, he definitely has a working C
+compiler.  But if one has installed the binary distribution, then the
+compiler clearly is a prerequisite.
+
+Will Blend Algebra / Blend Program work under Cinelerra in an AppImage form? 
+Perhaps they should if a C compiler is installed.  Can somebody who is
+familiar with AppImages test this?
+
+What about other architectures?  It has to be tested.  If some other
+architecture is Unix-like, and is ELF based, the things should be portable.
+
+But under Windows it is not the case.  Unlike Unix/Linux, Windows does not
+have ELF shared objects, and its DLLs are not fully position independent. 
+There exists a definite probability of conflicts between virtual addresses
+which can prevent some user's functions from dynamic load.  But does a
+version of Cinelerra exist for Windows at all?  No idea so far...
