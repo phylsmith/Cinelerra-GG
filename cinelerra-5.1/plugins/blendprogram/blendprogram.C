@@ -332,8 +332,10 @@ int BlendProgramFileButton::handle_event()
 void BlendProgramFileButton::run()
 {
   int result = 1;
+  char *cp;
   const char *fpath;
   char fname[BCTEXTLEN], dir[BCTEXTLEN];
+  BC_Resources *resources;
 
   strcpy (fname, plugin->config.funcname);
 
@@ -350,7 +352,7 @@ void BlendProgramFileButton::run()
       strcpy (dir, plugin->server->mwindow->session->filename);
       if (dir[0])
       {
-	char *cp = strrchr (dir, '/');
+	cp = strrchr (dir, '/');
 	if (cp)
 	{
 	  cp[1] = 0;		// strip project filename off from project path
@@ -363,6 +365,83 @@ void BlendProgramFileButton::run()
     printf ("BlendProgramFileButton::run creating file_box (%s)\n", fname);
 #endif
     file_box = new BlendProgramFileBox (plugin, gui, fname);
+
+    // Problem: if we call create_objects() right now, the most recently
+    // visited path from history will be taken, not that where the current
+    // function is. We have to update visited directory history beforehand,
+    // but we cannot call update_history() before create_objects(),
+    // ListBox recent_popup is not yet created, this can induce SEGV.
+    // Therefore we must replicate updating history here explicitly.
+    resources = get_resources();
+    strcpy (dir, fname);
+    cp = strrchr (dir, '/');
+    if (cp)		// slash found
+    {
+      int oldest_id = 0x7fffffff, oldest = -1, match = -1, empty = -1;
+      cp[1] = 0;
+      for (int i=0; i<FILEBOX_HISTORY_SIZE; i++)	// scan all history
+      {
+	if (resources->filebox_history[i].path[0]) // history slot not empty
+	{
+	  if (! strcmp (resources->filebox_history[i].path, dir))
+	  {
+	    resources->filebox_history[i].id = resources->get_filebox_id();
+	    match = i;
+	    break;	// matched path already in history, nothing to do
+	  }
+	  if (resources->filebox_history[i].id < oldest_id)
+	  {
+	    oldest_id = resources->filebox_history[i].id;
+	    oldest = i;	// memorize oldest slot
+	  }
+	}		// if history slot not empty
+	else empty = i;	// empty history slot found
+      }			// scan all history
+      if (match < 0)	// matched path not found, insert one
+      {
+	if (empty < 0)	// no empty slot, free oldest one, create new entry
+	{
+	  for (int i=oldest; i<FILEBOX_HISTORY_SIZE-1; i++)
+	  {
+	    strcpy (resources->filebox_history[i].path,
+		    resources->filebox_history[i+1].path);
+	    resources->filebox_history[i].id =
+	      resources->filebox_history[i+1].id;
+	  }
+	  empty = FILEBOX_HISTORY_SIZE-1;
+	}		// if no empty slot
+	strcpy (resources->filebox_history[empty].path, dir);
+	resources->filebox_history[empty].id = resources->get_filebox_id();
+	int done = 0;
+	while (! done)	// alphabetize contents
+	{
+	  done = 1;
+	  for (int i=1; i<FILEBOX_HISTORY_SIZE; i++)
+	  {
+	    if ((resources->filebox_history[i-1].path[0] &&
+		 resources->filebox_history[i].path[0] &&
+		 strcasecmp (resources->filebox_history[i-1].path,
+			     resources->filebox_history[i].path) > 0) ||
+		(resources->filebox_history[i-1].path[0] == 0 &&
+		 resources->filebox_history[i].path[0]))
+	    {
+	      done = 0;
+	      int id_temp;
+	      strcpy (dir, resources->filebox_history[i-1].path);
+	      id_temp = resources->filebox_history[i-1].id;
+	      strcpy (resources->filebox_history[i-1].path,
+		      resources->filebox_history[i].path);
+	      resources->filebox_history[i-1].id =
+		resources->filebox_history[i].id;
+	      strcpy (resources->filebox_history[i].path, dir);
+	      resources->filebox_history[i].id = id_temp;
+	    }
+	  }	// for FILEBOX_HISTORY_SIZE
+	}	// while ! done
+      }		// if matched path not found
+    }		// if slash found
+
+    // Visited directory history updated, we can create_objects() now.
     file_box->create_objects();
     file_box->lock_window ("BlendProgramFileButton::run");
     file_box->add_objects();			// add our special buttons
@@ -403,7 +482,7 @@ void BlendProgramFileButton::run()
     // another project location might be plugin->server->mwindow->edl->path
     if (dir[0])		// project filename contains some path
     {
-      char *cp = strrchr (dir, '/');
+      cp = strrchr (dir, '/');
       if (cp)
       {
 	cp[1] = 0;	// the directory of current project with trailing slash
@@ -544,12 +623,9 @@ int BlendProgramToCurdir::handle_event()
   // but in memory only, text fields in the dialog are not actualized.
   // file_box->refresh() does not help to refresh text fields either.
   // Therefore we have to apply a trick with closing FileBox and
-  // reopening it with the new generated path.
+  // reopening it with the new generated path. Visited paths history
+  // will be updated inside BlendProgramFileButton::run() in reinit_path loop.
   file_box->update_paths (path);
-
-  // Without updating history FileBox forgets our new dir
-  // and sets curdir to some old history item.
-  file_box->update_history();
 
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
@@ -605,7 +681,6 @@ int BlendProgramToUsrlib::handle_event()
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
   file_box->update_paths (path);
-  file_box->update_history();
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
@@ -642,7 +717,6 @@ int BlendProgramToSyslib::handle_event()
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
   file_box->update_paths (path);
-  file_box->update_history();
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
@@ -715,7 +789,6 @@ int BlendProgramCopyCurdir::handle_event()
   // Copying successful, now change dir to the location of the target
   file_box->fs->change_dir (dir);
   file_box->update_paths (to_path);
-  file_box->update_history();
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
