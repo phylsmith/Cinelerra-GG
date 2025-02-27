@@ -4,6 +4,7 @@ CFLAGS += -I../ -I$(CINELERRA) -I$(GUICAST) -I../colors -fPIC
 CFLAGS += $(static_incs)
 LFLAGS += $(static_libs)
 LFLAGS += $(LDFLAGS)
+LDFLAGS += -Wl,-z,noexecstack
 LDLINKER ?= $(CXX) -shared
 $(shell mkdir -p $(OBJDIR))
 
