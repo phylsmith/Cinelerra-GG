@@ -16,6 +16,10 @@ AgingTV:	Use to achieve an "old" movie or TV show
 Alpha:		Vary the alpha value from 0-completely transparent
 		to 1-no transparency at all.
 Auto Scale:	Automatically scale to a specified size.
+Blend Algebra:	Program your own blending algorithm to combine
+		tracks and put the result into a single track.
+Blend Program:	Program your own blending algorithm to modify 
+		the tracks directly.
 Blue Banana:	Used for color transformation or remapping as
 		well as chroma-key filtering. See Manual for usage:
 		. Select a specifc target color.
