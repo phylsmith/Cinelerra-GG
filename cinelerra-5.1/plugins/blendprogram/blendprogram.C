@@ -235,7 +235,8 @@ int BlendProgramRefresh::handle_event()
 	  ctime(&BlendProgramTstamp));
 #endif
   plugin->func_lock->unlock();
-  return 1;	// just reattach all functions, without reconfiguration
+  plugin->send_configure_change();// no reconfigure, just recheck all functions
+  return 1;
 }
 
 BlendProgramEdit::BlendProgramEdit (BlendProgram *plugin,
@@ -614,7 +615,11 @@ int BlendProgramToCurdir::handle_event()
   if (spath) file_box->fs->extract_name (fname, spath);	// cut name from dir
 
   if (fname[0]) file_box->fs->join_names (path, dir, fname);
-  else strcpy (path, dir);	// substitute old entered dir with project dir
+  else				// substitute old entered dir with project dir
+  {
+    strcpy (path, dir);
+    strcat (path, "/");
+  }
 
   // Not exactly sure what operations on FileBox are really important
   file_box->fs->change_dir (dir);	// force it to recognize the new dir
@@ -676,7 +681,11 @@ int BlendProgramToUsrlib::handle_event()
   const char *spath = file_box->get_submitted_path();// get name entered so far
   if (spath) file_box->fs->extract_name (fname, spath);	// cut name from dir
   if (fname[0]) file_box->fs->join_names (path, dir, fname);
-  else strcpy (path, dir);	// substitute old entered dir with user libdir
+  else				// substitute old entered dir with user libdir
+  {
+    strcpy (path, dir);
+    strcat (path, "/");
+  }
 
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
@@ -712,7 +721,11 @@ int BlendProgramToSyslib::handle_event()
   const char *spath = file_box->get_submitted_path();// get name entered so far
   if (spath) file_box->fs->extract_name (fname, spath);	// cut name from dir
   if (fname[0]) file_box->fs->join_names (path, dir, fname);
-  else strcpy (path, dir);	// substitute that old dir with system libdir
+  else				// substitute that old dir with system libdir
+  {
+    strcpy (path, dir);
+    strcat (path, "/");
+  }
 
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
