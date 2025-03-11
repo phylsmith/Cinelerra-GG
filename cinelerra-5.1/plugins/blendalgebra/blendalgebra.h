@@ -199,6 +199,7 @@ public:
   BlendAlgebraFileEdit *file_edit;
 
   int reinit_path;
+  char changed_path[BCTEXTLEN];
 };
 
 class BlendAlgebraFileButton : public BC_GenericButton, public Thread
@@ -362,6 +363,7 @@ public:
 
   Mutex *editing_lock;
   int editing;
+  int quit_now;
 };
 
 // For multithreading processing engine

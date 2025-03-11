@@ -449,14 +449,19 @@ void BlendProgramFileButton::run()
     file_box->update_filter ("*.bp");
     file_box->unlock_window();
     result = file_box->run_window();
+    if (gui->quit_now)			// plugin dialog closed, imitate Cancel
+    {
+      delete file_box;
+      file_box = 0;
+      return;
+    }
     if (file_box->reinit_path)			// if set, a button was clicked
     {
-      fpath = file_box->get_current_path();	// current, as set by buttons
 #ifdef DEBUG
-      printf ("BlendProgramFileButton::run file_box returned %d reinit_path=%d\n   fpath=%s\n",
-	      result, file_box->reinit_path, fpath);
+      printf ("BlendProgramFileButton::run file_box returned %d reinit_path=%d\n   changed_path=%s\n",
+	      result, file_box->reinit_path, file_box->changed_path);
 #endif
-      strncpy (fname, fpath ? fpath : "", sizeof(fname)-1);
+      strcpy (fname, file_box->changed_path);	// this path was set by buttons
       delete file_box;
       file_box = 0;
       continue;	// reinit_path will be cleared on repeat in FileBox constructor
@@ -538,7 +543,8 @@ BlendProgramFileBox::BlendProgramFileBox(BlendProgram *plugin,
   copy_curdir = 0;
   copy_usrlib = 0;
   file_edit   = 0;
-  reinit_path = 0;
+  reinit_path = 0;	// reinit_path and changed_path can be set by buttons
+  strcpy (changed_path, init_path);
 }
 
 BlendProgramFileBox::~BlendProgramFileBox()
@@ -624,13 +630,12 @@ int BlendProgramToCurdir::handle_event()
   // Not exactly sure what operations on FileBox are really important
   file_box->fs->change_dir (dir);	// force it to recognize the new dir
 
-  // This updates all paths, sets current_path and submitted_path of FileBox,
-  // but in memory only, text fields in the dialog are not actualized.
+  // Changed path is in memory only, dialog text fields are not actualized.
   // file_box->refresh() does not help to refresh text fields either.
   // Therefore we have to apply a trick with closing FileBox and
   // reopening it with the new generated path. Visited paths history
   // will be updated inside BlendProgramFileButton::run() in reinit_path loop.
-  file_box->update_paths (path);
+  strcpy (file_box->changed_path, path);
 
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
@@ -689,7 +694,7 @@ int BlendProgramToUsrlib::handle_event()
 
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
-  file_box->update_paths (path);
+  strcpy (file_box->changed_path, path);
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
@@ -729,7 +734,7 @@ int BlendProgramToSyslib::handle_event()
 
   // Reinitialize FileBox with the modified path
   file_box->fs->change_dir (dir);
-  file_box->update_paths (path);
+  strcpy (file_box->changed_path, path);
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
@@ -801,7 +806,7 @@ int BlendProgramCopyCurdir::handle_event()
 
   // Copying successful, now change dir to the location of the target
   file_box->fs->change_dir (dir);
-  file_box->update_paths (to_path);
+  strcpy (file_box->changed_path, to_path);
   file_box->reinit_path = 1;	// set flag to reopen FileBox afterwards
   file_box->set_done(1); // temporarily close FileBox, will be reopened later
 
@@ -1186,11 +1191,16 @@ BlendProgramWindow::BlendProgramWindow(BlendProgram *plugin)
   this->plugin = plugin;
   color_thread = 0;
   editing_lock = new Mutex("BlendProgramWindow::editing_lock");
-  editing = 0;
+  editing  = 0;
+  quit_now = 0;
 }
 
 BlendProgramWindow::~BlendProgramWindow()
 {
+  quit_now = 1;	// cleanup in progress, stop mocking up with editing_lock
+  if (color_thread) color_thread->close_window();
+  file_button->stop();			// force closing Attach... dialog
+  editing = 0;
   delete color_thread;
   delete editing_lock;
 }
@@ -1304,6 +1314,7 @@ void BlendProgramWindow::update_key_sample()
 void BlendProgramWindow::done_event()
 {
   color_thread->close_window();
+  file_button->stop();
 }
 
 int BlendProgramWindow::close_event()
