@@ -167,7 +167,7 @@ int BC_Capture::allocate_data()
 
 // Crashes here if remote server.
 		BC_Resources::error = 0;
-		XShmAttach(display, &shm_info);
+		use_shm = XShmAttach(display, &shm_info);
 		XSync(display, False);
 		if( BC_Resources::error ) {
 			XDestroyImage(ximage);
@@ -236,7 +236,7 @@ int BC_Capture::capture_frame(VFrame *frame, int &x1, int &y1,
 
 // Read the raw data
 	if( use_shm )
-		XShmGetImage(display, rootwin, ximage, x1, y1, 0xffffffff);
+		use_shm = XShmGetImage(display, rootwin, ximage, x1, y1, 0xffffffff);
 	else
 		XGetSubImage(display, rootwin, x1, y1, w, h, 0xffffffff, ZPixmap, ximage, 0, 0);
 
