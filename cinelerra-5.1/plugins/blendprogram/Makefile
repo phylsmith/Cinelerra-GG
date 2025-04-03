@@ -21,6 +21,7 @@ DLFCN_BP_DIR = $(DLFCN_DIR)/bp
 
 BP_OBJS = \
 	chromakey.bp.so \
+	tone_mapping.bp.so \
 	background.bp.so
 
 BP_SRCS = $(BP_OBJS:.bp.so=.bp)
