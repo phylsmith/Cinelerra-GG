@@ -1,0 +1,8 @@
+--- ./third_party/cpuinfo/deps/clog/CmakeLists.txx	2024-10-29 15:44:08.000000000 +0000
++++ ./third_party/cpuinfo/deps/clog/CMakeLists.txt	2025-04-07 03:08:49.606466389 +0000
+@@ -1,4 +1,4 @@
+-CMAKE_MINIMUM_REQUIRED(VERSION 3.1 FATAL_ERROR)
++CMAKE_MINIMUM_REQUIRED(VERSION 3.5 FATAL_ERROR)
+ 
+ INCLUDE(GNUInstallDirs)
+ 

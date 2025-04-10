@@ -70,7 +70,7 @@ void Auto::copy(int64_t start, int64_t end, FileXML *file, int default_only)
 
 void Auto::copy_from(Auto *that)
 {
-	this->orig_id = that->orig_id;
+	this->orig_id = orig_id;
 	this->position = that->position;
 }
 
