@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # Helper script to compile Cinelerra blend programs
 # Calling: BlendProgramCompile.pl [options] <program filename>

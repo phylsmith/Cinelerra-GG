@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # Helper script to compile Cinelerra blend algebra functions
 # Calling: BlendAlgebraCompile.pl [options] <function filename>

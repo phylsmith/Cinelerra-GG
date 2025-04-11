@@ -1,6 +1,9 @@
 include ../../plugin_defs
 
+PLATFORM = $(shell uname)
+ifneq ($(PLATFORM), NetBSD)
 LDFLAGS += -ldl
+endif
 
 OBJS = $(OBJDIR)/blendalgebra.o
 
