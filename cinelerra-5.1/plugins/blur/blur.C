@@ -32,7 +32,7 @@
 #include <string.h>
 
 
-
+#define MAX_FLT  3.40282347e+38
 
 
 #define MIN_RADIUS 2
@@ -571,7 +571,7 @@ void BlurEngine::run()
 				break;
 
 			case BC_RGB_FLOAT:
-				BLUR(float, 1.0, 3);
+				BLUR(float, MAX_FLT, 3);
 				break;
 
 			case BC_RGBA8888:
@@ -580,7 +580,7 @@ void BlurEngine::run()
 				break;
 
 			case BC_RGBA_FLOAT:
-				BLUR(float, 1.0, 4);
+				BLUR(float, MAX_FLT, 4);
 				break;
 
 			case BC_RGB161616:
