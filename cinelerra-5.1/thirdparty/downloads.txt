@@ -33,7 +33,7 @@ http://downloads.xiph.org/releases/theora/libtheora-1.1.1.tar.bz2
 # Added 0.7.4 in at least 2016; no new updates; not in HV or CV
 https://repology.org/project/a52dec/information
 https://sourceforge.net/projects/lame/files/latest/download?source=directory = 3.100
-https://download.osgeo.org/libtiff/tiff-4.6.0t.tar.xz
+https://download.osgeo.org/libtiff/tiff-4.7.0.tar.xz
 https://sourceforge.net/projects/libuuid/files/latest/download?source=directory - 1.0.3
 https://www.videolan.org/developers/x264.html (May 2024 version r3191)
 https://bitbucket.org/multicoreware/x265_git/downloads/x265_4.0.tar.gz (Sept. 2024)
@@ -48,7 +48,7 @@ https://github.com/webmproject/libwebp/archive/refs/tags/v1.4.0.tar.gz
 https://github.com/mozilla/aom = libaom-v3.8.0 (need v3.4.0 for ubuntu 16)
 git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git ??
 https://github.com/FFmpeg/nv-codec-headers/releases/download/n12.2.72.0/nv-codec-headers-12.2.72.0.tar.gz
-
+# 10.0.26.0 previous for several years and needed for older O/S like Slackware 15 kept in ffnvcodec-old.tar.gz
 https://gitlab.com/drobilla/lv2/-/archive/v1.18.0/lv2-v1.18.0.tar.gz
 http://download.drobilla.net/suil-0.10.6.tar.bz2
 http://download.drobilla.net/sratom-0.6.4.tar.bz2

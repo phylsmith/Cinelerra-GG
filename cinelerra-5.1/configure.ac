@@ -407,7 +407,7 @@ PKG_3RD([ilmBase],[auto], [ilmBase], [] [])
 #  [])
 #
 PKG_3RD([tiff],[auto],
-  [tiff-4.6.0t],
+  [tiff-4.7.0],
   [ libtiff/.libs/libtiff.a \
     libtiff/.libs/libtiffxx.a \
     port/.libs/libport.a ],[
