@@ -3,6 +3,11 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2025 March/April changes of note:
+  An additional SYSLIB Blend Program of tone_mapping.bp
+    has been created for tonemapping an HDR media and
+    report its values within the range (0, 1.0).
+  Tiff has been updated to version 4.7.0.
 2025 January/February changes of note:
   BlendAlgebra and BlendProgram major blending enhancements
    have been implemented and documented in the Manual.
