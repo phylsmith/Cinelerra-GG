@@ -61,7 +61,7 @@ $(OBJDIR)/blendalgebra.o: blendalgebra.C blendalgebra.h
 
 %.ba.so: %.ba $(FRONT) $(HELPER)
 	rm -f $@
-	CIN_CC=$(CC) CIN_DAT= ./$(HELPER) -noapi -compile -opt -warn $<
+	CIN_CC="$(CC)" CIN_DAT= ./$(HELPER) -noapi -compile -opt -warn $<
 
 all:: $(OUTPUT) $(BA_OBJS)
 

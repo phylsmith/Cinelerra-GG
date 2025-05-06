@@ -33,7 +33,7 @@ $(OBJDIR)/blendprogram.o: blendprogram.C blendprogram.h
 
 %.bp.so: %.bp $(FRONT) $(HELPER)
 	rm -f $@
-	CIN_CC=$(CC) CIN_DAT= ./$(HELPER) -noapi -compile -opt -warn $<
+	CIN_CC="$(CC)" CIN_DAT= ./$(HELPER) -noapi -compile -opt -warn $<
 
 all:: $(OUTPUT) $(BP_OBJS)
 
