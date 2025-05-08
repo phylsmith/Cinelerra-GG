@@ -12,60 +12,34 @@ For usage help, refer to the following:
   BlendAlgebra and BlendProgram major blending enhancements
    have been implemented and documented in the Manual.
   Flac library has been updated from 1.4.3 to 1.5.0.
-2024 November/December changes of note:
+.
+2024 New Features of note:
   Building with oneVPL now available using --with-onevpl.
-  SVT-AV1 has been updated from 2.2.1 to 2.3.0.
-  There are new vaapi/qsv/mediacodec rendering formats.
-  Nvidia encode headers updated from 10.0.26.0 to 12.2.72.0.
-2024 October changes of note:
   Updated libraries include:
-   x265 to version 4.0, libvpx to 1.14.1, libwebp to 1.4.0,
-   libjpeg-turbo to 3.0.4.
-2024 September changes of note:
-  Updated libraries include: dcraw, flac, giflib,
-   openjpeg, tiff, svt_av1, and x264 to current latest.
-2024 July changes of note:
+   SVT-AV1 to 2.3.0, Nvidia encode headers to 12.2.72.0,
+   x265 to 4.0, libvpx to 1.14.1, libwebp to 1.4.0,
+   mjpegtools to 2.2.1, ffmpeg to 7.0, libsndfile to 1.2.2,
+   libaom to 3.8.0, libjpeg-turbo to 3.0.4.
+  The following have been updated to the current latest:
+   dcraw, flac, giflib, openjpeg, tiff, svt_av1, x264.
+  There are new vaapi/qsv/mediacodec rendering formats.
   All of the AppImages are now being built with x265.
    8/10/12 bit encode options (multibit).
-2024 June changes of note:
   ChromaKeyAVID new plugin to use instead of ChromKeyHSV
    with an improved algorithm based on Avid SpectraMatte.
-2024 May changes of note:
-  FFmpeg has been updated from 6.1 to 7.0.
   ChromaKey and ChromaKeyHSV have improved menus/options.
-  Mjpegtools upgraded from 2.1.0 to 2.2.1.
-2024 January changes of note:
-  X265 library has been updated to snapshot of 17-12-2023.
-  Libsndfile is now at version 1.2.2.
-  Libaom is updated to 3.8.0 but does not work on older O/S.
-  The Resources window info/details now shows sar/dar values.
   Libsvtav1 is a buildable option for newer distros.
   Histogram/Videoscpe now allow for greater than 1 values.
-2023 November changes of note:
+.
+2023 New Features of note:
   New build farm for Ubuntu, Debian, Suse, and Fedora at:
    https://github.com/einhander/cin-gg-packages/releases
-  FFmpeg has been upgraded to 6.1.
-  Libvpx has been upgraded to 1.13.1.
-  Tiff has been upgraded to 4.6.0.
-2023 September changes of note:
-  Libwebp has been upgraded to 1.3.2.
+  Updated libraries include:
+   FFmpeg to 6.1, Libvpx to 1.13.1, Tiff to 4.6.0,
+   Libwebp to 1.3.2, X264 to r3106 stable release, 
+   Flac to 1.4.2, Libjpeg-turbo to 2.1.5.1, Libvpx to 1.13.0.
   Alternative shortcuts (more Standard) AppImage available.
-2023 August changes of note:
   Mirror new video plugin has been added.
-  Copyright messages now include GG team & earlier CV team.
-2023 June changes of note:
-  Capability to create DVDs with BFF interlace added.
-2023 April changes of note:
-  X264 has been upgraded to r3106 stable release. 
-2023 March changes of note:
-  Flac has been upgraded to 1.4.2
-  Tiff has been upgraded to 4.5.0
-  Libjpeg-turbo upgraded to 2.1.5.1
-  Libvpx is now upgraded to 1.13.0
-2023 February changes of note:
-  GPL headers have been added to essentially all program 
-   files with contributor attribution for CV or known author.
-2023 January changes of note:
   New shell script added to delete background render files
    that exist on /tmp named brenderX.
   Speed up for rendering VP9 4K/8K videos on computers with
