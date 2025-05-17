@@ -1,6 +1,6 @@
---- a/libavformat/avformat.h
-+++ b/libavformat/avformat.h
-@@ -499,6 +499,9 @@
+--- a/libavformat/avformat.h	2025-05-08 15:58:37.933172640 -0600
++++ b/libavformat/avformat.h	2025-05-08 15:57:46.964410825 -0600
+@@ -496,6 +496,9 @@
                                          The user or muxer can override this through
                                          AVFormatContext.avoid_negative_ts
                                          */
@@ -10,7 +10,7 @@
  
  #define AVFMT_SEEK_TO_PTS   0x4000000 /**< Seeking is based on PTS */
  
-@@ -562,7 +565,8 @@
+@@ -559,7 +562,8 @@
      /**
       * Can use flags: AVFMT_NOFILE, AVFMT_NEEDNUMBER, AVFMT_SHOW_IDS,
       * AVFMT_NOTIMESTAMPS, AVFMT_GENERIC_INDEX, AVFMT_TS_DISCONT, AVFMT_NOBINSEARCH,
@@ -20,9 +20,9 @@
       */
      int flags;
  
---- a/libavformat/dv.c
-+++ b/libavformat/dv.c
-@@ -713,6 +713,7 @@
+--- a/libavformat/dv.c	2025-05-08 15:59:26.143851727 -0600
++++ b/libavformat/dv.c	2025-05-08 15:59:01.103509955 -0600
+@@ -714,6 +714,7 @@
  const FFInputFormat ff_dv_demuxer = {
      .p.name         = "dv",
      .p.long_name    = NULL_IF_CONFIG_SMALL("DV (Digital Video)"),
@@ -31,9 +31,9 @@
      .priv_data_size = sizeof(RawDVContext),
      .read_probe     = dv_probe,
 
---- a/libavformat/matroskadec.c
-+++ b/libavformat/matroskadec.c
-@@ -4794,6 +4794,7 @@
+--- a/libavformat/matroskadec.c	2025-05-08 16:00:34.406740107 -0600
++++ b/libavformat/matroskadec.c	2025-05-08 15:59:37.777003123 -0600
+@@ -4832,6 +4832,7 @@
  const FFInputFormat ff_webm_dash_manifest_demuxer = {
      .p.name         = "webm_dash_manifest",
      .p.long_name    = NULL_IF_CONFIG_SMALL("WebM DASH Manifest"),
@@ -41,7 +41,7 @@
      .p.priv_class   = &webm_dash_class,
      .priv_data_size = sizeof(MatroskaDemuxContext),
      .flags_internal = FF_INFMT_FLAG_INIT_CLEANUP,
-@@ -4806,6 +4807,7 @@
+@@ -4844,6 +4845,7 @@
  const FFInputFormat ff_matroska_demuxer = {
      .p.name         = "matroska,webm",
      .p.long_name    = NULL_IF_CONFIG_SMALL("Matroska / WebM"),
@@ -50,9 +50,9 @@
      .p.mime_type    = "audio/webm,audio/x-matroska,video/webm,video/x-matroska",
      .priv_data_size = sizeof(MatroskaDemuxContext),
 
---- a/libavformat/seek.c
-+++ b/libavformat/seek.c
-@@ -605,6 +605,13 @@
+--- a/libavformat/seek.c	2025-05-08 16:01:47.828700137 -0600
++++ b/libavformat/seek.c	2025-05-08 16:00:44.845875964 -0600
+@@ -607,6 +607,13 @@
          return seek_frame_byte(s, stream_index, timestamp, flags);
      }
  

@@ -1,6 +1,6 @@
---- a/libavformat/avidec.c
-+++ b/libavformat/avidec.c
-@@ -2020,6 +2020,7 @@
+--- a/libavformat/avidec.c	2025-05-09 13:35:07.851155737 -0600
++++ b/libavformat/avidec.c	2025-05-09 13:34:45.702821357 -0600
+@@ -2021,6 +2021,7 @@
      .p.name         = "avi",
      .p.long_name    = NULL_IF_CONFIG_SMALL("AVI (Audio Video Interleaved)"),
      .p.extensions   = "avi",

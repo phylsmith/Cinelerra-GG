@@ -1,6 +1,6 @@
---- a/libavformat/mpegenc.c
-+++ b/libavformat/mpegenc.c
-@@ -987,9 +987,9 @@
+--- a/libavformat/mpegenc.c	2025-05-11 15:05:24.437490237 -0600
++++ b/libavformat/mpegenc.c	2025-05-11 14:46:46.661934073 -0600
+@@ -989,9 +989,9 @@
          PacketDesc *pkt_desc;
  
          while ((pkt_desc = stream->predecode_packet) &&

@@ -1,6 +1,6 @@
---- a/libavutil/hwcontext_cuda.c.orig	2023-11-11 03:25:17.000000000 +0300
-+++ b/libavutil/hwcontext_cuda.c	2023-11-12 17:52:01.243063419 +0300
-@@ -361,11 +361,13 @@
+--- a/libavutil/hwcontext_cuda.c	2025-04-18 14:35:01.291580404 -0600
++++ b/libavutil/hwcontext_cuda.c	2025-04-18 14:34:29.859129090 -0600
+@@ -365,11 +365,13 @@
                                                      hwctx->internal->cuda_device));
          if (ret < 0)
              return ret;

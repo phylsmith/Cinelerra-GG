@@ -58,6 +58,7 @@ install:	all
 	cp -a cinelerra.html $(TARGET_DIR)/.
 	cp -a shortcuts.html $(TARGET_DIR)/.
 	cp -a RenderMux.sh $(TARGET_DIR)/.
+	cp -a brender_tmp_delete.sh $(TARGET_DIR)/.
 	cp -a ContextManual.pl $(TARGET_DIR)/.
 	cp -a README.blendalg $(TARGET_DIR)/.
 	cp -a 99-ShuttlePRO.rules $(TARGET_DIR)/.

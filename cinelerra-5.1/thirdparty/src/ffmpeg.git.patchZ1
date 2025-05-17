@@ -1,8 +1,8 @@
---- a/libavcodec/wrapped_avframe.c
-+++ b/libavcodec/wrapped_avframe.c
-@@ -33,6 +33,38 @@
+--- a/libavcodec/wrapped_avframe.c	2025-05-11 16:34:43.753546422 -0600
++++ b/libavcodec/wrapped_avframe.c	2025-05-11 15:08:08.157768438 -0600
+@@ -32,6 +32,38 @@
  #include "libavutil/buffer.h"
- #include "libavutil/pixdesc.h"
+ #include "libavutil/mem.h"
  
 +
 +
@@ -39,7 +39,7 @@
  static void wrapped_avframe_release_buffer(void *unused, uint8_t *data)
  {
      AVFrame *frame = (AVFrame *)data;
-@@ -111,6 +143,7 @@
+@@ -110,6 +142,7 @@
      .p.id           = AV_CODEC_ID_WRAPPED_AVFRAME,
      .p.capabilities = AV_CODEC_CAP_ENCODER_REORDERED_OPAQUE,
      FF_CODEC_ENCODE_CB(wrapped_avframe_encode),
