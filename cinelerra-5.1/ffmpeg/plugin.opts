@@ -68,7 +68,7 @@ blackframe
 #blend ###Input/output error
 blackdetect
 blockdetect
-boxblur
+#boxblur  ###Hangs
 #buffer size=320x240:pixfmt=6:time_base=1/24:pixel_aspect=1/1 ###Invalid argument
 #buffersink ###Input/output error
 bwdif
@@ -299,7 +299,7 @@ volume
 volumedetect
 #vstack ###Operation not permitted
 w3fdif
-waveform
+#waveform ###Crashes
 weave
 xbr
 #xmedian
@@ -505,7 +505,8 @@ afdelaysrc
 #fsync ###No such file or directory
 #tiltandshift ###Resource temporarily available
 : do not work
-# overlay_qsv ###Input/output error
-# hstack_qsv ###Operation not permitted
-# vstack_qsv ###Operation not permitted
-# xstack_qsv ###Operation not permitted
+#overlay_qsv ###Input/output error
+#hstack_qsv ###Operation not permitted
+#vstack_qsv ###Operation not permitted
+#xstack_qsv ###Operation not permitted
+#transpose_vaapi ###Operation not permitted

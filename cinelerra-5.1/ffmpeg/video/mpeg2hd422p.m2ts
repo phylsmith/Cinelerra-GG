@@ -1,0 +1,11 @@
+mpegts mpeg2video
+cin_pix_fmt=yuv422p
+b=35M
+dc=10
+muxrate=38M
+minrate=35M
+maxrate=35M
+bufsize=38M
+bf=2
+profile=high
+refs=1
