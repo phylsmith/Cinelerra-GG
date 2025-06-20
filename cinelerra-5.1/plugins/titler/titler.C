@@ -2306,9 +2306,9 @@ void TitleTranslateUnit::process_package(LoadPackage *package)
 
 	switch( output->get_color_model() ) {
 	case BC_RGB888:     TRANSLATE(unsigned char, 0xff, 3, 0);    break;
-	case BC_RGB_FLOAT:  TRANSLATE(float, MAX_FLT, 3, 0);             break;
+	case BC_RGB_FLOAT:  TRANSLATE(float, 1.0, 3, 0);             break;
 	case BC_YUV888:     TRANSLATE(unsigned char, 0xff, 3, 0x80); break;
-	case BC_RGBA_FLOAT: TRANSLATE(float, MAX_FLT, 4, 0);             break;
+	case BC_RGBA_FLOAT: TRANSLATE(float, 1.0, 4, 0);             break;
 	case BC_RGBA8888:   TRANSLATE(unsigned char, 0xff, 4, 0);    break;
 	case BC_YUVA8888:   TRANSLATE(unsigned char, 0xff, 4, 0x80); break;
 	}

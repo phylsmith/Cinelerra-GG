@@ -1,0 +1,8 @@
+matroska mpeg2video
+cin_pix_fmt=yuv422p
+b=30M
+muxrate=35M
+minrate=30M
+maxrate=30M
+bufsize=25M
+profile=422p
