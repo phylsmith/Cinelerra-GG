@@ -37,7 +37,7 @@ https://download.osgeo.org/libtiff/tiff-4.7.0.tar.xz
 https://sourceforge.net/projects/libuuid/files/latest/download?source=directory - 1.0.3
 https://www.videolan.org/developers/x264.html (May 2024 version r3191)
 https://bitbucket.org/multicoreware/x265_git/downloads/x265_4.0.tar.gz (Sept. 2024)
-https://ffmpeg.org/releases/ffmpeg-7.0.tar.xz
+https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz
 https://github.com/webmproject/libvpx/tags (v1.14.1.tar.gz)
 https://code.videolan.org/videolan/dav1d/-/archive/0.5.1/dav1d-0.5.1.tar.gz
 https://gitlab.com/AOMediaCodec/SVT-AV1/-/releases  (2.3.0)

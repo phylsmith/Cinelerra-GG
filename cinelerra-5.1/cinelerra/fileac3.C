@@ -191,7 +191,9 @@ int FileAC3::close_file()
 	if(codec_context)
 	{
 		encode_flush();
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 		avcodec_close(codec_context);
+#endif
 		avcodec_free_context(&codec_context);
 		codec = 0;
 	}

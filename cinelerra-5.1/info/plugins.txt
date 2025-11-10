@@ -434,6 +434,7 @@ F_pal100bars:	Generate PAL 100% color bars. This only works with
 		RGB 8-bit.
 F_pal75bars:	Generate PAL 75% color bars. This only works with
 		RGB 8-bit.
+F_perlin:	Generate Perlin noise.
 F_perms:	Set permissions for the output video frame.
 F_perspective:	Corrects the perspective of video.
 F_phase:	Phase shift fields.

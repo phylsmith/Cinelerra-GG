@@ -864,18 +864,25 @@ int PluginFAClient::activate()
 			"in", args, NULL, graph);
 		if(ret <0) printf("abuffer failed!\n");
 	}
-	if( ret >= 0 )
+/* 	if( ret >= 0 )
 		ret = avfilter_graph_create_filter(&fsink, avfilter_get_by_name("abuffersink"),
-			"out", NULL, NULL, graph);
+			"out", NULL, NULL, graph); */
+	/*
 	if( ret >= 0 )
 		ret = av_opt_set_bin(fsink, "sample_fmts",
 			(uint8_t*)&sample_fmt, sizeof(sample_fmt), AV_OPT_SEARCH_CHILDREN);
-	if( ret >= 0 )
+	
+	 if( ret >= 0 )
 		ret = av_opt_set(fsink, "ch_layouts",
 			chLayoutDescription, AV_OPT_SEARCH_CHILDREN);
 	if( ret >= 0 )
 		ret = av_opt_set_bin(fsink, "sample_rates",
 			(uint8_t*)&sample_rate, sizeof(sample_rate), AV_OPT_SEARCH_CHILDREN);
+	*/
+	if( ret >= 0 ) 
+	    ret = avfilter_graph_create_filter(&fsink, avfilter_get_by_name("abuffersink"),
+		"out", NULL, NULL, graph);
+	
 	if( ret >= 0 )
 		ret = PluginFClient::activate();
 	if( ret < 0 && activated >= 0 ) {
@@ -943,9 +950,11 @@ int PluginFVClient::activate(int width, int height, int color_model)
 	if( ret >= 0 )
 		ret = avfilter_graph_create_filter(&fsink, avfilter_get_by_name("buffersink"),
 			"out", NULL, NULL, graph);
+	/*
 	if( ret >= 0 )
 		ret = av_opt_set_bin(fsink, "pix_fmts",
 			(uint8_t*)&pix_fmt, sizeof(pix_fmt), AV_OPT_SEARCH_CHILDREN);
+	*/
 	if( ret >= 0 )
 		ret = PluginFClient::activate();
 	if( ret < 0 && activated >= 0 ) {
@@ -1096,9 +1105,13 @@ int PluginFVClient::process_buffer(VFrame **frames, int64_t position, double fra
 
 	int colormodel = vframe->get_color_model();
 	int ret = activate(width, height, colormodel);
-	AVPixelFormat pix_fmt = fsrc ?
+	AVPixelFormat pix_fmt;
+	if (fsrc && fsrc->outputs[0]) {
+		pix_fmt =  fsrc ?
 		(AVPixelFormat) fsrc->outputs[0]->format :
 		color_model_to_pix_fmt(colormodel);
+	} else {
+	pix_fmt = color_model_to_pix_fmt(colormodel);}
 	if( pix_fmt <= AV_PIX_FMT_NONE || pix_fmt >= AV_PIX_FMT_NB )
 		pix_fmt = AV_PIX_FMT_RGBA;
 
@@ -1255,7 +1268,7 @@ int PluginFFilter::init(const char *name, PluginFClientConfig *conf)
 	PluginFLogLevel errs(AV_LOG_ERROR);
 	this->filter = avfilter_get_by_name(name);
 	if( !this->filter ) return AVERROR(ENOENT);
-	int flag_mask = AVFILTER_FLAG_DYNAMIC_INPUTS | AVFILTER_FLAG_DYNAMIC_OUTPUTS;
+	int flag_mask = /* AVFILTER_FLAG_DYNAMIC_INPUTS |*/ AVFILTER_FLAG_DYNAMIC_OUTPUTS;
 	if( filter->flags & flag_mask ) return AVERROR(EPERM);
 	if( !this->is_audio() && !this->is_video() ) return AVERROR(EIO);
 	this->graph = avfilter_graph_alloc();

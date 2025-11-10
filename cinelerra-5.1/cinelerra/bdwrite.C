@@ -2586,7 +2586,11 @@ static int field_probe(AVFormatContext *fmt_ctx, AVStream *st)
     }
     ret = avcodec_receive_frame(ctx, ipic);
     if( ret >= 0 ) {
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
       ilaced = ipic->interlaced_frame ? 1 : 0;
+#else
+    ilaced = ipic->flags & AV_FRAME_FLAG_INTERLACED  ? 1 : 0;
+#endif
       break;
     }
     if( ret != AVERROR(EAGAIN) )
@@ -2769,7 +2773,9 @@ int media_info::scan()
     ret = scan(fmt_ctx);
 
   for( int i=0; i<(int)streams.size(); ++i )
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
     avcodec_close(streams[i]->ctx);
+#endif
   avformat_close_input(&fmt_ctx);
 
   return ret;

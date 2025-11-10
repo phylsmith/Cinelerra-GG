@@ -224,10 +224,9 @@ PKG_3RD([esound],[no],
   [ . ])
 
 PKG_3RD([ffmpeg],[yes],
-  [ffmpeg-7.0],
+  [ffmpeg-8.0],
   [ libavutil/libavutil.a \
     libavcodec/libavcodec.a \
-    libpostproc/libpostproc.a \
     libavformat/libavformat.a \
     libswscale/libswscale.a \
     libavfilter/libavfilter.a \

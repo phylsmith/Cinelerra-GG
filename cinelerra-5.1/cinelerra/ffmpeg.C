@@ -310,7 +310,9 @@ FFStream::FFStream(FFMPEG *ffmpeg, AVStream *st, int fidx)
 FFStream::~FFStream()
 {
 	frm_lock->lock("FFStream::~FFStream");
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 	if( reading > 0 || writing > 0 ) avcodec_close(avctx);
+#endif	
 	if( avctx ) avcodec_free_context(&avctx);
 	if( fmt_ctx ) avformat_close_input(&fmt_ctx);
 	if( hw_device_ctx ) av_buffer_unref(&hw_device_ctx);
@@ -475,7 +477,9 @@ int FFStream::decode_activate()
 			if( ret < 0 && hw_type != AV_HWDEVICE_TYPE_NONE ) {
 				ff_err(ret, "HW device init failed, using SW decode.\nfile:%s\n",
 					ffmpeg->fmt_ctx->url);
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 				avcodec_close(avctx);
+#endif
 				avcodec_free_context(&avctx);
 				av_buffer_unref(&hw_device_ctx);
 				hw_device_ctx = 0;
@@ -1305,7 +1309,7 @@ int FFVideoStream::probe(int64_t pos)
 		if( ret > 0 ) {
 			//printf("codec interlace: %i \n",frame->interlaced_frame);
 			//printf("codec tff: %i \n",frame->top_field_first);
-
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 			if (!frame->interlaced_frame)
 				ffmpeg->interlace_from_codec = AV_FIELD_PROGRESSIVE;
 			if ((frame->interlaced_frame) && (frame->top_field_first))
@@ -1313,7 +1317,14 @@ int FFVideoStream::probe(int64_t pos)
 			if ((frame->interlaced_frame) && (!frame->top_field_first))
 				ffmpeg->interlace_from_codec = AV_FIELD_BB;
 			//printf("Interlace mode from codec: %i\n", ffmpeg->interlace_from_codec);
-
+#else
+			if (!frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST)
+				ffmpeg->interlace_from_codec = AV_FIELD_PROGRESSIVE;
+			if ((frame->flags & AV_FRAME_FLAG_INTERLACED) && (frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST))
+				ffmpeg->interlace_from_codec = AV_FIELD_TT;
+			if ((frame->flags & AV_FRAME_FLAG_INTERLACED ) && (!frame->flags & AV_FRAME_FLAG_TOP_FIELD_FIRST))
+				ffmpeg->interlace_from_codec = AV_FIELD_BB;
+#endif
 	}
 
 	if( frame->format == AV_PIX_FMT_NONE || frame->width <= 0 || frame->height <= 0 )
@@ -1339,7 +1350,11 @@ int FFVideoStream::load(VFrame *vframe, int64_t pos)
 	while( ret>=0 && !flushed && curr_pos<=pos && --i>=0 ) {
 		ret = read_frame(frame);
 		if( ret > 0 ) {
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 			if( frame->key_frame && seeking < 0 ) {
+#else
+			if( (frame->flags & AV_FRAME_FLAG_KEY) && seeking < 0 ) {
+#endif
 				int use_cache = ffmpeg->get_use_cache();
 				if( use_cache < 0 ) {
 // for reverse read, reload file frame_cache from keyframe to pos
@@ -1511,8 +1526,15 @@ int FFVideoStream::drain()
 int FFVideoStream::encode_frame(AVFrame *frame)
 {
 	if( frame ) {
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 		frame->interlaced_frame = interlaced;
 		frame->top_field_first = top_field_first;
+#else
+		if(top_field_first)
+		frame->flags |= AV_FRAME_FLAG_TOP_FIELD_FIRST;
+		if(interlaced)
+		frame->flags |= AV_FRAME_FLAG_INTERLACED;
+#endif
 	}
 	if( frame && frame->format == AV_PIX_FMT_VAAPI ) { // ugly
 		int ret = avcodec_send_frame(avctx, frame);
@@ -3846,7 +3868,20 @@ double FFVideoStream::get_rotation_angle()
 #else
 	int size = 0;
 #endif
+
+#if LIBAVCODEC_VERSION_INT <= AV_VERSION_INT(59,16,100)
 	int *matrix = (int*)av_stream_get_side_data(st, AV_PKT_DATA_DISPLAYMATRIX, &size);
+#else
+	int32_t *matrix = NULL;
+        if (!matrix) {
+            const AVPacketSideData *psd = av_packet_side_data_get(st->codecpar->coded_side_data,
+                                                                  st->codecpar->nb_coded_side_data,
+                                                                  AV_PKT_DATA_DISPLAYMATRIX);
+            if (psd)
+                matrix = (int32_t *)psd->data;
+        }
+	
+#endif
 	int len = size/sizeof(*matrix);
 	if( !matrix || len < 5 ) return 0;
 	const double s = 1/65536.;
@@ -3903,7 +3938,9 @@ int FFVideoStream::create_filter(const char *filter_spec)
 		while( --i>=0 && *sp!=0 && !strchr(" \t:=,",*sp) ) *np++ = *sp++;
 		*np = 0;
 		const AVFilter *filter = !filter_name[0] ? 0 : avfilter_get_by_name(filter_name);
-		if( !filter || avfilter_pad_get_type(filter->inputs,0) != AVMEDIA_TYPE_VIDEO ) {
+		//AVFilterContext *ctx = filter->ctx;
+		int       nb_pads = avfilter_filter_pad_count(filter,0);
+		if( !filter || (nb_pads>1 && avfilter_pad_get_type(filter->inputs,0)) != AVMEDIA_TYPE_VIDEO ) {
 			ff_err(AVERROR(EINVAL), "FFVideoStream::create_filter: %s\n", filter_spec);
 			return -1;
 		}
@@ -3933,11 +3970,19 @@ int FFVideoStream::create_filter(const char *filter_spec)
 		ret = insert_filter("buffersink", 0, "out");
 		buffersink_ctx = filt_ctx;
 	}
+	/*
+	if( ret >= 0 ) {
+	ret = av_opt_set(buffersink_ctx, "pixel_formats", av_get_pix_fmt_name(pix_fmt),
+                     AV_OPT_SEARCH_CHILDREN);
+	}
+	
 	if( ret >= 0 ) {
 		ret = av_opt_set_bin(buffersink_ctx, "pix_fmts",
 			(uint8_t*)&pix_fmt, sizeof(pix_fmt),
 			AV_OPT_SEARCH_CHILDREN);
 	}
+	*/
+	
 	if( ret >= 0 )
 		ret = config_filters(filter_spec, fsrc);
 	else
@@ -3957,7 +4002,8 @@ int FFAudioStream::create_filter(const char *filter_spec)
 		while( --i>=0 && *sp!=0 && !strchr(" \t:=,",*sp) ) *np++ = *sp++;
 		*np = 0;
 		const AVFilter *filter = !filter_name[0] ? 0 : avfilter_get_by_name(filter_name);
-		if( !filter || avfilter_pad_get_type(filter->inputs,0) != AVMEDIA_TYPE_AUDIO ) {
+		int       nb_pads = avfilter_filter_pad_count(filter,0);
+		if( !filter || (nb_pads >1 &&  avfilter_pad_get_type(filter->inputs,0)) != AVMEDIA_TYPE_AUDIO ) {
 			ff_err(AVERROR(EINVAL), "FFAudioStream::create_filter: %s\n", filter_spec);
 			return -1;
 		}

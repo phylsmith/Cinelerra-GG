@@ -36,11 +36,13 @@ case "$dir" in
     rm -f /tmp/$yasm
   ;;
 #"fedora3*")
-#  dnf group install "Development Tools"
+#  dnf group install "Development Tools" -- substitute for older versions
+#  dnf -y --best --allowerasing -- substitute for older versions
 #  ... rpm-build lzma-sdk-devel libtool ...
+# fedora for newest versions
 "fedora")
-  dnf group install "Development Tools"
-  dnf -y --best --allowerasing \
+  dnf group install development-tools
+  dnf -y --best \
     install nasm yasm libavc1394-devel libusbx-devel flac-devel \
     libjpeg-devel libdv-devel libdvdnav-devel libdvdread-devel \
     libtheora-devel libiec61883-devel esound-devel uuid-devel \
