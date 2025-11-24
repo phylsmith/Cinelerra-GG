@@ -273,7 +273,7 @@ tiff.cfg_params+= --disable-libdeflate --disable-lerc --enable-shared=no --disab
  --with-webp-lib-dir=$(call pkg_libs,libwebp))\
  $(call if_npkg,libwebp,--disable-webp)
 twolame.cfg_params?=--enable-shared=no
-x264.cfg_params?= --enable-static --enable-pic
+x264.cfg_params?= --enable-static --enable-pic --disable-lavf --disable-swscale --disable-ffms --disable-gpac --disable-lsmash
 x265.cfg_vars?=chmod +x ./configure; chmod +x ./multilib.sh;
 #x265.cfg_vars?=$(call cmake_config,source)
 #x265.cfg_params?= -DENABLE_SHARED=no -DENABLE_CLI=no

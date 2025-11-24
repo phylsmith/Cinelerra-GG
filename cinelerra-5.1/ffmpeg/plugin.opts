@@ -514,3 +514,5 @@ afdelaysrc
 #xpsnr ###Input/output error
 #drawbox_vaapi ###Operation not permitted
 #pad_vaapi ###Operation not permitted
+; crash in 8.0
+#blackdetect_vulkan
