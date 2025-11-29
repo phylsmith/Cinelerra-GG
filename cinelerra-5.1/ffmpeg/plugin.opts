@@ -516,3 +516,5 @@ afdelaysrc
 #pad_vaapi ###Operation not permitted
 ; crash in 8.0
 #blackdetect_vulkan
+: do not work in 8.0 (just like the other cuda-s which use nvidia graphics card)
+#scale_cuda ###Operation not implemented when you try to use it

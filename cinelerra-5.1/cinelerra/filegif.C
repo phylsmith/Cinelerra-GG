@@ -36,11 +36,13 @@
 
 //from "getarg.h"
 extern "C"
+#if !defined HAVE_GIFLIB_QUANTIZE
 int GifQuantizeBuffer(unsigned int Width, unsigned int Height,
-                   int *ColorMapSize, GifByteType * RedInput,
-                   GifByteType * GreenInput, GifByteType * BlueInput,
-                   GifByteType * OutputBuffer,
+                   int *ColorMapSize, const GifByteType * RedInput,
+                   const GifByteType * GreenInput, GifByteType * BlueInput,
+                   const GifByteType * OutputBuffer,
                    GifColorType * OutputColorMap);
+#endif
 #if GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 2 || GIFLIB_MAJOR == 5 && GIFLIB_MINOR == 1 && GIFLIB_RELEASE >= 9
 
 #define ABS(x)    ((x) > 0 ? (x) : (-(x)))
@@ -101,6 +103,7 @@ static int SubdivColorMap(NewColorMapType * NewColorSubdiv,
                           unsigned int ColorMapSize,
                           unsigned int *NewColorMapSize);
 
+#if !defined HAVE_GIFLIB_QUANTIZE
 
 /******************************************************************************
  Quantize high resolution image into lower one. Input image consists of a
@@ -232,6 +235,7 @@ GifQuantizeBuffer(unsigned int Width,
         if (MaxRGBError[2] < ABS(OutputColorMap[Index].Blue - BlueInput[i]))
             MaxRGBError[2] = ABS(OutputColorMap[Index].Blue - BlueInput[i]);
     }
+#endif
 
 #ifdef DEBUG
     fprintf(stderr,

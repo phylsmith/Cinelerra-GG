@@ -677,6 +677,7 @@ CHECK_LIB([encore], [encore], [encore])
 CHECK_HEADERS([encore], [encore headers], [encore.h])
 CHECK_LIB([giflib], [gif], [DGifOpen])
 CHECK_HEADERS([giflib], [gif lib headers], [gif_lib.h])
+CHECK_LIB([giflib_quantize], [gif], [GifQuantizeBuffer])
 CHECK_LIB([jbig], [jbig], [jbg_dec_init])
 
 CHECK_LIB([VDPAU], [vdpau], [vdp_device_create_x11])
@@ -1078,6 +1079,13 @@ echo ""
 if test "x$WANT_CIN_3RDPARTY" != "xno"; then
   CFG_CFLAGS+=" -DHAVE_CIN_3RDPARTY"
 fi
+
+if test "x$HAVE_GIFLIB_QUANTIZE" = "xyes" -a "x$WANT_CIN_3RDPARTY" = "xno"; then
+  CFG_CFLAGS+=" -DHAVE_GIFLIB_QUANTIZE"
+fi
+
+
+
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
 	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
