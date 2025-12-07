@@ -39,8 +39,8 @@ extern "C"
 #if !defined HAVE_GIFLIB_QUANTIZE
 int GifQuantizeBuffer(unsigned int Width, unsigned int Height,
                    int *ColorMapSize, const GifByteType * RedInput,
-                   const GifByteType * GreenInput, GifByteType * BlueInput,
-                   const GifByteType * OutputBuffer,
+                   const GifByteType * GreenInput, const GifByteType * BlueInput,
+                   GifByteType * OutputBuffer,
                    GifColorType * OutputColorMap);
 #endif
 #if GIFLIB_MAJOR == 5 && GIFLIB_MINOR >= 2 || GIFLIB_MAJOR == 5 && GIFLIB_MINOR == 1 && GIFLIB_RELEASE >= 9
@@ -235,7 +235,7 @@ GifQuantizeBuffer(unsigned int Width,
         if (MaxRGBError[2] < ABS(OutputColorMap[Index].Blue - BlueInput[i]))
             MaxRGBError[2] = ABS(OutputColorMap[Index].Blue - BlueInput[i]);
     }
-#endif
+
 
 #ifdef DEBUG
     fprintf(stderr,
@@ -249,6 +249,8 @@ GifQuantizeBuffer(unsigned int Width,
 
     return GIF_OK;
 }
+
+#endif // HAVE_GIFLIB_QUANTIZE
 
 /******************************************************************************
  Routine to subdivide the RGB space recursively using median cut in each
