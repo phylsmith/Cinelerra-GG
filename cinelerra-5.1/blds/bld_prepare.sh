@@ -7,7 +7,7 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 <os>"
-  echo "  <os> = [centos | suse | ubuntu | fedora | mint | debian | arch | debian-older | ubuntu-older]"
+  echo "  <os> = [centos | suse | ubuntu | ubuntu24 | fedora | mint | debian | arch | debian-older | ubuntu-older]"
 fi
 
 dir="$1"
@@ -59,7 +59,7 @@ case "$dir" in
     jbigkit-devel libvdpau-devel libva-devel gtk2-devel mesa-vdpau-drivers \
     pulseaudio-libs-devel libtool patchelf boost-devel
   ;;
-"arch")
+"arch") gtk2 may not be in distro; you can just use Calf plugins without UI
     pacman -Syu gtk2 nasm yasm cmake fftw patchelf boost boost-libs \
     base-devel libvdpau libva perl-xml-parser perl-carp libogg texinfo \
     libsndfile
@@ -119,7 +119,20 @@ case "$dir" in
     libpulse-dev libtool 2to3 python-is-python3 python2-minimal python2 dh-python \
     patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl libimath-dev liblilv-dev
   ;;
-#debian for newest versions since about 06/2022
+#ub24.04 libgtk2.0-dev may not be in distro; you can just use Calf plugins without UI
+"ubuntu24")
+  apt-get -y install apt-file sox nasm yasm g++ build-essential libz-dev \
+    texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
+    libncurses5-dev libxinerama-dev libfreetype6-dev libxft-dev libgif-dev \
+    libtiff5-dev exuberant-ctags ttf-bitstream-vera xfonts-75dpi xfonts-100dpi \
+    fonts-dejavu libopenexr-dev libavc1394-dev festival-dev lv2-dev libfftw3-dev gdb \
+    libdc1394-25 libdc1394-dev libiec61883-dev libflac-dev libjbig-dev libusb-1.0-0-dev \
+    libvdpau-dev libva-dev libsndfile1-dev libtheora-dev cmake udftools \
+    libxml2-utils git inkscape autoconf automake debhelper libgtk2.0-dev \
+    libpulse-dev libtool 2to3 python-is-python3 python3-minimal python3 dh-python \
+    patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl libimath-dev liblilv-dev
+  ;;
+#debian for newest versions since about 06/2022 (add 2to3 package if python issues occur)
 "debian")
   apt-get -f -y install apt-file sox nasm yasm g++ build-essential zlib1g-dev \
     texinfo libpng-dev freeglut3-dev libxv-dev libasound2-dev libbz2-dev \
@@ -128,8 +141,10 @@ case "$dir" in
     fonts-dejavu libopenexr-dev festival libfftw3-dev gdb libusb-1.0-0-dev \
     libdc1394-25 libdc1394-dev libflac-dev libjbig-dev libvdpau-dev libva-dev \
     inkscape libsndfile1-dev libtheora-dev cmake udftools libxml2-utils git \
-    autoconf automake debhelper libgtk2.0-dev libpulse-dev 2to3 python-is-python3  python3 dh-python \
-    patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl fuse
+    autoconf automake debhelper libgtk2.0-dev libpulse-dev python-is-python3  python3 dh-python \
+    patchelf libboost-filesystem-dev libboost-regex-dev libxml-parser-perl fuse \
+    lv2-dev libsratom-dev libsuil-dev liblilv-dev liba52-dev libtwolame-dev libdv-dev \
+    libmp3lame-dev libavc1394-dev libiec61883-dev libavcodec-dev libavformat-dev libavfilter-dev
   ;;
 
 *)
