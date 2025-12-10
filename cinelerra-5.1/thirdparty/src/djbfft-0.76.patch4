@@ -1,0 +1,10 @@
+--- ./accuracy.c.orig	2025-12-08 18:22:51.217422274 +0300
++++ ./accuracy.c	2025-12-08 18:23:11.417422601 +0300
+@@ -4,6 +4,7 @@
+ #include "fftc8.h"
+ #include "fftr4.h"
+ #include "fftr8.h"
++#include <stdlib.h>
+ 
+ #define ROTATE(x,b) x = (((x) << (b)) | ((x) >> (32 - (b))))
+ real8 myrand()

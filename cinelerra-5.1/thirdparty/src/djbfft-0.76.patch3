@@ -1,0 +1,10 @@
+--- ./speed.c.orig	2025-12-08 18:24:05.385423476 +0300
++++ ./speed.c	2025-12-08 18:24:25.281423799 +0300
+@@ -4,6 +4,7 @@
+ #include "fftc4.h"
+ #include "fftc8.h"
+ #include "timing.h"
++#include <stdlib.h>
+ 
+ void nomem()
+ {

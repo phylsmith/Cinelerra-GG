@@ -1,0 +1,9 @@
+--- ./substdio.h.rig	2025-12-09 12:08:30.758458575 +0300
++++ ./substdio.h	2025-12-09 12:09:40.930459713 +0300
+@@ -1,3 +1,6 @@
++#include <errno.h>
++#include <sys/types.h>
++
+ #ifndef SUBSTDIO_H
+ #define SUBSTDIO_H
+ 

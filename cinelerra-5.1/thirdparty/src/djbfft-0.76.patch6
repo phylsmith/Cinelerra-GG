@@ -1,0 +1,11 @@
+--- ./install.c.orig	2025-12-09 12:02:21.402452589 +0300
++++ ./install.c	2025-12-09 12:06:06.774456242 +0300
+@@ -4,6 +4,8 @@
+ #include "open.h"
+ #include "readwrite.h"
+ #include "exit.h"
++#include <sys/stat.h>
++#include <unistd.h>
+ 
+ extern void hier();
+ 

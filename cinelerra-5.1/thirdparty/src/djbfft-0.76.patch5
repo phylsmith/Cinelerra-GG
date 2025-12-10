@@ -1,0 +1,16 @@
+--- ./accuracy2.c.orig	2025-12-09 12:01:43.810451980 +0300
++++ ./accuracy2.c	2025-12-09 12:03:19.766453535 +0300
+@@ -1,11 +1,13 @@
+ #include <stdio.h>
+ #include <math.h>
++#include <stdlib.h>
+ #include "fftc4.h"
+ #include "fftc8.h"
+ #include "fftr4.h"
+ #include "fftr8.h"
+ #include "fftfreq.h"
+ 
++
+ unsigned int freq[8192];
+ complex8 testroots[8192];
+ complex4 x4[8192];

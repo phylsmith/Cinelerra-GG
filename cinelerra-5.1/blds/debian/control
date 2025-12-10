@@ -11,7 +11,7 @@ Build-Depends:
  libflac-dev, libfreetype6-dev, liblzma-dev, libncurses5-dev,
  libpng-dev, libtool, libusb-1.0-0-dev, libva-dev, libvdpau-dev,
  libxft-dev, libxinerama-dev, libxml2-utils, libxv-dev,
- libz-dev, linux-firmware, nasm, texinfo, ttf-bitstream-vera,
+ libz-dev, nasm, texinfo, ttf-bitstream-vera,
  udftools, xfonts-100dpi, xfonts-75dpi, yasm, libpulse-dev
 
 Package: cin

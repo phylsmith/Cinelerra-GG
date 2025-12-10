@@ -23,6 +23,12 @@ Oct, 23, 2024
   cd
   ./cin/cinelerra
 
+== for Debian package build:
+
+   cd blds
+   ./bld_prepare.sh debian
+   ./debpkg.sh
+
 == Build notes:
 Shared builds are not recommended, since system versions of thirdparty
 libraries are not always known to be free of problems.  The build
