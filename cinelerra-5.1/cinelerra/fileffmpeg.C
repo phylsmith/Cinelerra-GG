@@ -1976,12 +1976,15 @@ int FFOptionsFormatView::handle_event()
 	char replace_name0[] = "mov";
 	char replace_name1[] = "mpegts";
 	char replace_name2[] = "matroska";
+	char replace_name3[] = "segment";
 	if (!strcmp(format_name, "qt"))
 		format_name = replace_name0; // fixup
 	if (!strcmp(format_name, "m2ts"))
 		format_name = replace_name1; // fixup
 	if (!strcmp(format_name, "mkv"))
 		format_name = replace_name2; // fixup
+	if (!strcmp(format_name, "seg"))
+		format_name = replace_name3; // fixup
 	avformat_free_context(fmt_ctx);  fmt_ctx = 0;
 	int ret = avformat_alloc_output_context2(&fmt_ctx, 0, format_name, 0);
 	if( ret || !fmt_ctx ) {

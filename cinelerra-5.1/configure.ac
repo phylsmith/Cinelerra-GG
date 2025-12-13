@@ -87,6 +87,9 @@ CHECK_WITH([x10tv],[usb 0bc7:0004 X10 remote device],[X10TV],[yes])
 CHECK_WITH([vaapi],[video acceleration api],[VAAPI],[yes])
 CHECK_WITH([vdpau],[video decode+presentation api for unix],[VDPAU],[yes])
 CHECK_WITH([onevpl],[Intel QSV api for unix],[ONEVPL],[no])
+CHECK_WITH([vulkan],[Vulkan api],[VULKAN],[no])
+CHECK_WITH([libplacebo],[libplacebo ffmpeg Vulkan filter],[LIBPLACEBO],[no])
+CHECK_WITH([libzimg],[libzimg ffmpeg filter],[LIBZIMG],[no])
 CHECK_WITH([nv],[nvenc/nvdec ffnvcodec api],[NV],[yes])
 CHECK_WITH([cuda],[nv cuda plugins],[CUDA],[auto])
 CHECK_WITH([clang],[use clang instead of gcc/g++],[CLANG],[no])
@@ -701,6 +704,23 @@ if test "x$HAVE_ONEVPL" != "xyes" -a "x$WANT_ONEVPL" = "xyes"; then
   AC_MSG_ERROR([requires onevpl support.])
 fi
 
+CHECK_LIB([VULKAN], [vulkan], [vkQueueSubmit])
+if test "x$HAVE_VULKAN" != "xyes" -a "x$WANT_VULKAN" = "xyes"; then
+  AC_MSG_ERROR([requires vulkan support.])
+fi
+
+CHECK_LIB([LIBPLACEBO], [placebo], [pl_tone_map_sample])
+if test "x$HAVE_LIBPLACEBO" != "xyes" -a "x$WANT_LIBPLACEBO" = "xyes"; then
+  AC_MSG_ERROR([requires libplacebo support.])
+fi
+
+CHECK_LIB([LIBZIMG], [zimg], [zimg_filter_graph_build])
+if test "x$HAVE_LIBZIMG" != "xyes" -a "x$WANT_LIBZIMG" = "xyes"; then
+  AC_MSG_ERROR([requires libzimg support.])
+fi
+
+
+
 #CHECK_LIB([NVENC], [nvidia-encode], [NvEncodeAPICreateInstance])
 
 #if test "x$HAVE_mjpegtools" = "xyes"; then
@@ -1089,7 +1109,7 @@ fi
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
 	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
-	 VAAPI VDPAU ONEVPL CUDA NV WINTV X10TV; do
+	 VAAPI VDPAU ONEVPL VULKAN LIBPLACEBO LIBZIMG CUDA NV WINTV X10TV; do
   eval vv="\$WANT_$v"
   if test "x$vv" != "xno"; then
     CFG_CFLAGS+=" -DHAVE_$v"
@@ -1142,6 +1162,31 @@ if test "x$WANT_ONEVPL" != "xno" -a "x$HAVE_ONEVPL" = "xyes"; then
   WANT_ONEVPL="yes"
 fi
 CFG_WANTS+=" ONEVPL"
+
+if test "x$WANT_VULKAN" != "xno" -a "x$HAVE_VULKAN" = "xyes"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -lvulkan `pkg-config --libs vulkan`'
+  FFMPEG_EXTRA_CFG+=' --extra-cflags="'$(pkg-config --cflags vulkan)'"'
+  WANT_VULKAN="yes"
+fi
+CFG_WANTS+=" VULKAN"
+
+if test "x$WANT_LIBPLACEBO" != "xno" -a "x$HAVE_LIBPLACEBO" = "xyes"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -lplacebo -lshaderc_shared  `pkg-config --libs libplacebo`'
+  FFMPEG_EXTRA_CFG+=' --enable-libshaderc --extra-cflags="'$(pkg-config --cflags libplacebo)'"'
+  EXTRA_LIBS+=' -lshaderc_shared'
+  WANT_LIBPLACEBO="yes"
+fi
+CFG_WANTS+=" LIBPLACEBO"
+
+if test "x$WANT_LIBZIMG" != "xno" -a "x$HAVE_LIBZIMG" = "xyes"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -lzimg  `pkg-config --libs zimg`'
+  FFMPEG_EXTRA_CFG+='  --extra-cflags="'$(pkg-config --cflags zimg)'"'
+  EXTRA_LIBS+=' -lzimg'
+  WANT_LIBZIMG="yes"
+fi
+CFG_WANTS+=" LIBZIMG"
+
+
 
 
 if test "x$WANT_NV" != "xno"; then

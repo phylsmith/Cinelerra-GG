@@ -137,6 +137,9 @@ ffmpeg.cfg_params= \
 	$(call if_want,VAAPI,--enable-vaapi,--disable-vaapi) \
 	$(call if_want,VDPAU,--enable-vdpau,--disable-vdpau) \
 	$(call if_want,ONEVPL,--enable-libvpl,--disable-libvpl) \
+	$(call if_want,VULKAN,--enable-vulkan,--disable-vulkan) \
+	$(call if_want,LIBPLACEBO,--enable-libplacebo,--disable-libplacebo) \
+	$(call if_want,LIBZIMG,--enable-libzimg,--disable-libzimg) \
 	$(call if_want,NV, --enable-nvenc --enable-nvdec --enable-ffnvcodec) \
 	$(call if_ena,twolame,--enable-libtwolame) \
 	$(call if_ena,openjpeg,--enable-libopenjpeg) \
