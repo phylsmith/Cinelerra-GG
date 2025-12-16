@@ -515,7 +515,7 @@ AC_ARG_ENABLE([$1],
 ])
 
 CHECK_ENABLE([static-build], [STATIC_BUILD], [build static], [auto])
-CHECK_ENABLE([x265_hidepth], [X265_HIDEPTH], [build x265 10bit], [no])
+CHECK_ENABLE([x265_hidepth], [X265_HIDEPTH], [build x265 10/12bit], [yes])
 
 test "x$WANT_STATIC_BUILD" = "xauto" && WANT_STATIC_BUILD=$WANT_CINBIN_BUILD
 
@@ -718,8 +718,6 @@ CHECK_LIB([LIBZIMG], [zimg], [zimg_filter_graph_build])
 if test "x$HAVE_LIBZIMG" != "xyes" -a "x$WANT_LIBZIMG" = "xyes"; then
   AC_MSG_ERROR([requires libzimg support.])
 fi
-
-
 
 #CHECK_LIB([NVENC], [nvidia-encode], [NvEncodeAPICreateInstance])
 
@@ -1109,7 +1107,7 @@ fi
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
 	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
-	 VAAPI VDPAU ONEVPL VULKAN LIBPLACEBO LIBZIMG CUDA NV WINTV X10TV; do
+	 VAAPI VDPAU ONEVPL VULKAN LIBPLACEBO LIBZIMG CUDA NV WINTV X10TV X265_HIDEPTH; do
   eval vv="\$WANT_$v"
   if test "x$vv" != "xno"; then
     CFG_CFLAGS+=" -DHAVE_$v"
@@ -1185,9 +1183,6 @@ if test "x$WANT_LIBZIMG" != "xno" -a "x$HAVE_LIBZIMG" = "xyes"; then
   WANT_LIBZIMG="yes"
 fi
 CFG_WANTS+=" LIBZIMG"
-
-
-
 
 if test "x$WANT_NV" != "xno"; then
   WANT_NV="yes"
@@ -1286,7 +1281,7 @@ echo "export THIRDPARTY EXTRA_LIBS FFMPEG_EXTRA_CFG"
 echo ""
 
 echo "WANT_CIN := $WANT_CIN"
-CFG_WANTS+=" CIN_3RDPARTY LIBZMPEG COMMERCIAL STATIC_BUILD"
+CFG_WANTS+=" CIN_3RDPARTY LIBZMPEG COMMERCIAL STATIC_BUILD X265_HIDEPTH"
 for w in $CFG_WANTS; do ww=WANT_$w; echo "WANT_$w := ${!ww}"; done
 echo ""
 

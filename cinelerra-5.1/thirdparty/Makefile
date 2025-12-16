@@ -277,9 +277,12 @@ tiff.cfg_params+= --disable-libdeflate --disable-lerc --enable-shared=no --disab
  $(call if_npkg,libwebp,--disable-webp)
 twolame.cfg_params?=--enable-shared=no
 x264.cfg_params?= --enable-static --enable-pic --disable-lavf --disable-swscale --disable-ffms --disable-gpac --disable-lsmash
+ifneq ($(WANT_X265_HIDEPTH),no)
 x265.cfg_vars?=chmod +x ./configure; chmod +x ./multilib.sh;
-#x265.cfg_vars?=$(call cmake_config,source)
-#x265.cfg_params?= -DENABLE_SHARED=no -DENABLE_CLI=no
+else
+x265.cfg_vars?=$(call cmake_config,source)
+x265.cfg_params?= -DENABLE_SHARED=no -DENABLE_CLI=no
+endif
 libvpx.cfg_params?= --enable-pic --disable-avx512 --enable-vp9-highbitdepth --disable-examples --disable-unit_tests
 libdpx.cfg_vars?= libtoolize; aclocal; autoconf; automake -a;
 libsndfile.cfg_params+= --disable-shared --enable-static --disable-sqlite --disable-mpeg
