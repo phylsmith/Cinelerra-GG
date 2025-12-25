@@ -36,6 +36,13 @@ ifeq ($(OBJDIR), ppc)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf32-powerpc\""
 endif
 
+ifeq ($(OBJDIR), sparc)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B sparc -I binary -O elf32-sparc\""
+endif
+
+ifeq ($(OBJDIR), sparc64)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B sparc -I binary -O elf32-sparc64\""
+endif
 
 
 
@@ -147,7 +154,7 @@ $(OUTPUT): $(OBJS) $(BCXFER)
 	ar rs $(OUTPUT) `ls -1 $(dir $(BCXFER))/xfer*.o`
 
 $(OBJDIR)/bootstrap:
-	$(CC) -O2 $(BOOTSTRAPFLAGS) bootstrap.c -o $(OBJDIR)/bootstrap
+	$(CC) -O0 -g $(BOOTSTRAPFLAGS) -Wcast-align bootstrap.c -o $(OBJDIR)/bootstrap
 
 $(OBJDIR)/pngtoh: pngtoh.c
 	$(CC) -O2 pngtoh.c -o $(OBJDIR)/pngtoh

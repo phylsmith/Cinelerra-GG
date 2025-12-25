@@ -53,8 +53,16 @@ void append_contents(char *path,
 	strcpy(buffer + *buffer_size, string);
 
 	*buffer_size += strlen(string) + 1;
-
-	*(int*)(buffer + *buffer_size) = data_offset;
+	
+	int tmp = 0;
+	char *ptr = buffer + *buffer_size;
+	memcpy(&tmp, &ptr, sizeof(int));
+	tmp  = data_offset;
+	ptr[3] = tmp >> 24;
+	ptr[2] = tmp >> 16;
+	ptr[1] = tmp >> 8;
+	ptr[0] = tmp;
+	//*(int*)(buffer + *buffer_size) = data_offset;
 	*buffer_size += sizeof(int);
 }
 
