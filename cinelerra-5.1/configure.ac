@@ -335,7 +335,7 @@ PKG_3RD([libsndfile],[auto],
   [ . ])
 
 PKG_3RD([libtheora],[auto],
-  [libtheora-1.1.1],
+  [libtheora-1.2.0],
   [ lib/.libs/libtheora.a \
     lib/.libs/libtheoradec.a \
     lib/.libs/libtheoraenc.a ],

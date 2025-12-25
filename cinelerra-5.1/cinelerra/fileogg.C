@@ -558,11 +558,21 @@ int FileOGG::ogg_init_encode(FILE *out)
 
 int FileOGG::decode_theora_init()
 {
+
+int pp_level, pp_level_max;
+
 	dec = th_decode_alloc(&ti, ts);
 	if( !dec ) {
 		eprintf(_("Error in probe data"));
 		return 1;
 	}
+       
+       th_decode_ctl(dec,TH_DECCTL_GET_PPLEVEL_MAX,&pp_level_max,
+     sizeof(pp_level_max));
+    pp_level=pp_level_max;
+    th_decode_ctl(dec,TH_DECCTL_SET_PPLEVEL,&pp_level,sizeof(pp_level));
+       
+       
 	keyframe_granule_shift = ti.keyframe_granule_shift;
 	iframe_granule_offset = th_granule_frame(dec, 0);
 	double fps = (double)ti.fps_numerator/ti.fps_denominator;
