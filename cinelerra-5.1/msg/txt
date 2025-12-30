@@ -3,6 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
+2025 December changes of note:
+  Libtheora updated from 1.1.1 to 1.2.0.
+  Modifications to accomodate more strict Debian 13.
 2025 November changes of note:
   FFmpeg library has been updated for version 8.0.
 2025 March/April changes of note:
