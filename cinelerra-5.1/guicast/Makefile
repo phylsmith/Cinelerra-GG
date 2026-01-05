@@ -32,6 +32,10 @@ ifeq ($(OBJDIR), ppc64)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf64-powerpc\""
 endif
 
+ifeq ($(OBJDIR), ppc64le)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf64-powerpcle\""
+endif
+
 ifeq ($(OBJDIR), ppc)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B powerpc -I binary -O elf32-powerpc\""
 endif
