@@ -40,6 +40,16 @@
 #include <dirent.h>
 #include <linux/input.h>
 
+/* The field to look up in struct input_event for integer seconds */
+#ifndef input_event_sec
+#define input_event_sec time.tv_sec
+#endif
+
+/* The field to look up in struct input_event for fractional seconds */
+#ifndef input_event_usec
+#define input_event_usec time.tv_usec
+#endif
+
 X10TV::X10TV(MWindow *mwindow, int *fds, int nfds)
 {
 	this->mwindow = mwindow;
@@ -218,12 +228,12 @@ void X10TV::handle_event(int fd)
 	case EV_MSC:
 		break;
 	default: {
-		time_t t = ev->time.tv_sec;
+		time_t t = ev->input_event_sec;
 		struct tm *tp = localtime(&t);
 		printf("x10tv event %d: %4d/%02d/%02d %02d:%02d:%02d.%03d = (%d, %d, 0x%x)\n",
 			fd, tp->tm_year+1900, tp->tm_mon+1, tp->tm_mday,
 			tp->tm_hour, tp->tm_min, tp->tm_sec,
-			(int)ev->time.tv_usec/1000, ev->type, ev->code, ev->value);
+			(int)ev->input_event_usec/1000, ev->type, ev->code, ev->value);
 		break; }
 	}
 }

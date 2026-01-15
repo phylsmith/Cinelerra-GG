@@ -48,6 +48,9 @@ ifeq ($(OBJDIR), sparc64)
 BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B sparc -I binary -O elf32-sparc64\""
 endif
 
+ifeq ($(OBJDIR), parisc)
+BOOTSTRAPFLAGS := -DBOOTSTRAP="\"objcopy -B hppa -I binary -O elf32-hppa\""
+endif
 
 
 $(shell mkdir -p $(OBJDIR) )
