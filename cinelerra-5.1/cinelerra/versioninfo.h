@@ -9,7 +9,7 @@
 #define COPYRIGHTTEXT1 "(c) 2006-2019 Heroine Virtual Ltd. by Adam Williams\n"
 #define COPYRIGHTTEXT2 "2007-2020 mods for Cinelerra-GG by W.P.Morrow aka goodguy\n"
 #define COPYRIGHTTEXT3 "2003-2017 mods for Cinelerra-CV by CinelerraCV team\n"
-#define COPYRIGHTTEXT4 "2015-2025 mods for Cinelerra-GG by Cinelerra-GG team\n"
+#define COPYRIGHTTEXT4 "2015-2026 mods for Cinelerra-GG by Cinelerra-GG team\n"
 
 #undef COMPILEDATE
 

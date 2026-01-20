@@ -147,9 +147,13 @@ fi
 
 CIN_INSTALLS=""
 CIN_UNINSTALLS=""
-if test "x$WANT_LIBZMPEG" = "xyes"; then
+if test "x$WANT_LIBZMPEG" = "xyes" -a "x$WANT_CIN_3RDPARTY" = "xyes"; then
   CIN_INSTALLS+=" zmp_install"
   CIN_UNINSTALLS+=" zmp_uninstall"
+fi
+if test "x$WANT_LIBZMPEG" = "xyes" -a "x$WANT_CIN_3RDPARTY" = "xno"; then
+  CIN_INSTALLS+=" zmp_install_nothird"
+  CIN_UNINSTALLS+=" zmp_uninstall_nothird"
 fi
 if test "x$WANT_COMMERCIAL" = "xyes"; then
   CIN_INSTALLS+=" com_install"

@@ -86,6 +86,17 @@ zmp_install:
 zmp_uninstall:
 	rm -f "$(DESTDIR)$(bindir)"/zmpeg3{cc2txt,ifochk}
 
+# with-libzmpeg3 without thirdparty
+zmp_install_nothird:
+	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" \
+		zmpeg3{cc2txt,ifochk}
+	cd bin; $(inst_sh) "$(DESTDIR)$(WANT_CINLIB_DIR)" \
+		hveg2enc mplexlo
+
+zmp_uninstall_nothird:
+	rm -f "$(DESTDIR)$(bindir)"/zmpeg3{cc2txt,ifochk}
+
+
 # with-commercial
 com_install:
 	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" cin_db
