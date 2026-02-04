@@ -1,4 +1,8 @@
 mp4 libx264
+#high profile
+profile=high
 # use framerate for 1 keyframe/sec, needed for seeks
 keyint_min=25
 x264-params keyint=25
+#faststart for streaming
+movflags=+faststart
