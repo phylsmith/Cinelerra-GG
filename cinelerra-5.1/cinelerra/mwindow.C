@@ -1710,16 +1710,20 @@ void MWindow::init_channeldb()
 void MWindow::init_menus()
 {
 	char string[BCTEXTLEN];
+	int allow_old_16bpc = 0;
+	if (getenv("ALLOW_OLD_16BPC")) allow_old_16bpc = 1;
 
 	// Color Models
 	BC_CModels::to_text(string, BC_RGB888);
 	colormodels.append(new ColormodelItem(string, BC_RGB888));
 	BC_CModels::to_text(string, BC_RGBA8888);
 	colormodels.append(new ColormodelItem(string, BC_RGBA8888));
-//	BC_CModels::to_text(string, BC_RGB161616);
-//	colormodels.append(new ColormodelItem(string, BC_RGB161616));
-//	BC_CModels::to_text(string, BC_RGBA16161616);
-//	colormodels.append(new ColormodelItem(string, BC_RGBA16161616));
+if(allow_old_16bpc) {
+	BC_CModels::to_text(string, BC_RGB161616);
+	colormodels.append(new ColormodelItem(string, BC_RGB161616));
+	BC_CModels::to_text(string, BC_RGBA16161616);
+	colormodels.append(new ColormodelItem(string, BC_RGBA16161616));
+}
 	BC_CModels::to_text(string, BC_RGB_FLOAT);
 	colormodels.append(new ColormodelItem(string, BC_RGB_FLOAT));
 	BC_CModels::to_text(string, BC_RGBA_FLOAT);
@@ -1728,10 +1732,12 @@ void MWindow::init_menus()
 	colormodels.append(new ColormodelItem(string, BC_YUV888));
 	BC_CModels::to_text(string, BC_YUVA8888);
 	colormodels.append(new ColormodelItem(string, BC_YUVA8888));
-//	BC_CModels::to_text(string, BC_YUV161616);
-//	colormodels.append(new ColormodelItem(string, BC_YUV161616));
-//	BC_CModels::to_text(string, BC_YUVA16161616);
-//	colormodels.append(new ColormodelItem(string, BC_YUVA16161616));
+if(allow_old_16bpc) {
+	BC_CModels::to_text(string, BC_YUV161616);
+	colormodels.append(new ColormodelItem(string, BC_YUV161616));
+	BC_CModels::to_text(string, BC_YUVA16161616);
+	colormodels.append(new ColormodelItem(string, BC_YUVA16161616));
+}
 
 #define ILACEPROJECTMODELISTADD(x) ilacemode_to_text(string, x); \
                            interlace_project_modes.append(new InterlacemodeItem(string, x));

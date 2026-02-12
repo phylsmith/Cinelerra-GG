@@ -3,20 +3,17 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
-2025 December changes of note:
-  Libtheora updated from 1.1.1 to 1.2.0.
-  Modifications to accomodate more strict Debian 13.
-2025 November changes of note:
-  FFmpeg library has been updated for version 8.0.
-2025 March/April changes of note:
+2026 New Features of note:
+.
+2025 New Features of note:
+  BlendAlgebra and BlendProgram major blending enhancements
+   have been implemented and documented in the Manual.
+  Updated libraries include:
+   FFmpeg library has been updated for version 8.0.
+   Libtheora to 1.2.0, Tiff to 4.7.0, Flac to 1.5.0.
   An additional SYSLIB Blend Program of tone_mapping.bp
     has been created for tonemapping an HDR media and
     report its values within the range (0, 1.0).
-  Tiff has been updated to version 4.7.0.
-2025 January/February changes of note:
-  BlendAlgebra and BlendProgram major blending enhancements
-   have been implemented and documented in the Manual.
-  Flac library has been updated from 1.4.3 to 1.5.0.
 .
 2024 New Features of note:
   Building with oneVPL now available using --with-onevpl.

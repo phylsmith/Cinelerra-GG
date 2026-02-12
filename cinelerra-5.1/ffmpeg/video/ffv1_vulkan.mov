@@ -1,0 +1,8 @@
+mov hevc_vulkan
+cin_pix_fmt=nv12
+cin_hw_device=vulkan
+#coder=0
+#context=1
+#g=1
+level=4
+strict=-2

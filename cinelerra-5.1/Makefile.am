@@ -77,9 +77,9 @@ dvl_uninstall:
 	rm -f Makefile
 
 # with-libzmpeg3
-zmp_install:
+zmp_install: bin_install
 	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" \
-		zmpeg3{cc2txt,ifochk}
+		zmpeg3cc2txt  zmpeg3ifochk
 	cd bin; $(inst_sh) "$(DESTDIR)$(WANT_CINLIB_DIR)" \
 		hveg2enc mpeg2enc mplex mplexlo
 
@@ -87,9 +87,9 @@ zmp_uninstall:
 	rm -f "$(DESTDIR)$(bindir)"/zmpeg3{cc2txt,ifochk}
 
 # with-libzmpeg3 without thirdparty
-zmp_install_nothird:
+zmp_install_nothird: bin_install
 	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" \
-		zmpeg3{cc2txt,ifochk}
+		zmpeg3cc2txt  zmpeg3ifochk
 	cd bin; $(inst_sh) "$(DESTDIR)$(WANT_CINLIB_DIR)" \
 		hveg2enc mplexlo
 
@@ -98,7 +98,7 @@ zmp_uninstall_nothird:
 
 
 # with-commercial
-com_install:
+com_install: bin_install
 	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" cin_db
 	cd bin; $(inst_sh) "$(DESTDIR)$(WANT_CINLIB_DIR)" cutads
 
@@ -106,14 +106,14 @@ com_uninstall:
 	rm -f "$(DESTDIR)$(bindir)/cin_db"
 
 # with-ladspa
-lad_install:
+lad_install: bin_install
 	cd bin/ladspa; $(inst_sh) "$(DESTDIR)$(WANT_LADSPA_DIR)" .
 
 lad_uninstall:
 	rm -rf "$(DESTDIR)$(WANT_LADSPA_DIR)"
 
 # with-lv2
-lv2_install:
+lv2_install: bin_install
 	cd bin; $(inst_sh) "$(DESTDIR)$(WANT_CINLIB_DIR)" lv2ui
 	cd bin; $(inst_sh) "$(DESTDIR)$(datadir)/$(WANT_CIN)" \
 		lv2 lv2_blacklist.txt

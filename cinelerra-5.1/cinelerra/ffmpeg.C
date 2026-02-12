@@ -376,6 +376,7 @@ GET_HW_PIXFMT(vdpau, AV_PIX_FMT_VDPAU)
 GET_HW_PIXFMT(cuda,  AV_PIX_FMT_CUDA)
 GET_HW_PIXFMT(nv12,  AV_PIX_FMT_NV12)
 GET_HW_PIXFMT(vulkan,  AV_PIX_FMT_VULKAN)
+GET_HW_PIXFMT(mediacodec,  AV_PIX_FMT_MEDIACODEC)
 
 static enum AVPixelFormat get_hw_format(AVCodecContext *ctx,
 			const enum AVPixelFormat *pix_fmts)
@@ -388,6 +389,7 @@ static enum AVPixelFormat get_hw_format(AVCodecContext *ctx,
 		case AV_PIX_FMT_CUDA:  ctx->get_format = get_hw_cuda;  return *p;
 		case AV_PIX_FMT_NV12:  ctx->get_format = get_hw_nv12;  return *p;
 		case AV_PIX_FMT_VULKAN:  ctx->get_format = get_hw_vulkan;  return *p;
+		case AV_PIX_FMT_MEDIACODEC:  ctx->get_format = get_hw_mediacodec;  return *p;
 		default:
 			fprintf(stderr, "Unknown HW surface format: %s\n",
 				av_get_pix_fmt_name(*p));
