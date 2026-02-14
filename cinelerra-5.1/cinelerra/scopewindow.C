@@ -305,6 +305,26 @@ void ScopeUnit::process_package(LoadPackage *package)
 			}
 		}
 		break;
+	case BC_YUV161616:
+		for( int y=pkg->row1; y<pkg->row2; ++y ) {
+			uint8_t *row = rows[y];
+			for( int x=0; x<dat_w; ++x ) {
+				PROCESS_YUV_PIXEL(x, row[0], row[1], row[2])
+				row += 3*sizeof(uint16_t);
+			}
+		}
+		break;
+
+	case BC_YUVA16161616:
+		for( int y=pkg->row1; y<pkg->row2; ++y ) {
+			uint8_t *row = rows[y];
+			for( int x=0; x<dat_w; ++x ) {
+				PROCESS_YUV_PIXEL(x, row[0], row[1], row[2])
+				row += 4*sizeof(uint16_t);
+			}
+		}
+		break;
+	
 	case BC_YUV420P: {
 		uint8_t *yp = gui->data_frame->get_y();
 		uint8_t *up = gui->data_frame->get_u();

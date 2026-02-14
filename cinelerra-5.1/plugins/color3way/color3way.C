@@ -277,6 +277,19 @@ void Color3WayUnit::process_package(LoadPackage *package)
 			case BC_YUVA8888:
 				PROCESS(unsigned char, 0xff, 4, 1)
 				break;
+			case BC_RGB161616:
+				PROCESS(uint16_t, 0xffff, 3, 0)
+				break;
+			case BC_RGBA16161616:
+				PROCESS(uint16_t, 0xffff, 4, 0)
+				break;
+			case BC_YUV161616:
+				PROCESS(uint16_t, 0xffff, 3, 1)
+				break;
+			case BC_YUVA16161616:
+				PROCESS(uint16_t, 0xffff, 4, 1)
+				break;
+			
 			case BC_RGB_FLOAT:
 				PROCESS(float, 1.0, 3, 0)
 				break;

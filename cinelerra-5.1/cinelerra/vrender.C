@@ -258,6 +258,15 @@ int VRender::get_colormodel(VEdit *playable_edit, int use_vconsole, int use_bren
 {
 	EDL *edl = renderengine->get_edl();
 	int colormodel = renderengine->get_edl()->session->color_model;
+	int colormodel_is16bpc = 0;
+	switch (colormodel) {
+	case BC_YUV161616:
+	case BC_YUVA16161616:
+	case BC_RGB161616:
+	case BC_RGBA16161616:
+		colormodel_is16bpc = 1;
+	default: {}
+	}
 	VideoOutConfig *vconfig = renderengine->config->vconfig;
 // check for playback: no plugins, not single frame
 	if( !use_vconsole && !renderengine->command->single_frame() ) {
@@ -274,7 +283,7 @@ int VRender::get_colormodel(VEdit *playable_edit, int use_vconsole, int use_bren
 			if( file ) {
 // damn the color range, full speed ahead
 				if( vconfig->driver == PLAYBACK_X11 && vconfig->use_direct_x11 &&
-				    file->colormodel_supported(BC_BGR8888) == BC_BGR8888 )
+				    file->colormodel_supported(BC_BGR8888) == BC_BGR8888  && ! colormodel_is16bpc )
 					colormodel = BC_BGR8888;
 				else {
 // file favorite colormodel may mismatch rgb/yuv

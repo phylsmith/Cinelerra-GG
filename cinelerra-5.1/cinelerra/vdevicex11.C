@@ -262,6 +262,19 @@ void VDeviceX11::new_output_buffer(VFrame **result, int file_colormodel, EDL *ed
 			!output->xscroll && !output->yscroll &&
 			output_x1 == 0 && output_x2 == device->out_w &&
 			output_y1 == 0 && output_y2 == device->out_h;
+			
+			int colormodel_is16bpc = 0;
+			switch (edl->session->color_model) {
+			case BC_YUV161616:
+			case BC_YUVA16161616:
+			case BC_RGB161616:
+			case BC_RGBA16161616:
+				colormodel_is16bpc = 1;
+				default: {}
+			}
+			
+			if(colormodel_is16bpc = 1) direct_supported = 0;
+
 
 // file wants direct frame but we need a temp
 		if( !direct_supported && file_colormodel == BC_BGR8888 )
