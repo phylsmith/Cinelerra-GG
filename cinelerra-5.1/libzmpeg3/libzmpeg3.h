@@ -20,6 +20,7 @@ typedef int (*zthumbnail_cb)(void *p, int trk);
 typedef int (*zcc_text_cb)(int sid, int id, int sfrm, int efrm, const char *txt);
 
 #ifdef __cplusplus
+#include <cstdint>
 #include <unistd.h>
 #include <stdlib.h>
 #include <byteswap.h>
