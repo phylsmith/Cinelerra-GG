@@ -15,8 +15,8 @@ AC_LANG([C])
 AC_PROG_CXX
 
 
-AC_CHECK_PROG(MAKEINFO,[makeinfo],[makeinfo],[no])
-if test x"$MAKEINFO" == x"no" ; then
+AC_CHECK_PROG(TEXINFO,makeinfo,yes,no)
+if test x"$TEXINFO" == x"no" ; then
 AC_MSG_ERROR([Please install texinfo])
 fi
 
@@ -28,6 +28,11 @@ fi
 AC_CHECK_PROG(LIBTOOL,[libtool],[libtool],[no])
 if test x"$LIBTOOL" == x"no" ; then
 AC_MSG_ERROR([Please install libtool])
+fi
+
+AC_CHECK_PROGS(PYTHON,[python3 python],[no])
+if test x"$PYTHON" == x"no" ; then
+AC_MSG_ERROR([Please install python/python3])
 fi
 
 CFG_CFLAGS+=" -fno-omit-frame-pointer -fno-math-errno -fno-signed-zeros"
