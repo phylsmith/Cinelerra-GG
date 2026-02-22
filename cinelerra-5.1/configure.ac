@@ -30,7 +30,7 @@ if test x"$LIBTOOL" == x"no" ; then
 AC_MSG_ERROR([Please install libtool])
 fi
 
-AC_CHECK_PROGS(PYTHON,[python3 python],[no])
+AC_CHECK_PROGS(PYTHON,[python3 python3.12 python3.9 python],[no])
 if test x"$PYTHON" == x"no" ; then
 AC_MSG_ERROR([Please install python/python3])
 fi
@@ -671,6 +671,13 @@ CHECK_LIB([tiff], [tiff], [TIFFOpen])
 CHECK_HEADERS([tiff], [tiff headers], [tiff.h tiffio.h])
 CHECK_LIB([twolame], [twolame], [twolame_encode_buffer_float32_interleaved])
 CHECK_HEADERS([twolame], [twolame headers], [twolame.h])
+CHECK_LIB([avcodec], [avcodec], [avcodec_open2])
+CHECK_HEADERS([avcodec], [avcodec headers], [libavcodec/avcodec.h])
+CHECK_LIB([avformat], [avformat], [avformat_find_stream_info])
+CHECK_HEADERS([avformat], [avformat headers], [libavformat/avformat.h])
+CHECK_LIB([swscale], [swscale], [sws_scale])
+CHECK_HEADERS([swscale], [swcale headers], [libswscale/swscale.h])
+CHECK_HEADERS([avutil], [avutil headers], [libavutil/avutil.h])
 CHECK_LIB([x264], [x264], [x264_encoder_encode])
 CHECK_HEADERS([x264], [x264 headers], [stdint.h x264.h])
 CHECK_LIB([x265], [x265], [x265_encoder_encode])
@@ -1240,6 +1247,7 @@ echo "  using: with-git-ffmpeg = $WANT_GIT_FFMPEG"
 echo "  using: with-noelision = $WANT_NOELISION"
 echo "  using: with-booby = $WANT_BOOBY"
 echo "  using: with-clang = $WANT_CLANG"
+echo "  using: python = $PYTHON"
 echo ""
 echo "  using: thirdparty build = $WANT_CIN_3RDPARTY"
 echo "  using: single-user  = $WANT_CINBIN_BUILD"
@@ -1247,6 +1255,7 @@ echo "  using: static-build = $WANT_STATIC_BUILD"
 echo "  using: ladspa-build = $WANT_LADSPA_BUILD"
 echo ""
 
+AC_SUBST(PYTHON)
 AC_SUBST(WANT_CIN_3RDPARTY)
 AC_SUBST(EXTRA_LIBS)
 AC_SUBST(FFMPEG_EXTRA_CFG)
@@ -1271,6 +1280,7 @@ if test "x$WANT_CLANG" = "xyes" ; then
   echo "CXX = clang++"
   echo "export CC CXX"
 fi
+echo "PYTHON := $PYTHON"
 echo ""
 echo "OBJDIR := $OBJDIR"
 echo "BINDIR := \$(TOPDIR)/bin"

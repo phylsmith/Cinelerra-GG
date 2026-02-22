@@ -59,12 +59,13 @@ case "$dir" in
     jbigkit-devel libvdpau-devel libva-devel gtk2-devel mesa-vdpau-drivers \
     pulseaudio-libs-devel libtool patchelf boost-devel
   ;;
-"arch") gtk2 may not be in distro; you can just use Calf plugins without UI
+#gtk2 may not be in distro; you can just use Calf plugins without UI
+"arch")
     pacman -Syu gtk2 nasm yasm cmake fftw patchelf boost boost-libs \
     base-devel libvdpau libva perl-xml-parser perl-carp libogg texinfo \
     libsndfile
  ;;
-"suse" | "leap" | "tumbleweed")
+"suse" | "leap" | "tumbleweed" | "slowroll")
   zypper -n install nasm gcc gcc-c++ zlib-devel texinfo libpng16-devel \
     freeglut-devel libXv-devel alsa-devel libbz2-devel ncurses-devel \
     libXinerama-devel freetype-devel libXft-devel giflib-devel ctags \
@@ -76,7 +77,7 @@ case "$dir" in
     yasm autoconf automake rpm-build libjbig-devel libvdpau-devel libva-devel \
     gtk2-devel libusb-1_0-devel libpulse-devel libtool python patchelf \
     libboost_regex-devel libboost_filesystem-devel
-    if [ ! -f /usr/lib64/libtermcap.so && ! -L /usr/lib64/libtermcap.so ]; then
+    if [[ ! -f /usr/lib64/libtermcap.so && ! -L /usr/lib64/libtermcap.so ]]; then
       ln -s libtermcap.so.2 /usr/lib64/libtermcap.so
     fi
   ;;

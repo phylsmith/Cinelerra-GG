@@ -135,20 +135,12 @@ $(shell echo $(CFLAGS) > $(OBJDIR)/c_flags)
 $(shell echo $(OBJS) > $(OBJDIR)/objs)
 
 all: $(OUTPUT) $(UTILS)
+
+python = $(shell echo $(PYTHON))
+
 PLATFORM = $(uname -s)
-ifneq ($(PLATFORM), FreeBSD)
+ifeq ($(PLATFORM), FreeBSD)
 python = $(shell find /usr/local/bin -name python3\* | head -n 1)
-endif
-ifneq ($(PLATFORM), Linux)
-python = $(shell which python)
-endif
-
-ifeq ($(python),)
-python = $(shell which python3.9)
-endif
-
-ifeq ($(python),)
-python = $(shell which python3.12)
 endif
 
 

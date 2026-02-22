@@ -16,7 +16,8 @@
 
 target=$(uname -m)
 echo target = $target
-CONFIG_OPTIONS="--with-single-user --with-booby --enable-static-build" 
+CONFIG_OPTIONS="$CONFIG_OPTIONS --with-single-user --with-booby "
+CONFIG_OPTIONS="$CONFIG_OPTIONS --enable-static-build" 
 if [ $target = "aarch64" ] ; then
 CONFIG_OPTIONS="$CONFIG_OPTIONS --disable-dav1d"
 elif [ $target = "armv7l" ] ; then
