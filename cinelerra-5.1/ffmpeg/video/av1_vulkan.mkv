@@ -1,0 +1,5 @@
+matroska av1_vulkan
+
+cin_pix_fmt=nv12
+cin_hw_device=vulkan
+

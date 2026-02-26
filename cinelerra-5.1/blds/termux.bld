@@ -1,6 +1,6 @@
 #!/bin/bash
 # Produced, tested, and used by Andrew-R on an Android tablet
 export FFMPEG_EXTRA_CFG="--disable-debug --target-os=android --enable-mediacodec --enable-jni  --enable-opencl --disable-doc --disable-ffprobe --enable-libdav1d"
-export EXTRA_LIBS="-ldav1d -lOpenCL  -landroid -landroid-posix-semaphore"
+export EXTRA_LIBS="-ldav1d -lOpenCL -landroid -landroid-posix-semaphore -lmediandk"
 ./configure --with-lv2 --disable-lv2 --disable-sord --disable-serd --disable-suil --disable-sratom --disable-lilv --without-vdpau --without-vaapi --without-ladspa-build \
   --without-nv  --with-single-user --with-clang --without-gl --disable-dav1d

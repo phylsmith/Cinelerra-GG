@@ -1,0 +1,44 @@
+--- ./substdo.c.orig	2026-02-22 04:04:08.657744551 +0300
++++ ./substdo.c	2026-02-22 04:04:34.817744532 +0300
+@@ -4,7 +4,7 @@
+ #include "error.h"
+ 
+ static int allwrite(op,fd,buf,len)
+-register int (*op)();
++register ssize_t (*op)();
+ register int fd;
+ register char *buf;
+ register int len;
+--- ./substdi.c.orig	2026-02-22 04:02:46.717744610 +0300
++++ ./substdi.c	2026-02-22 04:03:26.921744581 +0300
+@@ -3,7 +3,7 @@
+ #include "error.h"
+ 
+ static int oneread(op,fd,buf,len)
+-register int (*op)();
++register ssize_t (*op)();
+ register int fd;
+ register char *buf;
+ register int len;
+--- ./substdio.h.orig	2026-02-22 03:56:48.945744866 +0300
++++ ./substdio.h	2026-02-22 03:58:36.741744789 +0300
+@@ -9,7 +9,7 @@
+   int p;
+   int n;
+   int fd;
+-  int (*op)();
++  ssize_t (*op)();
+ } substdio;
+ 
+ #define SUBSTDIO_FDBUF(op,fd,buf,len) { (buf), 0, (len), (fd), (op) }
+--- ./substdio.c.orig	2026-02-22 04:01:02.893744684 +0300
++++ ./substdio.c	2026-02-22 04:01:43.749744655 +0300
+@@ -2,7 +2,7 @@
+ 
+ void substdio_fdbuf(s,op,fd,buf,len)
+ register substdio *s;
+-register int (*op)();
++register ssize_t (*op)();
+ register int fd;
+ register char *buf;
+ register int len;

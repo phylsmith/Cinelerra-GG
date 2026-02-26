@@ -1210,18 +1210,20 @@ AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev, const char 
 	AVHWDeviceType type = AV_HWDEVICE_TYPE_NONE;
 	if( strcmp(_("none"), hw_dev) ) {
 		type = av_hwdevice_find_type_by_name(hw_dev);
-		if( type != AV_HWDEVICE_TYPE_VAAPI ) {
-			fprintf(stderr, "currently, only vaapi hw encode is supported\n");
+		if( !((type == AV_HWDEVICE_TYPE_VAAPI) || (type == AV_HWDEVICE_TYPE_VULKAN ))) {
+			fprintf(stderr, "currently, only vaapi/vulkan hw encode is supported\n");
 			type = AV_HWDEVICE_TYPE_NONE;
 		}
 	}
+
 	if( type != AV_HWDEVICE_TYPE_NONE ) {
 		int ret = 0;
 		if (drm_node_enc) {
 		ret = av_hwdevice_ctx_create(&hw_device_ctx, AV_HWDEVICE_TYPE_VAAPI, drm_node_enc, 0, 0);
 		} else {
-		ret = av_hwdevice_ctx_create(&hw_device_ctx, AV_HWDEVICE_TYPE_VAAPI, 0, 0, 0);
+		ret = av_hwdevice_ctx_create(&hw_device_ctx, type, 0, 0, 0);
 		}
+		
 		if( ret < 0 ) {
 			ff_err(ret, "Failed to create a HW device.\n");
 			type = AV_HWDEVICE_TYPE_NONE;
@@ -1237,8 +1239,14 @@ AVHWDeviceType FFVideoStream::encode_hw_activate(const char *hw_dev, const char 
 	if( type != AV_HWDEVICE_TYPE_NONE ) {
 		AVHWFramesContext *frames_ctx = (AVHWFramesContext *)(hw_frames_ref->data);
 		frames_ctx->format = AV_PIX_FMT_VAAPI;
+
+		if (type == AV_HWDEVICE_TYPE_VULKAN)
+		frames_ctx->format = AV_PIX_FMT_VULKAN;
+
 		frames_ctx->sw_format = AV_PIX_FMT_NV12;
 		if (strcmp(hw_sformat, "vaapi")) frames_ctx->sw_format = av_get_pix_fmt(hw_sformat);
+		if (strcmp(hw_sformat, "vulkan")) frames_ctx->sw_format = av_get_pix_fmt(hw_sformat);
+		
 		frames_ctx->width = width;
 		frames_ctx->height = height;
 		frames_ctx->initial_pool_size = 0; // 200;
@@ -1262,6 +1270,7 @@ int FFVideoStream::encode_hw_write(FFrame *picture)
 	AVFrame *hw_frm = 0;
 	switch( avctx->pix_fmt ) {
 	case AV_PIX_FMT_VAAPI:
+	case AV_PIX_FMT_VULKAN:
 		hw_frm = av_frame_alloc();
 		if( !hw_frm ) { ret = AVERROR(ENOMEM);  break; }
 		ret = av_hwframe_get_buffer(avctx->hw_frames_ctx, hw_frm, 0);
@@ -1413,6 +1422,9 @@ int FFVideoStream::init_frame(AVFrame *picture)
 	case AV_PIX_FMT_VAAPI:
 		picture->format = AV_PIX_FMT_NV12;
 		break;
+	case AV_PIX_FMT_VULKAN:
+		picture->format = avctx->sw_pix_fmt;
+		break;
 	default:
 		picture->format = avctx->pix_fmt;
 		break;
@@ -1506,6 +1518,7 @@ int FFVideoStream::encode(VFrame *vframe)
 		frame->pts = curr_pos;
 		ret = convert_pixfmt(vframe, frame);
 	}
+
 	if( ret >= 0 && avctx->hw_frames_ctx )
 		encode_hw_write(picture);
 	if( ret >= 0 ) {
@@ -1538,7 +1551,7 @@ int FFVideoStream::encode_frame(AVFrame *frame)
 		frame->flags |= AV_FRAME_FLAG_INTERLACED;
 #endif
 	}
-	if( frame && frame->format == AV_PIX_FMT_VAAPI ) { // ugly
+	if( frame && (frame->format == AV_PIX_FMT_VAAPI || frame->format == AV_PIX_FMT_VULKAN))  { // ugly
 		int ret = avcodec_send_frame(avctx, frame);
 		for( int retry=MAX_RETRY; !ret && --retry>=0; ) {
 			FFPacket pkt;  av_init_packet(pkt);
@@ -1661,6 +1674,7 @@ int FFVideoConvert::convert_picture_vframe(VFrame *frame, AVFrame *ip, AVFrame *
 
 	AVPixelFormat pix_fmt = (AVPixelFormat)ip->format;
 	FFVideoStream *vid =(FFVideoStream *)this;
+	
 	if( pix_fmt == vid->hw_pixfmt ) {
 		int ret = 0;
 		if( !sw_frame && !(sw_frame=av_frame_alloc()) )
@@ -3093,11 +3107,26 @@ int FFMPEG::open_encoder(const char *type, const char *spec)
 			case BC_COLORS_BT2020_CL: ctx->colorspace = AVCOL_SPC_BT2020_CL; break;
 			}
 			AVPixelFormat pix_fmt = av_get_pix_fmt(asset->ff_pixel_format);
-			if( opt_hw_dev != 0 ) {
-				AVHWDeviceType hw_type = vid->encode_hw_activate(opt_hw_dev, asset->ff_pixel_format);
+			AVHWDeviceType hw_type;
+			
+			int vulkan  = 0;
+			if(!strcmp(codec_name, "h264_vulkan") ||
+			  !strcmp(codec_name, "h265_vulkan") ||
+			  !strcmp(codec_name, "ffv1_vulkan") ||
+			  !strcmp(codec_name, "av1_vulkan"))
+			vulkan = 1;
+			
+			if( opt_hw_dev != 0 || vulkan == 1) {
+			if(opt_hw_dev)
+				hw_type = vid->encode_hw_activate(opt_hw_dev, asset->ff_pixel_format);
+			if(vulkan == 1)
+				hw_type = vid->encode_hw_activate("vulkan", asset->ff_pixel_format);
 				switch( hw_type ) {
 				case AV_HWDEVICE_TYPE_VAAPI:
 					pix_fmt = AV_PIX_FMT_VAAPI;
+					break;
+				case AV_HWDEVICE_TYPE_VULKAN:
+					pix_fmt = AV_PIX_FMT_VULKAN;
 					break;
 				case AV_HWDEVICE_TYPE_NONE:
 				default: break;
