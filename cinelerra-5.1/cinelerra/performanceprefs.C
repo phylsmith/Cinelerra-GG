@@ -366,7 +366,7 @@ void PrefsUseHWDev::create_objects()
 	set_tooltip(_("vdpau - Nvidia, Nouveau, AMD (mesa)\n"
 		"vaapi - Broadcom, Intel HD graphics, Amdgpu, Radeon\n"
 		"cuda  - Nvidia + Cuda SDK\n"
-		"vulkan - AMDGPU"));
+		"vulkan testing - AMDGPU"));
 	hw_dev_names.append(new BC_ListBoxItem(_("none")));
 #ifdef HAVE_VAAPI
 	hw_dev_names.append(new BC_ListBoxItem("vaapi"));
@@ -377,7 +377,7 @@ void PrefsUseHWDev::create_objects()
 #ifdef HAVE_NV
 	hw_dev_names.append(new BC_ListBoxItem("cuda"));
 #endif
-	hw_dev_names.append(new BC_ListBoxItem("vulkan"));
+	hw_dev_names.append(new BC_ListBoxItem("vulkan-testing"));
 	update_list(&hw_dev_names);
 	update(&pwindow->thread->preferences->use_hw_dev[0]);
 }
