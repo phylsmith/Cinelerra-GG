@@ -377,7 +377,7 @@ void PrefsUseHWDev::create_objects()
 #ifdef HAVE_NV
 	hw_dev_names.append(new BC_ListBoxItem("cuda"));
 #endif
-	hw_dev_names.append(new BC_ListBoxItem("vulkan-testing"));
+	hw_dev_names.append(new BC_ListBoxItem("vulkan"));
 	update_list(&hw_dev_names);
 	update(&pwindow->thread->preferences->use_hw_dev[0]);
 }
