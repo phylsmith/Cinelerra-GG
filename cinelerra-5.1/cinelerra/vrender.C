@@ -283,7 +283,7 @@ int VRender::get_colormodel(VEdit *playable_edit, int use_vconsole, int use_bren
 			if( file ) {
 // damn the color range, full speed ahead
 				if( vconfig->driver == PLAYBACK_X11 && vconfig->use_direct_x11 &&
-				    file->colormodel_supported(BC_BGR8888) == BC_BGR8888  && ! colormodel_is16bpc )
+				    file->colormodel_supported(BC_BGR8888) == BC_BGR8888  && !colormodel_is16bpc )
 					colormodel = BC_BGR8888;
 				else {
 // file favorite colormodel may mismatch rgb/yuv

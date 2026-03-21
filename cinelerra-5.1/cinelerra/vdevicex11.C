@@ -273,7 +273,7 @@ void VDeviceX11::new_output_buffer(VFrame **result, int file_colormodel, EDL *ed
 				default: {}
 			}
 			
-			if(colormodel_is16bpc = 1) direct_supported = 0;
+			if(colormodel_is16bpc == 1) direct_supported = 0;
 
 
 // file wants direct frame but we need a temp
