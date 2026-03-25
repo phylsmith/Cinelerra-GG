@@ -1,9 +1,10 @@
 mov prores_ks
 # ProRes, encoder prores_ks. Container Apple QuickTime movie (.mov).
-# Support for aplpha channel
+# Support for alpha channel
 profile=4
 quant_mat=auto
-cin_pix_fmt=yuva444p10le #also gbrp10le 
+cin_pix_fmt=yuva444p10le
+# also gbrp10le 
 # The possible video profile values for the ProRes codec are:
 # 5 = 4444xq
 # 4 = 4444

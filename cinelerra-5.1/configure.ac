@@ -485,7 +485,7 @@ PKG_3RD([libsvtav1],[no],
   [ usr/local/include/svt-av1 ])
 
 PKG_3RD([dav1d],[auto],
-  [dav1d-0.5.1],
+  [dav1d-1.5.3],
   [ usr/local/lib*/libdav1d*.a ],
   [ usr/local/include ])
 

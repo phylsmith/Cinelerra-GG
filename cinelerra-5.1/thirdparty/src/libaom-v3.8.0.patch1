@@ -1,0 +1,23 @@
+--- ./build/cmake/aom_configure.cmake.orig	2026-03-20 15:23:18.376175709 +0300
++++ ./build/cmake/aom_configure.cmake	2026-03-20 15:26:37.108552649 +0300
+@@ -328,13 +328,13 @@
+   # with this flag. Note the order of this check and -Wextra-semi-stmt is
+   # important due to is_flag_present() matching substrings with string(FIND
+   # ...).
+-  if(CMAKE_VERSION VERSION_LESS "3.19"
+-     AND CMAKE_C_COMPILER_ID STREQUAL "GNU"
+-     AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
+-    add_cxx_flag_if_supported("-Wextra-semi")
+-  else()
+-    add_compiler_flag_if_supported("-Wextra-semi")
+-  endif()
++#  if(CMAKE_VERSION VERSION_LESS "3.19"
++#     AND CMAKE_C_COMPILER_ID STREQUAL "GNU"
++#     AND CMAKE_C_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
++#    add_cxx_flag_if_supported("-Wextra-semi")
++#  else()
++#    add_compiler_flag_if_supported("-Wextra-semi")
++#  endif()
+   add_compiler_flag_if_supported("-Wextra-semi-stmt")
+   add_compiler_flag_if_supported("-Wfloat-conversion")
+   add_compiler_flag_if_supported("-Wformat=2")
