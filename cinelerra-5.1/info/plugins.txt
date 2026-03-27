@@ -22,7 +22,7 @@ Blend Program:	Program your own blending algorithm to modify
 		the tracks directly.
 Blue Banana:	Used for color transformation or remapping as
 		well as chroma-key filtering. See Manual for usage:
-		. Select a specifc target color.
+		. Select a specific target color.
 		. Create a selection region by expanding color.
 		. Optionally reduce or expand the alpha plane.
 		. Optionally apply a color remapping to selection.
@@ -304,6 +304,7 @@ F_colorchart:	The colorchart source provides a colors checker chart.
 F_colorcontrast: Adjust color contrast between RGB components.
 F_colorcorrect:	Adjust color white balance selectivity for blacks
 		and whites.
+F_colordetect:	Detect color video properties.
 F_colorhold:	Turns a certain color range into gray when RGB.
 F_colorkey:	Turns a certain color into transparency when RGB.
 F_colorlevels:	Adjusts the color levels.
@@ -430,6 +431,7 @@ F_oscilloscope:	2D video oscilloscope.  Useful to measure spatial
 F_owdenoise:	Denoises using wavelets.
 F_pad:		Add paddings to the input image, and place the
 		original input at the provided x, y coordinates.
+F_pad_cuda:	Cuda-based GPU padding filter.
 F_pal100bars:	Generate PAL 100% color bars. This only works with
 		RGB 8-bit.
 F_pal75bars:	Generate PAL 75% color bars. This only works with
@@ -445,6 +447,7 @@ F_pixscope:	Pixel data analysis for checking color and levels.
 		It will display sample values of color channels.
 F_pp:		Filters video using libpostproc.
 F_pp7:		Applies Postprocessing 7 filter.
+F_premultiply_dynamic:	Premultiply/unpreultiply and image in-place.
 F_prewitt:	Apply prewitt operator.
 F_pseudocolor:	Make pseudocolored video frames.
 F_pullup:	Pullup from field sequence to frames.
@@ -607,7 +610,7 @@ F_atrim:	Pick one continuous section from the input and drop
 F_bandpass:	Applies a two-pole Butterworth band-pass filter.
 F_bandreject:	Applies a two-pole Butterworth band-reject filter.
 F_bass:		Boosts or cuts lower frequencies.
-F_biquad:	Applies a biquad IIR filter with the given coefficents.
+F_biquad:	Applies a biquad IIR filter with the given coefficients.
 F_chorus:	Adds a chorus effect to the audio.
 F_compand:	Compresses or expands audio dynamic range.
 F_compensationdelay: Audio compensation delay line.
@@ -737,7 +740,7 @@ Compressor:	Lessen the dynamic range between the loudest and
 		quietest parts of an audio signal by boosting the
 		quieter signals and attenuating the louder signals.
 Compressor Multi: Compressor that acts on 3 distinct frequency bands
-		instead of the entire singe sprectrum.
+		instead of the entire frequency spectrum.
 DC Offset:	Remove DC Offset, which is usually an undesirable
 		characteristic of a recording normally caused by
 		defective equipment. (Has no controls)
@@ -780,7 +783,7 @@ L_Fast overdrive: Compresses the extreme peaks to make a sound
 Flanger:	Adds a flanger effect to the audio.
 L_Flanger:	Digital flanger implementation.  Uses excursion,
 		controlled bandwidth modulation function, which
-		makes the modulation less repetitive and noticable.
+		makes the modulation less repetitive and noticeable.
 L_Foldover distortion: Uses a sine wave approximation to simulate
 		valve style foldover distortion.
 L_Fractionally Addressed Delay Line: Fixed ring buffer delay implementation.
@@ -833,7 +836,7 @@ L_Inverter:	Utility plugin that inverts the signal.
 L_Karaoke:	Attempts to strip the vocals from a stereo signal.
 L_L/C/R Delay:	A left/center/right delay with feedback
 #L_LFO Phaser:
-L_LS Filter:	Filter similiar to the filter used in giga sampler.
+L_LS Filter:	Filter similar to the filter used in giga sampler.
 Live Audio:	Reads audio directly from the soundcard input,
 		replacing any audio on track.
 Loop audio:	Loop some number of samples of audio over & over.
@@ -863,7 +866,7 @@ Pitch shift:	Uses FFT to try to change the pitch without
 L_Plate reverb:	Physical model of a steel plate reverb.  It uses 8
 		linear waveguides to model the plate.
 L_Pointer cast distortion: Distortion is created by treating the floating
-		point repesentation of the input signal as a 0.32 1's
+		point representation of the input signal as a 0.32 1's
 		complement fixed point integer. Not musical but still
 		recognizable.  Makes interesting noises.
 L_Rate shifter:	Stretches or compresses the input with a ringbuffer.
@@ -913,7 +916,7 @@ L_Surround matrix encoder: Allows you to encode 4 channels of sound into
 		a Dolby1 Surround/Pro-Logic decoder into Left, Right,
 		Center and Surround signals.
 Synthesizer:	Generate synthesizer sounds; to set key data, turn
-		on Generate keyframes while tweeking.
+		on Generate keyframes while tweaking.
 L_Tape Delay Simulation: Models the tape motion and some smear effect.
 Time Stretch RT: Change the speed of an audio signal without
 		affecting its pitch.

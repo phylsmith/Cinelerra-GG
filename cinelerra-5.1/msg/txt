@@ -3,7 +3,9 @@ For usage help, refer to the following:
   https://cinelerra-gg.org/download/CinelerraGG_Manual.pdf
   http://g-raffa.eu/Cinelerra/HOWTO/basics.html
 .
-2026 New Features of note:
+2026 March changes of note:
+  FFmpeg library updated to version 8.1.
+  Dav1d library updated to version 1.3.5.
 .
 2025 New Features of note:
   BlendAlgebra and BlendProgram major blending enhancements
@@ -155,7 +157,7 @@ For usage help, refer to the following:
   Inter-View mode / Identifying Source Targets added.
   Cut and Paste behavior added; right mouse button on clip.
   Grouping and ungrouping possibilities in Arrow mode,
-  Color titles and media with changable colors and alpha.
+  Color titles and media with changeable colors and alpha.
   Change thumbnail size, vicon memory usage and color mode.
   Preview window zoom scale for vicons in Resources window.
   Sketcher plugin newly added to "pencil in" lines/curves.
