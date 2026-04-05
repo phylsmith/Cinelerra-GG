@@ -377,6 +377,7 @@ GET_HW_PIXFMT(cuda,  AV_PIX_FMT_CUDA)
 GET_HW_PIXFMT(nv12,  AV_PIX_FMT_NV12)
 GET_HW_PIXFMT(vulkan,  AV_PIX_FMT_VULKAN)
 GET_HW_PIXFMT(mediacodec,  AV_PIX_FMT_MEDIACODEC)
+GET_HW_PIXFMT(qsv,  AV_PIX_FMT_QSV)
 
 static enum AVPixelFormat get_hw_format(AVCodecContext *ctx,
 			const enum AVPixelFormat *pix_fmts)
@@ -390,6 +391,7 @@ static enum AVPixelFormat get_hw_format(AVCodecContext *ctx,
 		case AV_PIX_FMT_NV12:  ctx->get_format = get_hw_nv12;  return *p;
 		case AV_PIX_FMT_VULKAN:  ctx->get_format = get_hw_vulkan;  return *p;
 		case AV_PIX_FMT_MEDIACODEC:  ctx->get_format = get_hw_mediacodec;  return *p;
+		case AV_PIX_FMT_QSV:  ctx->get_format = get_hw_qsv;  return *p;
 		default:
 			fprintf(stderr, "Unknown HW surface format: %s\n",
 				av_get_pix_fmt_name(*p));
@@ -1046,7 +1048,7 @@ int FFAudioStream::audio_seek(int64_t pos)
 	if( in_history(pos) ) return 0;
 	if( pos == curr_pos ) return 0;
 	reset_history();  mbsz = 0;
-// guarentee preload > 1sec samples
+// guarantee preload > 1sec samples
 	if( (pos-=sample_rate) < 0 ) pos = 0;
 	if( seek(pos, sample_rate) < 0 ) return -1;
 	return 1;
@@ -1411,7 +1413,7 @@ int FFVideoStream::video_seek(int64_t pos)
 	if( gop > 64 ) gop = 64;
 	int read_limit = curr_pos + 3*gop;
 	if( pos >= curr_pos && pos <= read_limit ) return 0;
-// guarentee preload more than 2*gop frames
+// guarantee preload more than 2*gop frames
 	if( seek(pos - 3*gop, frame_rate) < 0 ) return -1;
 	return 1;
 }
@@ -3410,7 +3412,7 @@ int FFMPEG::encode_activate()
 			const char *filename = asset->path;
 			FILE *fp = fopen(filename,"w");
 			if( !fp ) {
-				eprintf(_("Cant write image2 header file: %s\n  %m"), filename);
+				eprintf(_("Can't write image2 header file: %s\n  %m"), filename);
 				return 1;
 			}
 			fprintf(fp, "IMAGE2\n");

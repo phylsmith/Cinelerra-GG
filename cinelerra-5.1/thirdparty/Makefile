@@ -195,9 +195,9 @@ ffmpeg.cfg_params= \
 cmake_config=echo 'cmake "$$$$@" "$(1)"' > ./configure; chmod +x ./configure;
 libbthread.cfg_vars?= echo "exec true" > ./configure; chmod +x ./configure;
 a52dec.mak_params?= ; cd $(call bld_path,a52dec,include); ln -sf . a52dec
-a52dec.cflags?= "$(call inc_path,djbfft)"
+a52dec.cflags?= "$(call inc_path,djbfft)  -std=c11 "
 a52dec.ldflags?= "$(call ld_path,djbfft)"
-a52dec.cfg_vars?= CFLAGS+=" -U__FreeBSD__ $(call inc_path,djbfft)" LIBS+=" $(call ld_path,djbfft)"; autoreconf -ifv && automake -caf;
+a52dec.cfg_vars?= export CFLAGS+=" -std=c11 "; CFLAGS+=" -U__FreeBSD__ $(call inc_path,djbfft)" LIBS+=" $(call ld_path,djbfft)"; autoreconf -ifv && automake -caf;
 a52dec.cfg_params?=--enable-djbfft --disable-oss
 djbfft.cfg_vars?=echo "$(call bld_path,djbfft)" > conf-home; \
  (CFLAGS="$(CFLAGS) -std=gnu89"; $(CFG_VARS)$(if $(CFG_VARS),; )echo "$(CC) $$$$CFLAGS") > conf-cc; \
@@ -227,7 +227,7 @@ libwebp.cfg_vars?= ./autogen.sh;
 libwebp.cfg_params?= --prefix=$(call bld_path,libwebp)usr/local --enable-static --disable-shared --disable-libwebpdemux --disable-libwebpmux; \
     make install;
 mjpegtools.cflags?="$(call inc_path,libjpeg) $(call ld_path,libjpeg,build)"
-mjpegtools.cfg_vars?= ./autogen.sh; export CXXFLAGS+="-std=c++11";
+mjpegtools.cfg_vars?= ./autogen.sh; export CXXFLAGS+=" -std=c++11 "; export CFLAGS+=" -std=gnu11 ";
 mjpegtools.cfg_params?= --enable-shared=no --without-libquicktime --without-libdv \
  --without-libpng --without-dga --without-gtk --without-libsdl --without-sdlgfx
 mjpegtools.mak_params?= all
