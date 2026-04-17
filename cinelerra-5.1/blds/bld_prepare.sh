@@ -7,7 +7,7 @@ fi
 
 if [ $# -ne 1 ]; then
   echo "usage: $0 <os>"
-  echo "  <os> = [centos | suse | ubuntu | ubuntu24 | fedora | mint | debian | arch | debian-older | ubuntu-older]"
+  echo "  <os> = [centos | suse | ubuntu | ubuntu24 | fedora | mint | debian | arch | debian-older | ubuntu-older | termux]"
 fi
 
 dir="$1"
@@ -147,7 +147,14 @@ case "$dir" in
     lv2-dev libsratom-dev libsuil-dev liblilv-dev liba52-dev libtwolame-dev libdv-dev \
     libmp3lame-dev libavc1394-dev libiec61883-dev libavcodec-dev libavformat-dev libavfilter-dev
   ;;
-
+"termux")
+pkg in boost-static freetype-static gpac-static gtk2-static liba52-static libandroid-shmem-static \
+libmp3lame-static libmpeg2-static libopencore-amr-static libpng-static libsndfile-static \
+libtheora-static libtiff-static libtwolame-static libusb-static libvo-amrwbenc-static \
+libxdg-basedir-static libxinerama-static libxpm-static libzimg-static python3 alsa-lib pulseaudio \
+littlecms-static zlib-static clang texinfo cmake patchelf autoconf automake m4 libtool \
+xorg-fonts-75dpi xorg-fonts-alias xorg-fonts-encodings fontconfig xz libiconv
+  ;;
 *)
   echo "unknown os: $dir"
   exit 1;
