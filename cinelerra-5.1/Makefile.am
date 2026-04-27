@@ -53,7 +53,7 @@ sys_install: $(CIN_INSTALLS)
 	cd bin; $(inst_sh) "$(DESTDIR)$(bindir)" "$(WANT_CIN)" bdwrite
 	cd bin; $(inst_sh) "$(DESTDIR)$(datadir)/$(WANT_CIN)" \
 		COPYING README models Cinelerra_factory expanders.* \
-		shuttlerc ffmpeg msg info tips doc
+		shuttlerc ffmpeg msg info tips doc dlfcn
 	cd bin/locale; $(inst_sh) "$(DESTDIR)$(localedir)" .
 	cd bin/plugins; $(inst_sh) "$(DESTDIR)$(WANT_PLUGIN_DIR)" .
 	cd bin/applications; $(inst_sh) "$(DESTDIR)$(datadir)/applications" .
