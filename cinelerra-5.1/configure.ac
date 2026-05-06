@@ -95,6 +95,8 @@ CHECK_WITH([onevpl],[Intel QSV api for unix],[ONEVPL],[no])
 CHECK_WITH([vulkan],[Vulkan api],[VULKAN],[no])
 CHECK_WITH([libplacebo],[libplacebo ffmpeg Vulkan filter],[LIBPLACEBO],[no])
 CHECK_WITH([libzimg],[libzimg ffmpeg filter],[LIBZIMG],[no])
+CHECK_WITH([lcms2],[liblcms2 support for ffmpeg],[LIBLCMS2],[auto])
+CHECK_WITH([opencolorio],[opencolorio support for ffmpeg],[LIBOPENCOLORIO],[no])
 CHECK_WITH([nv],[nvenc/nvdec ffnvcodec api],[NV],[yes])
 CHECK_WITH([cuda],[nv cuda plugins],[CUDA],[auto])
 CHECK_WITH([clang],[use clang instead of gcc/g++],[CLANG],[no])
@@ -735,6 +737,12 @@ if test "x$HAVE_LIBZIMG" != "xyes" -a "x$WANT_LIBZIMG" = "xyes"; then
   AC_MSG_ERROR([requires libzimg support.])
 fi
 
+CHECK_LIB([LIBLCMS2], [lcms2], [cmsOpenProfileFromMemTHR])
+if test "x$HAVE_LIBLCMS2" != "xyes" -a "x$WANT_LIBLCMS2" != "xno"; then
+  AC_MSG_WARN([requires optional lcms2 support.])
+  WANT_LIBLCMS2="no"
+fi
+
 #CHECK_LIB([NVENC], [nvidia-encode], [NvEncodeAPICreateInstance])
 
 #if test "x$HAVE_mjpegtools" = "xyes"; then
@@ -1123,7 +1131,7 @@ fi
 for v in GL XFT XXF86VM OSS ALSA FIREWIRE OGG DV DVB LADSPA \
 	 VIDEO4LINUX2 ESOUND PULSE PACTL OPENEXR LV2 \
 	 COMMERCIAL GIFLIB LIBZMPEG LIBDPX SHUTTLE SHUTTLE_USB XV \
-	 VAAPI VDPAU ONEVPL VULKAN LIBPLACEBO LIBZIMG CUDA NV WINTV X10TV X265_HIDEPTH; do
+	 VAAPI VDPAU ONEVPL VULKAN LIBPLACEBO LIBZIMG LIBLCMS2 LIBOPENCOLORIO CUDA NV WINTV X10TV X265_HIDEPTH; do
   eval vv="\$WANT_$v"
   if test "x$vv" != "xno"; then
     CFG_CFLAGS+=" -DHAVE_$v"
@@ -1199,6 +1207,24 @@ if test "x$WANT_LIBZIMG" != "xno" -a "x$HAVE_LIBZIMG" = "xyes"; then
   WANT_LIBZIMG="yes"
 fi
 CFG_WANTS+=" LIBZIMG"
+
+if test "x$WANT_LIBLCMS2" != "xno" -a "x$HAVE_LIBLCMS2" = "xyes"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -llcms2  `pkg-config --libs lcms2`'
+  FFMPEG_EXTRA_CFG+='  --extra-cflags="'$(pkg-config --cflags lcms2)'"'
+  EXTRA_LIBS+=' -llcms2'
+  WANT_LIBLCMS2="yes"
+fi
+CFG_WANTS+=" LIBLCMS2"
+
+if test "x$WANT_LIBOPENCOLORIO" != "xno"; then
+  FFMPEG_EXTRA_LDFLAGS+=' -lOpenColorIO  `pkg-config --libs OpenColorIO`'
+  FFMPEG_EXTRA_CFG+='  --extra-cflags="'$(pkg-config --cflags OpenColorIO)'"'
+  EXTRA_LIBS+=' -lOpenColorIO'
+  WANT_LIBOPENCOLORIO="yes"
+fi
+CFG_WANTS+=" LIBOPENCOLORIO"
+
+
 
 if test "x$WANT_NV" != "xno"; then
   WANT_NV="yes"

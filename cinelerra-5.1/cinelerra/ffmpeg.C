@@ -51,6 +51,9 @@
 #ifdef HAVE_DV
 #include "libdv.h"
 #endif
+#ifdef HAVE_LIBLCMS2
+#include "lcms2.h"
+#endif
 #include "libmjpeg.h"
 #include "mainerror.h"
 #include "mwindow.h"
@@ -1699,7 +1702,8 @@ int FFVideoConvert::convert_picture_vframe(VFrame *frame, AVFrame *ip, AVFrame *
 				" sws_getCachedContext() failed\n");
 		return -1;
 	}
-
+	
+	
 	int color_range = 0;
 	switch( preferences->yuv_color_range ) {
 	case BC_COLORS_JPEG:  color_range = 1;  break;
@@ -1734,6 +1738,44 @@ int FFVideoConvert::convert_picture_vframe(VFrame *frame, AVFrame *ip, AVFrame *
 			vid->ffmpeg->fmt_ctx->url);
 		return -1;
 	}
+	
+#ifdef HAVE_LIBLCMS2
+	const AVFrameSideData *sd;
+	cmsHPROFILE profile = 0, profile1 = 0;
+	cmsContext cms_ctx;
+	cmsHTRANSFORM hTransform;
+
+	sd = av_frame_get_side_data(ip, AV_FRAME_DATA_ICC_PROFILE);
+	if(sd) {
+	profile = cmsOpenProfileFromMemTHR(cms_ctx, sd->data, sd->size);
+	char *profile1_path, *profile1_path_hardcoded; 
+	profile1_path = getenv("CIN_CM_PROFILE");
+	//strcpy(profile1_path_hardcoded, "/usr/share/apps/krita/profiles/WideGamut.icm");
+	
+	if(profile1_path) {
+	profile1 = cmsOpenProfileFromFile(profile1_path, "r");
+	
+	hTransform = cmsCreateTransformTHR(cms_ctx, profile,
+                                TYPE_RGBA_8,
+                                profile1,
+                                TYPE_RGBA_8,
+                                INTENT_PERCEPTUAL, cmsFLAGS_NOOPTIMIZE | cmsFLAGS_BLACKPOINTCOMPENSATION | cmsFLAGS_COPY_ALPHA);
+        if(!hTransform)
+        printf("failed to create transform1 \n");
+                                
+	
+	//printf ("cmodel: %i \n", cmodel);
+	uint8_t *data = frame->get_data();
+	if (cmodel == BC_RGBA8888) {
+	cmsDoTransform(hTransform, data, data, frame->get_w() * frame->get_h());
+	printf("cms! \n");
+	}
+	cmsCloseProfile(profile1);
+	}
+	cmsCloseProfile(profile);
+	}
+#endif // lcms2
+
 	return 0;
 }
 
@@ -1863,6 +1905,8 @@ int FFVideoConvert::convert_vframe_picture(VFrame *frame, AVFrame *op, AVFrame *
 		ff_err(ret, "FFVideoConvert::convert_frame_picture: sws_scale() failed\n");
 		return -1;
 	}
+	
+
 	return 0;
 }
 

@@ -140,6 +140,8 @@ ffmpeg.cfg_params= \
 	$(call if_want,VULKAN,--enable-vulkan,--disable-vulkan) \
 	$(call if_want,LIBPLACEBO,--enable-libplacebo,--disable-libplacebo) \
 	$(call if_want,LIBZIMG,--enable-libzimg,--disable-libzimg) \
+	$(call if_want,LIBLCMS2,--enable-lcms2,--disable-lcms2) \
+	$(call if_want,LIBOPENCOLORIO,--enable-libopencolorio,--disable-libopencolorio) \
 	$(call if_want,NV, --enable-nvenc --enable-nvdec --enable-ffnvcodec) \
 	$(call if_ena,twolame,--enable-libtwolame) \
 	$(call if_ena,openjpeg,--enable-libopenjpeg) \
