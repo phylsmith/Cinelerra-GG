@@ -318,8 +318,7 @@ PKG_3RD([libdv],[auto],
 
 PKG_3RD([libjpeg],[auto],
   [libjpeg-turbo-3.0.4],
-  [ build/libjpeg.a \
-    build/libturbojpeg.a ],
+  [ build/libjpeg.a ],
   [ opt/libjpeg-turbo/include ])
 
 PKG_3RD([opus],[auto],

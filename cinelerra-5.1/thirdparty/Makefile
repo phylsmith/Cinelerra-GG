@@ -248,7 +248,7 @@ libiec61883.ldflags?="$(call ld_path,libraw1394,src/.libs)"
 libiec61883.cfg_params?= PKG_CONFIG_PATH="$(call bld_path,libraw1394)" --enable-shared=no
 libiec61883.mak_params?=; cd $(call bld_path,libiec61883,src); ln -sf . libiec61883
 libjpeg.cfg_vars?= mkdir build && cd build && $(call cmake_config,..)
-libjpeg.cfg_params?= -DENABLE_SHARED=no -DCMAKE_INSTALL_LIBDIR=lib 
+libjpeg.cfg_params?= -DENABLE_SHARED=no -DWITH_TURBOJPEG=no -DCMAKE_INSTALL_LIBDIR=lib 
 libjpeg.mak_params?= -C build all install DESTDIR=$(call bld_path,libjpeg)
 libogg.cfg_vars?= autoreconf -ifv -I m4 && automake -caf;
 libogg.cfg_params?= --enable-shared=no

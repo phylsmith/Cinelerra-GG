@@ -92,10 +92,11 @@ class CommandLineThread : public Thread
 {
 public:
 	CommandLineThread(ArrayList<char*> *filenames,
-		MWindow *mwindow)
+		MWindow *mwindow, int loadmode)
 	{
 		this->filenames = filenames;
 		this->mwindow = mwindow;
+		this->loadmode = loadmode;
 	}
 
 
@@ -108,8 +109,12 @@ public:
 //PRINT_TRACE
 		mwindow->gui->lock_window("main");
 //PRINT_TRACE
+		int edl_mode = 0; 
+		if(loadmode == LOADMODE_REPLACE)
+		edl_mode = LOADMODE_EDL_CLIP;
 		mwindow->load_filenames(filenames,
-			LOADMODE_REPLACE, LOADMODE_EDL_CLIP);
+			loadmode, edl_mode);
+		//printf("Loadmode: %i \n", loadmode);
 //PRINT_TRACE
 		if( filenames->size() == 1 )
 			mwindow->gui->mainmenu->add_load(filenames->get(0));
@@ -120,6 +125,7 @@ public:
 
 	MWindow *mwindow;
 	ArrayList<char*> *filenames;
+	int loadmode;
 };
 
 long cin_timezone;
@@ -174,6 +180,7 @@ int main(int argc, char *argv[])
 	char batch_path[BCTEXTLEN];
 	int nice_value = 20;
 	int load_perpetual = 1;
+	int initial_loadmode = LOADMODE_REPLACE;
 	config_path[0] = 0;
 	batch_path[0] = 0;
 	deamon_path[0] = 0;
@@ -282,6 +289,13 @@ int main(int argc, char *argv[])
 		else if( !strcmp(argv[i], "-S") ) {
 			load_perpetual = 0;
 		}
+		else if( !strcmp(argv[i], "-l") ) {
+			if( argc > i + 1 ) {
+				initial_loadmode = atoi(argv[i + 1]);
+				//printf ("Load mode: %i \n", initial_loadmode);
+				i++;
+			}
+		}
 		else {
 			char *new_filename;
 			new_filename = new char[BCTEXTLEN];
@@ -334,6 +348,7 @@ int main(int argc, char *argv[])
 			printf(_("-d = Run in the background as renderfarm client.  The port (400) is optional.\n"));
 			printf(_("-f = Run in the foreground as renderfarm client.  Substitute for -d.\n"));
 			printf(_("-n = Nice value if running as renderfarm client. (19)\n"));
+			printf(_("-l = Initial loadmode, default 1\n"));
 			printf(_("-c = Configuration file to use instead of %s/%s.\n"),
 				File::get_config_path(), CONFIG_FILE);
 			printf(_("-r = batch render the contents of the batch file (%s/%s) with no GUI.  batch file is optional.\n"),
@@ -387,10 +402,10 @@ int main(int argc, char *argv[])
 				if( load_perpetual )
 					mwindow.load_undo_data();
 //SET_TRACE
-// load the initial files on seperate tracks
+// load the initial files as initial_loadmode instructs, or on new tracks by default
 // use a new thread so it doesn't block the GUI
 				if( filenames.total ) {
-					thread  = new CommandLineThread(&filenames, &mwindow);
+					thread  = new CommandLineThread(&filenames, &mwindow, initial_loadmode);
 					thread->start();
 //PRINT_TRACE
 				}

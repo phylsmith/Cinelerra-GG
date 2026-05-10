@@ -153,6 +153,7 @@ int TipWindowGUI::keypress_event()
 	case RETURN:
 	case ESC:
 	case 'w':
+	case 'q':
 		set_done(0);
 		break;
 	}
